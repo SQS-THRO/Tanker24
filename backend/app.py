@@ -4,6 +4,7 @@ import logging
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from router.example import router as example_router
+from database import create_db_and_tables
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -11,6 +12,9 @@ logger = logging.getLogger("uvicorn.error")
 async def lifespan(app: FastAPI):
     try:
         logger.info("Starting up...")
+        logger.info("connecting to database and creating tables if not exist")
+        await create_db_and_tables()
+        logger.info("Startup complete")
         yield
     except Exception as e:
         logger.error(f"Error during startup: {e}")
