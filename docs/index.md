@@ -8,12 +8,5 @@ Check out the [usage](usage) section for further information, including how to [
 
 ### 🔧 Application Logic
 
-::: app.app
-
-::: app.db
-
-::: app.schemas
-
-::: app.users
 
 
