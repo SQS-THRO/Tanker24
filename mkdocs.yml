@@ -55,6 +55,8 @@ plugins:
   - search
   - mkdocstrings:
       default_handler: python
+  - build_plantuml:
+      render: "server"
 markdown_extensions:
   - admonition
   - codehilite
