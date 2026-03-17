@@ -55,16 +55,12 @@ plugins:
   - search
   - mkdocstrings:
       default_handler: python
-  - build_plantuml:
-      render: "server"
+  - plantuml:
+      puml_url: https://www.plantuml.com/plantuml/
 markdown_extensions:
   - admonition
   - codehilite
   - toc:
       permalink: true
-  - pymdownx.superfences:
-      custom_fences:
-        - name: plantuml
-          renderer: plantuml
-          class: plantuml
+  - pymdownx.superfences
 

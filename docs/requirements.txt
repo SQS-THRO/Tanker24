@@ -1,6 +1,6 @@
 mkdocs-material
 mkdocstrings-python
 
-mkdocs-build-plantuml-plugin
+mkdocs_puml
 
 griffe
