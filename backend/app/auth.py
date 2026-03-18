@@ -15,7 +15,9 @@ from app.database import get_db
 from app.models import User
 
 
-async def get_user_db(session: AsyncSession = Depends(get_db)) -> AsyncGenerator[SQLAlchemyUserDatabase, None]:
+async def get_user_db(
+    session: AsyncSession = Depends(get_db),
+) -> AsyncGenerator[SQLAlchemyUserDatabase, None]:
     yield SQLAlchemyUserDatabase(session, User)
 
 
@@ -55,6 +57,8 @@ async def get_current_active_user(
 
 
 async def get_current_superuser(
-    user: User = Depends(fastapi_users.current_user(active=True, superuser=True)),
+    user: User = Depends(
+        fastapi_users.current_user(active=True, superuser=True)
+    ),
 ) -> User:
     return user
