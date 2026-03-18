@@ -10,6 +10,7 @@ Check out the [usage](usage) section for further information, including how to [
 <!-- omit from toc -->
 ## Table of Contents
 - [Project Vision](#project-vision)
+- [arc42 Documentation](arc42)
 - [Class model](#class-model)
   - [ER-Diagram](#er-diagram)
 - [🔧 Application Logic](#-application-logic)
