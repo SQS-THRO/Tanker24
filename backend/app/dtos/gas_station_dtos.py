@@ -37,6 +37,3 @@ class GasStation:
     overrides: Optional[List[str]] = None
     opening_times: Optional[OpeningTime] = None
     distance: Optional[float] = None
-
-    def __repr__(self):
-        return f"{self.name} ({self.place}) - E5: {self.e5}, E10: {self.e10}, Diesel: {self.diesel}"
