@@ -1,23 +1,25 @@
-# 1. Introduction and goals
+# arc42
 
-# 2. Constraints
+## 1. Introduction and goals
 
-# 3. Context and scope
+## 2. Constraints
 
-# 4. Solution strategy
+## 3. Context and scope
 
-# 5. Building block view
+## 4. Solution strategy
 
-# 6. Runtime view
+## 5. Building block view
 
-# 7. Deployment view
+## 6. Runtime view
 
-# 8. Crosscutting concepts
+## 7. Deployment view
 
-# 9. Architecture decisions
+## 8. Crosscutting concepts
 
-# 10. Quality
+## 9. Architecture decisions
 
-# 11. Risks and technical debt
+## 10. Quality
 
-# 12. Glossary
+## 11. Risks and technical debt
+
+## 12. Glossary
