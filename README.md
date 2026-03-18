@@ -3,6 +3,9 @@
 This repository is used to implement a project for the Software Quality Assurance module at Rosenheim Technical University in the Master's degree program in Computer Science.
 
 - [Project Vision](#project-vision)
+- [Class model](#class-model)
+  - [ER-Diagram](#er-diagram)
+  - [C4-Diagram](#c4-diagram)
 - [Features](#features)
 
 
@@ -14,4 +17,11 @@ With Tank24 we want to show case Software Quality Assurance methods on an import
 
 The system vision schema is based on: G. Beneken, F. Hummel und M. Kucich, Grundkurs agiles Software-Engineering: Ein Handbuch für Studium und Praxis. Wiesbaden, Germany: Springer Vieweg, 2022. doi: 10.1007/978-3-658-37371-9
 
+## Class model
+### ER-Diagram
+![ER-Diagram of the Tanker24 Backend](./.assets/er-diagram.drawio.svg)
+
+### C4-Diagram
+
 ## Features
+
