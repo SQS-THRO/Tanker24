@@ -2,10 +2,6 @@
 # ADR documentation
 This sup page lists all Architecture Decision Records (ADR). 
 
-- [FastAPI ADR](#fastapi-adr)
-- [FastAPI-userapi ADR](#fastapi-userapi-adr)
+- [FastAPI ADR](decisions/ADR_001_FastAPI)
+- [FastAPI-userapi ADR](decisions/ADR_002_fastapi-users)
 
-## FastAPI ADR
-test
-
-- [FastAPI-users ADR](docs/decisions/ADR_fastapi-users.md)

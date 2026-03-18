@@ -83,3 +83,4 @@ nav:
   - Getting started:
     - Installation: installation.md
     - Usage: usage.md
+  - ADRs: adr.md
