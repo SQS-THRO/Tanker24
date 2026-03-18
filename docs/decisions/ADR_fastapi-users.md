@@ -1,4 +1,4 @@
-# ADR 001: Choosing `fastapi-users` for User Authentication
+# ADR 002: Choosing `fastapi-users` for User Authentication
 
 **Date:** 2026-03-18  
 **Context:** Security, Developer Productivity, Scalability  
