@@ -51,6 +51,11 @@ theme:
   font:
     text: Roboto
     code: Roboto Mono
+  favicon:
+    assets/favicon.svg
+  icon:
+    logo: logo
+
 plugins:
   - search
   - mkdocstrings:
