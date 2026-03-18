@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,17 +11,21 @@ from app.schemas.station import StationCreate, StationUpdate
 router = APIRouter(prefix="/stations", tags=["stations"])
 
 
-@router.get("/", response_model=List[StationSchema])
+@router.get("/", response_model=list[StationSchema])
 async def list_stations(
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_active_user),
-) -> List[StationSchema]:
-    result = await db.execute(select(Station).where(Station.owner_id == user.id))
+) -> list[StationSchema]:
+    result = await db.execute(
+        select(Station).where(Station.owner_id == user.id)
+    )
     stations = result.scalars().all()
     return stations
 
 
-@router.post("/", response_model=StationSchema, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/", response_model=StationSchema, status_code=status.HTTP_201_CREATED
+)
 async def create_station(
     station: StationCreate,
     db: AsyncSession = Depends(get_db),
@@ -43,11 +45,15 @@ async def get_station(
     user: User = Depends(get_current_active_user),
 ) -> StationSchema:
     result = await db.execute(
-        select(Station).where(Station.id == station_id, Station.owner_id == user.id)
+        select(Station).where(
+            Station.id == station_id, Station.owner_id == user.id
+        )
     )
     station = result.scalar_one_or_none()
     if not station:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Station not found"
+        )
     return station
 
 
@@ -59,11 +65,15 @@ async def update_station(
     user: User = Depends(get_current_active_user),
 ) -> StationSchema:
     result = await db.execute(
-        select(Station).where(Station.id == station_id, Station.owner_id == user.id)
+        select(Station).where(
+            Station.id == station_id, Station.owner_id == user.id
+        )
     )
     station = result.scalar_one_or_none()
     if not station:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Station not found"
+        )
 
     update_data = station_update.model_dump(exclude_unset=True)
     for key, value in update_data.stations():
@@ -81,11 +91,15 @@ async def delete_station(
     user: User = Depends(get_current_active_user),
 ) -> None:
     result = await db.execute(
-        select(Station).where(Station.id == station_id, Station.owner_id == user.id)
+        select(Station).where(
+            Station.id == station_id, Station.owner_id == user.id
+        )
     )
     station = result.scalar_one_or_none()
     if not station:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Station not found"
+        )
 
     await db.delete(station)
     await db.commit()
