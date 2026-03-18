@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from app.dtos.gas_station_dtos import GasStation, OpeningTime
 
