@@ -2,7 +2,7 @@
 
 The project needs to reach at least 80% code coverage and include tests from all levels of the **test automation pyramid**.
 
-![Test Automation Pyramid](../.assets/TestPyramid.png)
+![Test Automation Pyramid](assets/images/TestPyramid.png)
 
 
 ## Github Pipeline for Test Execution
