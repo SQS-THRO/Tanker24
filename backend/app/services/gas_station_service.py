@@ -31,12 +31,12 @@ class GasStation:
         longitude: float,
         distance: Optional[float],
         is_open: bool,
-        whole_day: Optional[bool],
-        overrides: Optional[list[str]],
-        opening_times: Optional[OpeningTime],
         diesel: Optional[float],
         e5: Optional[float],
         e10: Optional[float],
+        whole_day: Optional[bool] = None,
+        overrides: Optional[list[str]] = None,
+        opening_times: Optional[OpeningTime] = None
     ):
         self.id = id
         self.name = name
@@ -67,7 +67,7 @@ class GasStationService:
     # Static base url
     BASE_URL = "https://creativecommons.tankerkoenig.de/json/"
 
-    def __init__(self, api_key: str = "test"):
+    def __init__(self, api_key: str = "00000000-0000-0000-0000-000000000002"):
         self.api_key = api_key
 
     def get_gas_station_by_id(self, id: str):
