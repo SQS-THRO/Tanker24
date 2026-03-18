@@ -1,63 +1,9 @@
-from enum import Enum
 from typing import List, Optional
 
-from datetime import datetime
+from app.dtos.gas_station_dtos import GasStation, OpeningTime
+
 import httpx
 
-class FuelType(str, Enum):
-    diesel = "diesel"
-    e5 = "e5"
-    e10 = "e10"
-    all = "all"
-
-class OpeningTime:
-    def __init__(self, text: str, start: str, end: str):
-        self.text = text
-        self.start = datetime.strptime(start, "%H:%M:%S").time()
-        self.end = datetime.strptime(start, "%H:%M:%S").time()
-
-# Auto map the data from the received JSON to a GasStation object
-class GasStation:
-    def __init__(
-        self,
-        id: str,
-        name: str,
-        brand: Optional[str],
-        street: Optional[str],
-        house_number: Optional[str],
-        post_code: Optional[int],
-        place: Optional[str],
-        latitude: float,
-        longitude: float,
-        distance: Optional[float],
-        is_open: bool,
-        diesel: Optional[float],
-        e5: Optional[float],
-        e10: Optional[float],
-        whole_day: Optional[bool] = None,
-        overrides: Optional[list[str]] = None,
-        opening_times: Optional[OpeningTime] = None
-    ):
-        self.id = id
-        self.name = name
-        self.brand = brand
-        self.street = street
-        self.house_number = house_number
-        self.post_code = post_code
-        self.place = place
-        self.latitude = latitude
-        self.longitude = longitude
-        self.distance = distance
-        self.is_open = is_open
-        self.diesel = diesel
-        self.e5 = e5
-        self.e10 = e10
-        self.opening_times = opening_times,
-        self.overrides = overrides,
-        self.whole_day = whole_day
-
-    def __repr__(self):
-        return f"{self.name} ({self.place}) - E5: {self.e5}, E10: {self.e10}, Diesel: {self.diesel}"
 
 """ 
 The actual GasStation Service which communicates with the tankerkoenig api.
