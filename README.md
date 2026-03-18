@@ -1,9 +1,9 @@
+<!-- omit from toc -->
 # Tanker24
 This repository is used to implement a project for the Software Quality Assurance module at Rosenheim Technical University in the Master's degree program in Computer Science.
 
-- [Tanker24](#tanker24)
-  - [Project Vision](#project-vision)
-  - [Features](#features)
+- [Project Vision](#project-vision)
+- [Features](#features)
 
 
 ## Project Vision
