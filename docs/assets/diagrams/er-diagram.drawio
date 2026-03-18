@@ -137,24 +137,34 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="kj9UfYkXt1VkPygo11pj-47" parent="1" style="ellipse;whiteSpace=wrap;html=1;align=center;" value="Litres" vertex="1">
-          <mxGeometry height="40" width="100" x="550" y="700" as="geometry" />
+          <mxGeometry height="40" width="100" x="510" y="670" as="geometry" />
         </mxCell>
         <mxCell id="kj9UfYkXt1VkPygo11pj-50" edge="1" parent="1" source="kj9UfYkXt1VkPygo11pj-49" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="kj9UfYkXt1VkPygo11pj-25">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="720" y="660" />
-              <mxPoint x="660" y="660" />
+              <mxPoint x="660" y="670" />
+              <mxPoint x="660" y="670" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="kj9UfYkXt1VkPygo11pj-49" parent="1" style="ellipse;whiteSpace=wrap;html=1;align=center;" value="Price Per Litre" vertex="1">
-          <mxGeometry height="40" width="100" x="670" y="690" as="geometry" />
+          <mxGeometry height="40" width="100" x="610" y="690" as="geometry" />
         </mxCell>
-        <mxCell id="kj9UfYkXt1VkPygo11pj-52" edge="1" parent="1" source="kj9UfYkXt1VkPygo11pj-51" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="kj9UfYkXt1VkPygo11pj-25">
+        <mxCell id="kj9UfYkXt1VkPygo11pj-52" edge="1" parent="1" source="kj9UfYkXt1VkPygo11pj-51" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="kj9UfYkXt1VkPygo11pj-25">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="kj9UfYkXt1VkPygo11pj-51" parent="1" style="ellipse;whiteSpace=wrap;html=1;align=center;" value="Mileage" vertex="1">
-          <mxGeometry height="40" width="100" x="760" y="640" as="geometry" />
+          <mxGeometry height="40" width="100" x="700" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="88kKzrALyGr6ZLquPE8V-2" edge="1" parent="1" source="88kKzrALyGr6ZLquPE8V-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;endArrow=none;endFill=0;" target="kj9UfYkXt1VkPygo11pj-25">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="660" y="630" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="88kKzrALyGr6ZLquPE8V-1" parent="1" style="ellipse;whiteSpace=wrap;html=1;align=center;" value="Timestamp" vertex="1">
+          <mxGeometry height="40" width="100" x="790" y="620" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
