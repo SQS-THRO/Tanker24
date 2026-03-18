@@ -5,6 +5,8 @@ from app.services.gas_station_service import GasStationService
 from datetime import datetime
 from app.dtos.gas_station_dtos import GasStation, OpeningTime, FuelType
 
+# todo add test fixture for the default json responses
+
 class TestGasStationService:
     def test_get_stations(self):
         service = GasStationService()
