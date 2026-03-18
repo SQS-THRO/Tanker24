@@ -1,7 +1,6 @@
 <div align="center">
 
-![Logo](docs/assets/favicon.svg)
-
+<img width=25% src="docs/assets/favicon.svg" />
 
 <h1>Tanker24</h1>
 <small>This repository is used to implement a project for the Software Quality Assurance module at Rosenheim Technical University in the Master's degree program in Computer Science.</small>
