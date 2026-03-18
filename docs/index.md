@@ -28,6 +28,46 @@ The system vision schema is based on: G. Beneken, F. Hummel und M. Kucich, Grund
 ## Class model
 ### ER-Diagram
 ![ER-Diagram of the Tanker24 Backend](assets/images/er-diagram.drawio.svg)
+```puml
+@startuml
+left to right direction
+
+entity "User" as User {
+  *User Id
+  --
+  Forname
+  Surname
+  Pin
+}
+
+entity "Car" as Car {
+  *Car Id
+  --
+  Type
+  License Plate Number
+}
+
+entity "Fuel Type" as FuelType {
+  *Fuel Type Id
+  --
+  Name
+}
+
+entity "Histroy Record" as HistoryRecord {
+  *Record Id
+  --
+  Timestamp
+  Mileage
+  Price Per Litre
+  Litres
+}
+
+User ||--o{ Car : owns
+Car ||--o{ HistoryRecord : has
+FuelType ||--o{ HistoryRecord : has
+
+@enduml
+```
 
 ## 🔧 Application Logic
 
