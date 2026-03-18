@@ -8,4 +8,4 @@ This sup page lists all Architecture Decision Records (ADR).
 ## FastAPI ADR
 test
 
-## FastAPI-userapi ADR
+- [FastAPI-users ADR](docs/decisions/ADR_fastapi-users.md)
