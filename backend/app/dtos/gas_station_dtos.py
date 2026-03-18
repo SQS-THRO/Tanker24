@@ -13,7 +13,7 @@ class OpeningTime:
     def __init__(self, text: str, start: str, end: str):
         self.text = text
         self.start = datetime.strptime(start, "%H:%M:%S").time()
-        self.end = datetime.strptime(start, "%H:%M:%S").time()
+        self.end = datetime.strptime(end, "%H:%M:%S").time()
 
 # Map the data from the received JSON to a GasStation object
 @dataclass
