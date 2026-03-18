@@ -1,4 +1,12 @@
 site_name: Tanker24
+
+# Repository
+repo_name: SQS-THRO/Tanker24
+repo_url: https://github.com/SQS-THRO/Tanker24
+
+# Copyright
+copyright: Copyright &copy; 2026 SQS Team 3
+
 theme:
   name: material
   features:
@@ -69,3 +77,9 @@ markdown_extensions:
       permalink: true
   - pymdownx.superfences
 
+# Page tree
+nav:
+  - Home: index.md
+  - Getting started:
+    - Installation: installation.md
+    - Usage: usage.md
