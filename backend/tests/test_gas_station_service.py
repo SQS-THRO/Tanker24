@@ -3,9 +3,6 @@ import httpx
 import respx
 from app.services.gas_station_service import GasStationService
 from datetime import datetime
-from app.dtos.gas_station_dtos import GasStation, OpeningTime, FuelType
-
-# todo add test fixture for the default json responses
 
 class TestGasStationService:
     def test_get_stations(self):
@@ -14,33 +11,43 @@ class TestGasStationService:
 
         assert isinstance(result, list)
 
+    # Helper test fixture to reduce duplicate code
+    @pytest.fixture
+    def station_response_factory(self):
+        def _factory(**override_parameters):
+            data = {
+                "ok": True,
+                "station": {
+                    "id": "123",
+                    "name": "Test Station",
+                    "brand": "Aral",
+                    "street": "Main Street",
+                    "houseNumber": "1",
+                    "postCode": 80331,
+                    "place": "Munich",
+                    "lat": 48.137,
+                    "lng": 11.575,
+                    "dist": 1.2,
+                    "isOpen": True,
+                    "diesel": 1.689,
+                    "e5": 1.789,
+                    "e10": 1.729,
+                    "wholeDay": False,
+                    "overrides": False,
+                    "openingTimes": [],
+                },
+            }
+            data["station"].update(override_parameters)
+            return data
+
+        return _factory
+
     @respx.mock
-    def test_get_gas_station_by_id_with_respx(self):
+    def test_get_gas_station_by_id_with_respx(self, station_response_factory):
         route = respx.get("https://creativecommons.tankerkoenig.de/json/detail.php").mock(
             return_value=httpx.Response(
                 200,
-                json={
-                    "ok": True,
-                    "station": {
-                        "id": "123",
-                        "name": "Test Station",
-                        "brand": "Aral",
-                        "street": "Main Street",
-                        "houseNumber": "1",
-                        "postCode": 80331,
-                        "place": "Munich",
-                        "lat": 48.137,
-                        "lng": 11.575,
-                        "dist": 1.2,
-                        "isOpen": True,
-                        "diesel": 1.689,
-                        "e5": 1.789,
-                        "e10": 1.729,
-                        "wholeDay": False,
-                        "overrides": False,
-                        "openingTimes": [],
-                    },
-                },
+                json=station_response_factory(),
             )
         )
 
@@ -52,38 +59,17 @@ class TestGasStationService:
         assert result.name == "Test Station"
 
     @respx.mock
-    def test_get_gas_station_by_id_success(self):
+    def test_get_gas_station_by_id_success(self, station_response_factory):
         respx.get("https://creativecommons.tankerkoenig.de/json/detail.php").mock(
             return_value=httpx.Response(
                 200,
-                json={
-                    "ok": True,
-                    "station": {
-                        "id": "123",
-                        "name": "Test Station",
-                        "brand": "Aral",
-                        "street": "Main Street",
-                        "houseNumber": "1",
-                        "postCode": 80331,
-                        "place": "Munich",
-                        "lat": 48.137,
-                        "lng": 11.575,
-                        "dist": 1.2,
-                        "isOpen": True,
-                        "diesel": 1.689,
-                        "e5": 1.789,
-                        "e10": 1.729,
-                        "wholeDay": False,
-                        "overrides": False,
-                        "openingTimes": [
-                            {
-                                "text": "Mon-Fri",
-                                "start": "08:00:00",
-                                "end": "20:00:00",
-                            }
-                        ],
-                    },
-                },
+                json=station_response_factory(openingTimes =[
+                    {
+                        "text": "Mon-Fri",
+                        "start": "08:00:00",
+                        "end": "20:00:00",
+                    }
+                ])
             )
         )
 
@@ -114,32 +100,11 @@ class TestGasStationService:
 
     # Test with empty opening times
     @respx.mock
-    def test_get_gas_station_by_id_empty_opening_times(self):
+    def test_get_gas_station_by_id_empty_opening_times(self, station_response_factory):
         respx.get("https://creativecommons.tankerkoenig.de/json/detail.php").mock(
             return_value=httpx.Response(
                 200,
-                json={
-                    "ok": True,
-                    "station": {
-                        "id": "123",
-                        "name": "Test Station",
-                        "brand": "Aral",
-                        "street": "Main Street",
-                        "houseNumber": "1",
-                        "postCode": 80331,
-                        "place": "Munich",
-                        "lat": 48.137,
-                        "lng": 11.575,
-                        "dist": 1.2,
-                        "isOpen": True,
-                        "diesel": 1.689,
-                        "e5": 1.789,
-                        "e10": 1.729,
-                        "wholeDay": False,
-                        "overrides": False,
-                        "openingTimes": [],
-                    },
-                },
+                json=station_response_factory(),
             )
         )
 
@@ -179,32 +144,11 @@ class TestGasStationService:
 
     # Check if all params are mapped through
     @respx.mock
-    def test_get_gas_station_by_id_sends_correct_params(self):
+    def test_get_gas_station_by_id_sends_correct_params(self, station_response_factory):
         route = respx.get("https://creativecommons.tankerkoenig.de/json/detail.php").mock(
             return_value=httpx.Response(
                 200,
-                json={
-                    "ok": True,
-                    "station": {
-                        "id": "123",
-                        "name": "Test Station",
-                        "brand": "Aral",
-                        "street": "Main Street",
-                        "houseNumber": "1",
-                        "postCode": 80331,
-                        "place": "Munich",
-                        "lat": 48.137,
-                        "lng": 11.575,
-                        "dist": 1.2,
-                        "isOpen": True,
-                        "diesel": 1.689,
-                        "e5": 1.789,
-                        "e10": 1.729,
-                        "wholeDay": False,
-                        "overrides": False,
-                        "openingTimes": [],
-                    },
-                },
+                json=station_response_factory(),
             )
         )
 
