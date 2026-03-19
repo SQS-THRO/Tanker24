@@ -34,8 +34,7 @@ jobs:
         working-directory: backend
         run: |
           pytest tests/ -v
-          exit_code=$?
-          if [ $exit_code -eq 5 ]; then exit 0; else exit $exit_code; fi
+          [ $? -eq 5 ] || [ $? -eq 0 ]
 
   lint:
     runs-on: ubuntu-latest
