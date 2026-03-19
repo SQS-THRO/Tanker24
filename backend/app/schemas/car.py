@@ -1,4 +1,5 @@
 from __future__ import annotations
+from app.schemas.history_record import HistoryRecord
 
 from pydantic import BaseModel, ConfigDict
 
@@ -28,4 +29,3 @@ class CarWithHistory(Car):
     history_records: list[HistoryRecord] = []
 
 
-from app.schemas.history_record import HistoryRecord
