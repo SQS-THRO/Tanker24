@@ -32,9 +32,7 @@ jobs:
 
       - name: Run unit tests
         working-directory: backend
-        run: |
-          pytest tests/ -v
-          [ $? -eq 5 ] || [ $? -eq 0 ]
+        run: pytest tests/ -v
 
   lint:
     runs-on: ubuntu-latest
