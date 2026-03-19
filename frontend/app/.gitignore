@@ -26,3 +26,6 @@ test-results
 
 #code
 .vscode
+
+#lib
+!lib/
