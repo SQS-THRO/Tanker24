@@ -1,13 +1,12 @@
-from typing import List
-
 from app.dtos.gas_station_dtos import GasStation, OpeningTime
 
 import httpx
+from typing import List
 
 
-""" 
-The actual GasStation Service which communicates with the tankerkoenig api.
-It offers function for using an area search and getting data for a specific station.
+""" The actual GasStation Service which communicates with the tankerkoenig api.
+It offers function for using an area search and getting data for a specific 
+station. The service will throw any errors which occur during the processing.
 """
 class GasStationService:
     # Static base url
@@ -16,7 +15,7 @@ class GasStationService:
     def __init__(self, api_key: str = "00000000-0000-0000-0000-000000000002"):
         self.api_key = api_key
 
-    def get_gas_station_by_id(self, id: str):
+    def get_gas_station_by_id(self, id: str) -> GasStation:
         endpoint_url = "detail.php"
         # Required parameters for the api
         params = {
@@ -24,17 +23,19 @@ class GasStationService:
             "apikey": self.api_key
         }
 
-        response = httpx.get(self.BASE_URL+endpoint_url, params=params, timeout=10.0)
+        response = httpx.get(self.BASE_URL+endpoint_url,
+                             params=params, timeout=10.0)
         response.raise_for_status()
 
         data = response.json()
 
         if not data.get("ok"):
-            raise RuntimeError("Tankerkoenig API was unable to return the data for a specific station. The request was bad.")
+            raise RuntimeError("Tankerkoenig API was unable to return the data "
+                               "for a specific station. The request was bad.")
 
         station = data.get("station")
 
-        # prepare opening times as they are an array in the original received JSON
+        # prepare opening times as they are an array in the received JSON
         opening_times: List[OpeningTime] = []
         for opening_time in station.get("openingTimes", []):
             opening_times.append(
@@ -68,7 +69,8 @@ class GasStationService:
 
         return result
 
-    # It is possible to set the desired fuel type in the api request for more specific filtering. Use the enum FuelType for applying this filter
+    """It is possible to set the desired fuel type in the api request for more
+    specific filtering. Use the enum FuelType for applying this filter."""
     def get_gas_stations(
         self,
         latitude: float,

@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from app.schemas.car import Car
+from app.schemas.fuel_type import FuelType
+
 from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
@@ -37,6 +40,3 @@ class HistoryRecordWithRelations(HistoryRecord):
     car: Car | None = None
     fuel_type: FuelType | None = None
 
-
-from app.schemas.car import Car
-from app.schemas.fuel_type import FuelType
