@@ -61,8 +61,7 @@ theme:
     code: Roboto Mono
   favicon:
     assets/favicon.svg
-  icon:
-    logo: logo
+  logo: assets/favicon.svg
 
 plugins:
   - search
@@ -76,6 +75,7 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.superfences
+  - md_in_html
 
 # Page tree
 nav:
@@ -83,3 +83,4 @@ nav:
   - Getting started:
     - Installation: installation.md
     - Usage: usage.md
+  - ADRs: adr.md
