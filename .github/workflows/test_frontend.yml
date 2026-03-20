@@ -23,7 +23,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/app/package-lock.json
       - name: Run tests
-        working-directory: frontend
+        working-directory: frontend/app
         run: npm run test
 
   lint:
@@ -37,6 +37,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/app/package-lock.json
       - name: Run lint
-        working-directory: frontend
+        working-directory: frontend/app
         run: npm run lint
 
