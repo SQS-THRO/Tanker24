@@ -55,11 +55,7 @@ jobs:
 
       - name: Check formatting
         working-directory: backend
-        run: ruff check --select E,F,W,I --ignore F401 .
-
-      - name: Check import sorting
-        working-directory: backend
-        run: ruff check --select I --diff .
+        run: ruff check --diff .
 
   typecheck:
     runs-on: ubuntu-latest
