@@ -1,7 +1,11 @@
 from __future__ import annotations
-from app.schemas.history_record import HistoryRecord
+
+from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, ConfigDict
+
+if TYPE_CHECKING:
+    from app.schemas.history_record import HistoryRecord
 
 
 class CarBase(BaseModel):

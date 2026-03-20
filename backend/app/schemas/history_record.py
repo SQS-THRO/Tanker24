@@ -1,7 +1,11 @@
 from __future__ import annotations
 
-from app.schemas.car import Car
+from typing import TYPE_CHECKING
+
 from app.schemas.fuel_type import FuelType
+
+if TYPE_CHECKING:
+    from app.schemas.car import Car
 
 from datetime import datetime
 
