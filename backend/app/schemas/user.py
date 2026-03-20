@@ -20,6 +20,9 @@ class UserRead(UserBase):
 class UserCreate(UserBase):
     password: str
 
+    def create_update_dict(self) -> dict:
+        return self.model_dump()
+
 
 class UserUpdate(BaseModel):
     email: str | None = None

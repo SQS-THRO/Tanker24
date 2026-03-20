@@ -1,6 +1,4 @@
-from collections.abc import AsyncGenerator
-
-from fastapi import Depends
+from fastapi import Depends, Request
 from fastapi_users import FastAPIUsers
 from fastapi_users.authentication import (
     AuthenticationBackend,
@@ -8,17 +6,35 @@ from fastapi_users.authentication import (
     JWTStrategy,
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
+from fastapi_users.manager import BaseUserManager
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.database import get_db
 from app.models import User
+from app.schemas.user import UserCreate, UserRead
 
 
-async def get_user_db(
+class CustomUserManager(BaseUserManager[User, int]):
+    user_read_model = UserRead
+    user_create_model = UserCreate
+
+    async def on_after_register(
+        self, user: User, request: Request | None = None
+    ) -> None:
+        pass
+
+
+def get_user_db(
     session: AsyncSession = Depends(get_db),
-) -> AsyncGenerator[SQLAlchemyUserDatabase, None]:
-    yield SQLAlchemyUserDatabase(session, User)
+) -> SQLAlchemyUserDatabase[User, int]:
+    return SQLAlchemyUserDatabase(session, User)
+
+
+async def get_user_manager(
+    user_db: SQLAlchemyUserDatabase[User, int] = Depends(get_user_db),
+):
+    yield CustomUserManager(user_db)
 
 
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
@@ -39,7 +55,7 @@ auth_backend = AuthenticationBackend(
 
 
 fastapi_users = FastAPIUsers[User, int](
-    get_user_db,
+    get_user_manager,
     [auth_backend],
 )
 
