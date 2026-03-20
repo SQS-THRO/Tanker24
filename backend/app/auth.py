@@ -22,6 +22,9 @@ class CustomUserManager(BaseUserManager[User, int]):
 	async def on_after_register(self, user: User, request: Request | None = None) -> None:
 		pass
 
+	def parse_id(self, normalized_id: str) -> int:
+		return int(normalized_id)
+
 
 def get_user_db(
 	session: AsyncSession = Depends(get_db),
