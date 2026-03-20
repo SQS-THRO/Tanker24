@@ -9,14 +9,14 @@ from app.routers import auth, health, stations
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> None:
-    await init_db()
-    yield
+	await init_db()
+	yield
 
 
 app = FastAPI(
-    title=settings.app_name,
-    version=settings.app_version,
-    lifespan=lifespan,
+	title=settings.app_name,
+	version=settings.app_version,
+	lifespan=lifespan,
 )
 
 app.include_router(health.router)

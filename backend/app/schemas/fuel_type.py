@@ -2,18 +2,18 @@ from pydantic import BaseModel, ConfigDict
 
 
 class FuelTypeBase(BaseModel):
-    name: str
+	name: str
 
 
 class FuelTypeCreate(FuelTypeBase):
-    pass
+	pass
 
 
 class FuelTypeUpdate(BaseModel):
-    name: str | None = None
+	name: str | None = None
 
 
 class FuelType(FuelTypeBase):
-    id: int
+	id: int
 
-    model_config = ConfigDict(from_attributes=True)
+	model_config = ConfigDict(from_attributes=True)
