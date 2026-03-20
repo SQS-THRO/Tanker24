@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { authService } from '$lib/services/api';
+	import { goto } from '$app/navigation';
 
 	let email = $state('');
 	let password = $state('');
 	let error = $state('');
+	let loading = $state(false);
 
 	async function handleLogin() {
 		error = '';
@@ -11,7 +14,17 @@
 			error = 'Please fill in all fields';
 			return;
 		}
-		console.log('Login with:', email);
+
+		loading = true;
+		try {
+			const response = await authService.login({ email, password });
+			localStorage.setItem('token', response.access_token);
+			await goto(resolve('/'));
+		} catch (e) {
+			error = e instanceof Error ? e.message : 'Login failed';
+		} finally {
+			loading = false;
+		}
 	}
 </script>
 
@@ -51,7 +64,9 @@
 				<label for="password">Password</label>
 				<input type="password" id="password" bind:value={password} placeholder="Your password" />
 			</div>
-			<button type="submit" class="submit-btn">Login</button>
+			<button type="submit" class="submit-btn" disabled={loading}>
+				{loading ? 'Logging in...' : 'Login'}
+			</button>
 		</form>
 
 		<div class="divider"></div>

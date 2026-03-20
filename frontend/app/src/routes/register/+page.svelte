@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { authService } from '$lib/services/api';
+	import { goto } from '$app/navigation';
 
 	let last_name = $state('');
 	let first_name = $state('');
@@ -8,6 +10,7 @@
 	let password = $state('');
 	let confirmPassword = $state('');
 	let error = $state('');
+	let loading = $state(false);
 
 	async function handleRegister() {
 		error = '';
@@ -23,7 +26,22 @@
 			error = 'Password must be at least 8 characters';
 			return;
 		}
-		console.log('Register with:', email);
+
+		loading = true;
+		try {
+			await authService.register({
+				email,
+				forename: first_name,
+				surname: last_name,
+				pin,
+				password
+			});
+			await goto(resolve('/login'));
+		} catch (e) {
+			error = e instanceof Error ? e.message : 'Registration failed';
+		} finally {
+			loading = false;
+		}
 	}
 </script>
 
@@ -79,7 +97,9 @@
 				<label for="confirmPassword">Confirm Password</label>
 				<input type="password" id="confirmPassword" bind:value={confirmPassword} placeholder="Repeat your password" />
 			</div>
-			<button type="submit" class="submit-btn">Create Account</button>
+			<button type="submit" class="submit-btn" disabled={loading}>
+				{loading ? 'Creating Account...' : 'Create Account'}
+			</button>
 		</form>
 
 		<div class="divider"></div>
