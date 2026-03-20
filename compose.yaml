@@ -7,3 +7,9 @@ services:
       - "8000:8000"
     env_file:
       - .env
+  frontend:
+    build:
+      context: ./frontend/app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
