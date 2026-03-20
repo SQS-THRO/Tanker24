@@ -1,5 +1,7 @@
 <script lang="ts">
-	let last_name = $state('');	
+	import { resolve } from '$app/paths';
+
+	let last_name = $state('');
 	let first_name = $state('');
 	let email = $state('');
 	let pin = $state('');
@@ -21,12 +23,12 @@
 			error = 'Password must be at least 8 characters';
 			return;
 		}
-		console.log('Register with:', name, email);
+		console.log('Register with:', email);
 	}
 </script>
 
 <main>
-	<a href="/" class="back-btn" aria-label="Go back">
+	<a href={resolve('/')} class="back-btn" aria-label="Go back">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="24"
@@ -79,11 +81,11 @@
 			</div>
 			<button type="submit" class="submit-btn">Create Account</button>
 		</form>
-			
+
 		<div class="divider"></div>
 
 		<p class="register-link">
-			Already have an account? <a href="/login">Login</a>
+			Already have an account? <a href={resolve('/login')}>Login</a>
 		</p>
 	</div>
 </main>

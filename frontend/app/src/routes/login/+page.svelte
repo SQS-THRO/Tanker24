@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+
 	let email = $state('');
 	let password = $state('');
 	let error = $state('');
@@ -14,7 +16,7 @@
 </script>
 
 <main>
-	<a href="/" class="back-btn" aria-label="Go back">
+	<a href={resolve('/')} class="back-btn" aria-label="Go back">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="24"
@@ -55,7 +57,7 @@
 		<div class="divider"></div>
 
 		<p class="register-link">
-			Don't have an account? <a href="/register">Register</a>
+			Don't have an account? <a href={resolve('/register')}>Register</a>
 		</p>
 	</div>
 </main>

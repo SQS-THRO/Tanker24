@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import Button from '$lib/components/button.svelte';
 </script>
 
@@ -10,7 +11,7 @@
 		<Button label="Go to Map" href="/map" />
 	</section>
 
-	<a href="/login" class="profile-btn" aria-label="Login">
+	<a href={resolve('/login')} class="profile-btn" aria-label="Login">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="24"
