@@ -61,38 +61,17 @@ json Legend{
 |UC7|The user views a list of gas stations sorted by proximity to a specified location.|
 
 ## 1.2 Quality Goals
-### Content
-The top three (max five) quality goals for the architecture whose fulfillment is of highest importance to the major stakeholders. We really mean quality goals for the architecture. Don’t confuse them with project goals. They are not necessarily identical.
+The ISO  25010 specifies the eight quality goals goals for software applications. They are: Functional Stability, Reliability, Security, Maintainability, Performance Efficiency, Operability, Compatibility, Transferability. 
 
-The ISO 25010 standard provides a nice overview of potential topics of interest:
-
-ISO 25010 categories of quality requirements
-
-### Motivation
-You should know the quality goals of your most important stakeholders, since they will influence fundamental architectural decisions. Make sure to be very concrete about these qualities, avoid buzzwords. If you as an architect do not know how the quality of your work will be judged …
-
-### Form
-A table with the most important quality goals and concrete scenarios, ordered by priorities.
-
-See section 10 (Quality Requirements) for a complete overview of quality scenarios.
+|Prio|Quality Goal|Description|
+|----|------------|-----------|
+|1|Functional Stability|The software shall cover all specified main use cases.|
+|2|Reliability|The software shall seamlessly recover from tankerkoenig API outages.|
+|3|Security| The software shall protect the collected user data with authentication.|
+|4|Transferability|The software shall allow the user to transfer its collected user data (filling data) into JSON and csv.|
 
 ## 1.3 Stakeholder
-### Content
-Explicit overview of stakeholders of the system, i.e. all person, roles or organizations that
-
-should know the architecture
-have to be convinced of the architecture
-have to work with the architecture or with code
-need the documentation of the architecture for their work
-have to come up with decisions about the system or its development
-
-### Motivation
-You should know all parties involved in development of the system or affected by the system. Otherwise, you may get nasty surprises later in the development process. These stakeholders determine the extent and the level of detail of your work and its results.
-
-### Form
-Table with role names, person names, and their expectations with respect to the architecture and its documentation.
-
 | Role/Name | Needs | Expectations |
 |-----------|-------|--------------|
-|German car driver|       |              |
-|           |       |              |
+|German car driver|Find the cheapest gas station in their area.|Accurate and up-to-date fuel prices, fast search results, and easy comparison of nearby stations.|
+|Foreign drivers new to Germany|Find the closest gas station to their location.|Simple and intuitive interface and integration into common navigation apps. |
