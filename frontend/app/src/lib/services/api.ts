@@ -1,5 +1,5 @@
-import { PUBLIC_BACKEND_URL } from '$env/static/public';
-const API_BASE = PUBLIC_BACKEND_URL;
+import { env } from '$env/dynamic/public';
+const API_BASE = env.PUBLIC_BACKEND_URL ?? 'http://backend:8000';
 interface User {
 	id: number;
 	email: string;
