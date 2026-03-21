@@ -1,5 +1,5 @@
-const API_BASE = import.meta.env.API_BASE || 'http://backend';
-
+import {PUBLIC_BACKEND_URL} from '$env/static/public'
+const API_BASE = PUBLIC_BACKEND_URL
 interface User {
 	id: number;
 	email: string;
