@@ -10,7 +10,6 @@
 <button
 	onclick={async () => {
 		await goto(resolve(href));
-		resolve(href);
 	}}
 >
 	{label}
