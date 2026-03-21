@@ -1,5 +1,5 @@
-import {PUBLIC_BACKEND_URL} from '$env/static/public'
-const API_BASE = PUBLIC_BACKEND_URL
+import { PUBLIC_BACKEND_URL } from '$env/static/public';
+const API_BASE = PUBLIC_BACKEND_URL;
 interface User {
 	id: number;
 	email: string;

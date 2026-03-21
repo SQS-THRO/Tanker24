@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import Button from '$lib/components/button.svelte';
 	import { authService } from '$lib/services/api';
+	import { resolve } from '$app/paths';
 
 	let user = $state<{ forename: string } | null>(null);
 	let showDropdown = $state(false);
@@ -20,10 +21,6 @@
 
 	function toggleDropdown() {
 		showDropdown = !showDropdown;
-	}
-
-	function closeDropdown() {
-		showDropdown = false;
 	}
 
 	async function logout() {
@@ -64,7 +61,7 @@
 		</div>
 	{:else}
 		<div class="profile-wrapper">
-			<a href="/login" class="profile-btn login-btn" aria-label="Login">
+			<a href={resolve('/login')} class="profile-btn login-btn" aria-label="Login">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					width="24"
