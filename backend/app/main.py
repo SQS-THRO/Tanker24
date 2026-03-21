@@ -28,7 +28,7 @@ app.include_router(auth.users_router, prefix="/users", tags=["users"])
 app.include_router(stations.router)
 
 app.add_middleware(
-	CORSMiddleware,
+	CORSMiddleware,  # type: ignore[arg-type]
 	allow_origins=settings.CORSorigins,
 	allow_credentials=True,
 	allow_methods=["*"],
