@@ -13,13 +13,13 @@ router = APIRouter(prefix="/stations", tags=["stations"])
 
 
 def _validate_station(station: Station | StationSchema) -> StationSchema:
-    try:
-        return StationSchema.model_validate(station)
-    except ValidationError:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Invalid station data",
-        )
+	try:
+		return StationSchema.model_validate(station)
+	except ValidationError:
+		raise HTTPException(
+			status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+			detail="Invalid station data",
+		)
 
 
 @router.get("/", response_model=list[StationSchema])
