@@ -1,3 +1,7 @@
+---
+icon: simple/fastapi
+---
+
 # ADR 002: Choosing `fastapi-users` for User Authentication
 
 **Date:** 2026-03-18  

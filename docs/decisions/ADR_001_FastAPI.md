@@ -1,3 +1,7 @@
+---
+icon: simple/fastapi
+---
+
 # ADR 001: Choosing FastAPI for the Web Framework
 
 **Date:** 2026-03-18  

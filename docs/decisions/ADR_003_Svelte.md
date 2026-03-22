@@ -1,3 +1,7 @@
+---
+icon: simple/svelte
+---
+
 # ADR 003: Choosing Svelte for the UI Framework
 
 **Date:** 2026-03-18  

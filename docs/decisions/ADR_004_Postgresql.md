@@ -1,3 +1,7 @@
+---
+icon: simple/postgresql
+---
+
 # ADR 004: Choosing PostgreSQL DB as database
 
 **Date:** 2026-03-19  
