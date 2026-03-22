@@ -107,3 +107,14 @@ docstring-code-line-length = "dynamic"
 python_version = "3.12"
 strict = true
 ignore_missing_imports = true
+disable_error_code = [
+    "type-var",
+    "no-untyped-def",
+    "no-untyped-call"
+]
+
+[tool.ty.rules]
+unused-ignore-comment = "warn"
+redundant-cast = "ignore"
+possibly-missing-attribute = "error"
+possibly-missing-import = "error"

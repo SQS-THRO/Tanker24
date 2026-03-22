@@ -1,3 +1,4 @@
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -9,7 +10,7 @@ from app.routers import auth, health, stations
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> None:
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 	await init_db()
 	yield
 
@@ -27,9 +28,9 @@ app.include_router(auth.users_router, prefix="/users", tags=["users"])
 app.include_router(stations.router)
 
 app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.CORSorigins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+	CORSMiddleware,  # type: ignore[arg-type]
+	allow_origins=settings.CORSorigins,
+	allow_credentials=True,
+	allow_methods=["*"],
+	allow_headers=["*"],
 )

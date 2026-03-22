@@ -15,28 +15,28 @@ theme:
     - content.action.view
     - content.code.annotate
     - content.code.copy
-    # - content.code.select
-    # - content.footnote.tooltips
-    # - content.tabs.link
+    - content.code.select
+    - content.footnote.tooltips
+    - content.tabs.link
     - content.tooltips
-    # - header.autohide
-    # - navigation.expand
+    - header.autohide
+    - navigation.expand
     - navigation.footer
     - navigation.indexes
-    # - navigation.instant
-    # - navigation.instant.prefetch
-    # - navigation.instant.progress
-    # - navigation.prune
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.prune
     - navigation.sections
     - navigation.tabs
-    # - navigation.tabs.sticky
+    - navigation.tabs.sticky
     - navigation.top
     - navigation.tracking
     - search.highlight
     - search.share
     - search.suggest
     - toc.follow
-    # - toc.integrate
+    - toc.integrate
   palette:
     - media: "(prefers-color-scheme)"
       toggle:
@@ -75,12 +75,23 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
   - md_in_html
 
 # Page tree
 nav:
-  - Home: index.md
+  - Home:
+    - index.md
+    - Entity-Relationship model: er-model.md
+    - Class model: class-model.md
   - Getting started:
     - Installation: installation.md
     - Usage: usage.md
-  - ADRs: adr.md
+  - ADRs:
+    - decisions/index.md
+    - decisions/ADR_001_FastAPI.md
+    - decisions/ADR_002_fastapi-users.md
+    - decisions/ADR_003_Svelte.md
+    - decisions/ADR_004_Postgresql.md
+

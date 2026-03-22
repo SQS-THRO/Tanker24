@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -9,6 +10,16 @@ from app.schemas.station import Station as StationSchema
 from app.schemas.station import StationCreate, StationUpdate
 
 router = APIRouter(prefix="/stations", tags=["stations"])
+
+
+def _validate_station(station: Station | StationSchema) -> StationSchema:
+	try:
+		return StationSchema.model_validate(station)
+	except ValidationError:
+		raise HTTPException(
+			status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+			detail="Invalid station data",
+		)
 
 
 @router.get(
@@ -23,7 +34,7 @@ async def list_stations(
 ) -> list[StationSchema]:
 	result = await db.execute(select(Station).where(Station.owner_id == user.id))
 	stations = result.scalars().all()
-	return stations
+	return [_validate_station(s) for s in stations]
 
 
 @router.post(
@@ -42,7 +53,7 @@ async def create_station(
 	db.add(db_station)
 	await db.commit()
 	await db.refresh(db_station)
-	return db_station
+	return _validate_station(db_station)
 
 
 @router.get(
@@ -61,7 +72,7 @@ async def get_station(
 	station = result.scalar_one_or_none()
 	if not station:
 		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
-	return station
+	return _validate_station(station)
 
 
 @router.patch(
@@ -88,7 +99,7 @@ async def update_station(
 
 	await db.commit()
 	await db.refresh(station)
-	return station
+	return _validate_station(station)
 
 
 @router.delete(
