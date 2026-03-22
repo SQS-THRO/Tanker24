@@ -39,5 +39,5 @@ class GasStation:
 	e10: Optional[float]
 	whole_day: Optional[bool] = None
 	overrides: Optional[List[str]] = None
-	opening_times: Optional[OpeningTime] = None
+	opening_times: Optional[List[OpeningTime]] = None
 	distance: Optional[float] = None
