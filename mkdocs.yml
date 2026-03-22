@@ -75,9 +75,9 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.superfences
-  - md_in_html
   - pymdownx.tabbed:
       alternate_style: true
+  - md_in_html
 
 # Page tree
 nav:
