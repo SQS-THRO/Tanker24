@@ -83,4 +83,10 @@ nav:
   - Getting started:
     - Installation: installation.md
     - Usage: usage.md
-  - ADRs: adr.md
+  - ADRs:
+    - decisions/index.md
+    - decisions/ADR_001_FastAPI.md
+    - decisions/ADR_002_fastapi-users.md
+    - decisions/ADR_003_Svelte.md
+    - decisions/ADR_004_Postgresql.md
+
