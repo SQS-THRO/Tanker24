@@ -75,11 +75,16 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
   - md_in_html
 
 # Page tree
 nav:
-  - Home: index.md
+  - Home:
+    - index.md
+    - Entity-Relationship model: er-model.md
+    - Class model: class-model.md
   - Getting started:
     - Installation: installation.md
     - Usage: usage.md
