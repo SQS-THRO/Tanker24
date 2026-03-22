@@ -52,7 +52,7 @@ The container diagram shows how Tanker24 is structured internaly without putting
 
 
 ## Technology decisions
-As per organizational constrainc OC-3 all relevant technology decisions need to be documented as architecture decision records (ADR). The following page lists all ADRs: [here](../adr.md)
+As per organizational constrainc OC-3 all relevant technology decisions need to be documented as architecture decision records (ADR). The following page lists all ADRs: [here](../decisions/index.md)
 
 ## Quality Goals
 
