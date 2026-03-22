@@ -22,7 +22,12 @@ def _validate_station(station: Station | StationSchema) -> StationSchema:
 		)
 
 
-@router.get("/", response_model=list[StationSchema])
+@router.get(
+	"/",
+	response_model=list[StationSchema],
+	summary="List all stations",
+	description="Retrieve a list of all gas stations owned by the authenticated user.",
+)
 async def list_stations(
 	db: AsyncSession = Depends(get_db),
 	user: User = Depends(get_current_active_user),
@@ -32,7 +37,13 @@ async def list_stations(
 	return [_validate_station(s) for s in stations]
 
 
-@router.post("/", response_model=StationSchema, status_code=status.HTTP_201_CREATED)
+@router.post(
+	"/",
+	response_model=StationSchema,
+	status_code=status.HTTP_201_CREATED,
+	summary="Create a new station",
+	description="Create a new gas station owned by the authenticated user.",
+)
 async def create_station(
 	station: StationCreate,
 	db: AsyncSession = Depends(get_db),
@@ -45,7 +56,13 @@ async def create_station(
 	return _validate_station(db_station)
 
 
-@router.get("/{station_id}", response_model=StationSchema)
+@router.get(
+	"/{station_id}",
+	response_model=StationSchema,
+	summary="Get a station by ID",
+	description="Retrieve details of a specific gas station by its ID. Only accessible by the station owner.",
+	responses={404: {"description": "Station not found"}},
+)
 async def get_station(
 	station_id: int,
 	db: AsyncSession = Depends(get_db),
@@ -58,7 +75,13 @@ async def get_station(
 	return _validate_station(station)
 
 
-@router.patch("/{station_id}", response_model=StationSchema)
+@router.patch(
+	"/{station_id}",
+	response_model=StationSchema,
+	summary="Update a station",
+	description="Update an existing gas station. Only station attributes provided in the request body will be modified (partial update).",
+	responses={404: {"description": "Station not found"}},
+)
 async def update_station(
 	station_id: int,
 	station_update: StationUpdate,
@@ -79,7 +102,13 @@ async def update_station(
 	return _validate_station(station)
 
 
-@router.delete("/{station_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+	"/{station_id}",
+	status_code=status.HTTP_204_NO_CONTENT,
+	summary="Delete a station",
+	description="Delete a gas station by its ID. This action is permanent and cannot be undone. Only accessible by the station owner.",
+	responses={404: {"description": "Station not found"}},
+)
 async def delete_station(
 	station_id: int,
 	db: AsyncSession = Depends(get_db),
