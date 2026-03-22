@@ -13,93 +13,71 @@ router = APIRouter(prefix="/stations", tags=["stations"])
 
 @router.get("/", response_model=list[StationSchema])
 async def list_stations(
-    db: AsyncSession = Depends(get_db),
-    user: User = Depends(get_current_active_user),
+	db: AsyncSession = Depends(get_db),
+	user: User = Depends(get_current_active_user),
 ) -> list[StationSchema]:
-    result = await db.execute(
-        select(Station).where(Station.owner_id == user.id)
-    )
-    stations = result.scalars().all()
-    return stations
+	result = await db.execute(select(Station).where(Station.owner_id == user.id))
+	stations = result.scalars().all()
+	return stations
 
 
-@router.post(
-    "/", response_model=StationSchema, status_code=status.HTTP_201_CREATED
-)
+@router.post("/", response_model=StationSchema, status_code=status.HTTP_201_CREATED)
 async def create_station(
-    station: StationCreate,
-    db: AsyncSession = Depends(get_db),
-    user: User = Depends(get_current_active_user),
+	station: StationCreate,
+	db: AsyncSession = Depends(get_db),
+	user: User = Depends(get_current_active_user),
 ) -> StationSchema:
-    db_station = Station(**station.model_dump(), owner_id=user.id)
-    db.add(db_station)
-    await db.commit()
-    await db.refresh(db_station)
-    return db_station
+	db_station = Station(**station.model_dump(), owner_id=user.id)
+	db.add(db_station)
+	await db.commit()
+	await db.refresh(db_station)
+	return db_station
 
 
 @router.get("/{station_id}", response_model=StationSchema)
 async def get_station(
-    station_id: int,
-    db: AsyncSession = Depends(get_db),
-    user: User = Depends(get_current_active_user),
+	station_id: int,
+	db: AsyncSession = Depends(get_db),
+	user: User = Depends(get_current_active_user),
 ) -> StationSchema:
-    result = await db.execute(
-        select(Station).where(
-            Station.id == station_id, Station.owner_id == user.id
-        )
-    )
-    station = result.scalar_one_or_none()
-    if not station:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Station not found"
-        )
-    return station
+	result = await db.execute(select(Station).where(Station.id == station_id, Station.owner_id == user.id))
+	station = result.scalar_one_or_none()
+	if not station:
+		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
+	return station
 
 
 @router.patch("/{station_id}", response_model=StationSchema)
 async def update_station(
-    station_id: int,
-    station_update: StationUpdate,
-    db: AsyncSession = Depends(get_db),
-    user: User = Depends(get_current_active_user),
+	station_id: int,
+	station_update: StationUpdate,
+	db: AsyncSession = Depends(get_db),
+	user: User = Depends(get_current_active_user),
 ) -> StationSchema:
-    result = await db.execute(
-        select(Station).where(
-            Station.id == station_id, Station.owner_id == user.id
-        )
-    )
-    station = result.scalar_one_or_none()
-    if not station:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Station not found"
-        )
+	result = await db.execute(select(Station).where(Station.id == station_id, Station.owner_id == user.id))
+	station = result.scalar_one_or_none()
+	if not station:
+		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
 
-    update_data = station_update.model_dump(exclude_unset=True)
-    for key, value in update_data.stations():
-        setattr(station, key, value)
+	update_data = station_update.model_dump(exclude_unset=True)
+	for key, value in update_data.stations():
+		setattr(station, key, value)
 
-    await db.commit()
-    await db.refresh(station)
-    return station
+	await db.commit()
+	await db.refresh(station)
+	return station
 
 
 @router.delete("/{station_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_station(
-    station_id: int,
-    db: AsyncSession = Depends(get_db),
-    user: User = Depends(get_current_active_user),
+	station_id: int,
+	db: AsyncSession = Depends(get_db),
+	user: User = Depends(get_current_active_user),
 ) -> None:
-    result = await db.execute(
-        select(Station).where(
-            Station.id == station_id, Station.owner_id == user.id
-        )
-    )
-    station = result.scalar_one_or_none()
-    if not station:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Station not found"
-        )
+	result = await db.execute(select(Station).where(Station.id == station_id, Station.owner_id == user.id))
+	station = result.scalar_one_or_none()
+	if not station:
+		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
 
-    await db.delete(station)
-    await db.commit()
+	await db.delete(station)
+	await db.commit()
