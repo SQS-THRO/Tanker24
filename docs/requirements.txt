@@ -1,4 +1,4 @@
-mkdocs-material
+mkdocs-material[recommended,imaging]
 mkdocstrings-python
 
 mkdocs_puml
