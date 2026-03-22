@@ -5,17 +5,7 @@
 
     This project is under active development.
 
-Check out the [usage](usage) section for further information, including how to [install](usage#installation) the project.
-
-<!-- omit from toc -->
-## Table of Contents
-- [Project Vision](#project-vision)
-- [Class model](#class-model)
-  - [ER-Diagram](#er-diagram)
-  - [System Context Diagram (C4-Model Level 1)](#system-context-diagram-c4-model-level-1)
-  - [Container Diagram (C4-Model Level 2)](#container-diagram-c4-model-level-2)
-- [🔧 Application Logic](#-application-logic)
-
+Check out the [usage](usage) section for further information, including how to [install](installation) the project.
 
 ## Project Vision
 With Tanker24 we want to show case Software Quality Assurance methods on an important real world tool. As gas prices rise in Germany many people use Apps or Websites to check gas prices in their area. Tank24 will implement such a website and enable users to track their gas price history.
