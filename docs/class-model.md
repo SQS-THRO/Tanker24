@@ -58,7 +58,7 @@ icon: simple/uml
         Person_Ext(user, "German car drivers", $tags= "customer")
 
         System_Boundary(tanker24Application, "Tanker24"){
-            Container(web_app, "User Interface", "VueJS", $tags="webApp")
+            Container(web_app, "User Interface", "Svelte", $tags="webApp")
             ContainerDb(postgre, "Data Store & Cache", "PostgreSQL", $tags="db")
             Container(backend, "Tanker24 Backend", "Python 3", $tags="conApp")
 
