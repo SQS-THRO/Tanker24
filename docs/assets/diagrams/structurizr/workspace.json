@@ -1,0 +1,320 @@
+{
+  "configuration" : {
+    "scope" : "SoftwareSystem"
+  },
+  "description" : "System context diagram for the Tanker24 application",
+  "documentation" : { },
+  "id" : 1,
+  "lastModifiedAgent" : "structurizr/diagrams/294d1a93-6c65-4f2f-acd6-09dc958cc213",
+  "lastModifiedDate" : "2026-03-22T09:55:17Z",
+  "lastModifiedUser" : "1091495783",
+  "model" : {
+    "people" : [ {
+      "description" : "Car drivers",
+      "id" : "1",
+      "name" : "User",
+      "properties" : {
+        "structurizr.dsl.identifier" : "user"
+      },
+      "relationships" : [ {
+        "description" : "Request gas prices in area",
+        "destinationId" : "3",
+        "id" : "8",
+        "sourceId" : "1",
+        "tags" : "Relationship",
+        "technology" : "UI interaction"
+      }, {
+        "description" : "Request gas prices in area",
+        "destinationId" : "2",
+        "id" : "9",
+        "linkedRelationshipId" : "8",
+        "sourceId" : "1",
+        "technology" : "UI interaction"
+      }, {
+        "description" : "Store filling data",
+        "destinationId" : "3",
+        "id" : "10",
+        "sourceId" : "1",
+        "tags" : "Relationship",
+        "technology" : "UI interaction"
+      } ],
+      "tags" : "Element,Person"
+    } ],
+    "softwareSystems" : [ {
+      "containers" : [ {
+        "description" : "VueJS",
+        "documentation" : { },
+        "id" : "3",
+        "name" : "User Interface",
+        "properties" : {
+          "structurizr.dsl.identifier" : "tanker24.webApp"
+        },
+        "relationships" : [ {
+          "description" : "Request user data",
+          "destinationId" : "5",
+          "id" : "11",
+          "sourceId" : "3",
+          "tags" : "Relationship",
+          "technology" : "REST"
+        }, {
+          "description" : "Get map",
+          "destinationId" : "7",
+          "id" : "16",
+          "sourceId" : "3",
+          "tags" : "Relationship",
+          "technology" : "REST"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "Provides the web interface for searching gas prices and storing filling data."
+      }, {
+        "description" : "PostgreSQL",
+        "documentation" : { },
+        "id" : "4",
+        "name" : "Data Store & Cache",
+        "properties" : {
+          "structurizr.dsl.identifier" : "tanker24.postgre"
+        },
+        "tags" : "Element,Container,Database",
+        "technology" : "Stores user data and caches gas price data."
+      }, {
+        "description" : "Python 3",
+        "documentation" : { },
+        "id" : "5",
+        "name" : "Tanker24 Backend",
+        "properties" : {
+          "structurizr.dsl.identifier" : "tanker24.backend"
+        },
+        "relationships" : [ {
+          "description" : "Reads user data",
+          "destinationId" : "4",
+          "id" : "12",
+          "sourceId" : "5",
+          "tags" : "Relationship",
+          "technology" : "SOCKET"
+        }, {
+          "description" : "Read gas price cache",
+          "destinationId" : "4",
+          "id" : "13",
+          "sourceId" : "5",
+          "tags" : "Relationship",
+          "technology" : "SOCKET"
+        }, {
+          "description" : "Get current gas prices",
+          "destinationId" : "6",
+          "id" : "14",
+          "sourceId" : "5",
+          "tags" : "Relationship",
+          "technology" : "REST"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "Handles business logic, user data, and integration with external services."
+      } ],
+      "description" : "Web system for checking gas prices in the user's area.",
+      "documentation" : { },
+      "id" : "2",
+      "name" : "Tanker24",
+      "properties" : {
+        "structurizr.dsl.identifier" : "tanker24"
+      },
+      "relationships" : [ {
+        "description" : "Get current gas prices",
+        "destinationId" : "6",
+        "id" : "15",
+        "linkedRelationshipId" : "14",
+        "sourceId" : "2",
+        "technology" : "REST"
+      }, {
+        "description" : "Get map",
+        "destinationId" : "7",
+        "id" : "17",
+        "linkedRelationshipId" : "16",
+        "sourceId" : "2",
+        "technology" : "REST"
+      } ],
+      "tags" : "Element,Software System"
+    }, {
+      "description" : "Free data provider for gas price data based on the Bundeskartellamt API.",
+      "documentation" : { },
+      "id" : "6",
+      "name" : "Tankerkönig",
+      "properties" : {
+        "structurizr.dsl.identifier" : "tankerkoenig"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "description" : "Free map data provider for visualisation.",
+      "documentation" : { },
+      "id" : "7",
+      "name" : "OpenStreetMap",
+      "properties" : {
+        "structurizr.dsl.identifier" : "osm"
+      },
+      "tags" : "Element,Software System,External"
+    } ]
+  },
+  "name" : "Tanker24 - System Context",
+  "properties" : {
+    "structurizr.inspection.info" : "0",
+    "structurizr.inspection.ignore" : "0",
+    "structurizr.inspection.error" : "2",
+    "structurizr.inspection.warning" : "0",
+    "structurizr.dsl" : "d29ya3NwYWNlICJUYW5rZXIyNCAtIFN5c3RlbSBDb250ZXh0IiAiU3lzdGVtIGNvbnRleHQgZGlhZ3JhbSBmb3IgdGhlIFRhbmtlcjI0IGFwcGxpY2F0aW9uIiB7CgogICAgIWlkZW50aWZpZXJzIGhpZXJhcmNoaWNhbAoKICAgIG1vZGVsIHsKICAgICAgICB1c2VyID0gcGVyc29uICJVc2VyIiAiQ2FyIGRyaXZlcnMiCiAgICAgICAgCiAgICAgICAgdGFua2VyMjQgPSBzb2Z0d2FyZVN5c3RlbSAiVGFua2VyMjQiICJXZWIgc3lzdGVtIGZvciBjaGVja2luZyBnYXMgcHJpY2VzIGluIHRoZSB1c2VyJ3MgYXJlYS4iewogICAgICAgICAgICB3ZWJBcHAgPSBjb250YWluZXIgIlVzZXIgSW50ZXJmYWNlIiAiVnVlSlMiICJQcm92aWRlcyB0aGUgd2ViIGludGVyZmFjZSBmb3Igc2VhcmNoaW5nIGdhcyBwcmljZXMgYW5kIHN0b3JpbmcgZmlsbGluZyBkYXRhLiIKICAgICAgICAgICAgcG9zdGdyZSA9IGNvbnRhaW5lciAiRGF0YSBTdG9yZSAmIENhY2hlIiAiUG9zdGdyZVNRTCIgIlN0b3JlcyB1c2VyIGRhdGEgYW5kIGNhY2hlcyBnYXMgcHJpY2UgZGF0YS4iewogICAgICAgICAgICAgICAgdGFncyAiRGF0YWJhc2UiCiAgICAgICAgICAgIH0KICAgICAgICAgICAgYmFja2VuZCA9IGNvbnRhaW5lciAiVGFua2VyMjQgQmFja2VuZCIgIlB5dGhvbiAzIiAiSGFuZGxlcyBidXNpbmVzcyBsb2dpYywgdXNlciBkYXRhLCBhbmQgaW50ZWdyYXRpb24gd2l0aCBleHRlcm5hbCBzZXJ2aWNlcy4iCiAgICAgICAgCiAgICAgICAgfQoKICAgICAgICB0YW5rZXJrb2VuaWcgPSBzb2Z0d2FyZVN5c3RlbSAiVGFua2Vya8O2bmlnIiAiRnJlZSBkYXRhIHByb3ZpZGVyIGZvciBnYXMgcHJpY2UgZGF0YSBiYXNlZCBvbiB0aGUgQnVuZGVza2FydGVsbGFtdCBBUEkuIiB7CiAgICAgICAgICAgIHRhZ3MgIkV4dGVybmFsIgogICAgICAgIH0KCiAgICAgICAgb3NtID0gc29mdHdhcmVTeXN0ZW0gIk9wZW5TdHJlZXRNYXAiICJGcmVlIG1hcCBkYXRhIHByb3ZpZGVyIGZvciB2aXN1YWxpc2F0aW9uLiIgewogICAgICAgICAgICB0YWdzICJFeHRlcm5hbCIKICAgICAgICB9CgoKICAgICAgICB1c2VyIC0+IHRhbmtlcjI0LndlYkFwcCAiUmVxdWVzdCBnYXMgcHJpY2VzIGluIGFyZWEiICJVSSBpbnRlcmFjdGlvbiIKICAgICAgICB1c2VyIC0+IHRhbmtlcjI0LndlYkFwcCAiU3RvcmUgZmlsbGluZyBkYXRhIiAiVUkgaW50ZXJhY3Rpb24iCgogICAgICAgIHRhbmtlcjI0LndlYkFwcCAtPiB0YW5rZXIyNC5iYWNrZW5kICJSZXF1ZXN0IHVzZXIgZGF0YSIgIlJFU1QiCiAgICAgICAgdGFua2VyMjQuYmFja2VuZCAtPiB0YW5rZXIyNC5wb3N0Z3JlICJSZWFkcyB1c2VyIGRhdGEiICJTT0NLRVQiCiAgICAgICAgdGFua2VyMjQuYmFja2VuZCAtPiB0YW5rZXIyNC5wb3N0Z3JlICJSZWFkIGdhcyBwcmljZSBjYWNoZSIgIlNPQ0tFVCIKCiAgICAgICAgdGFua2VyMjQuYmFja2VuZCAtPiB0YW5rZXJrb2VuaWcgIkdldCBjdXJyZW50IGdhcyBwcmljZXMiICJSRVNUIgogICAgICAgIHRhbmtlcjI0LndlYkFwcCAtPiBvc20gIkdldCBtYXAiICJSRVNUIgogICAgfQoKICAgIHZpZXdzIHsKICAgICAgICBzeXN0ZW1Db250ZXh0IHRhbmtlcjI0ICJEaWFncmFtMSIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICB9CgogICAgICAgIGNvbnRhaW5lciB0YW5rZXIyNCAiRGlhZ3JhbTIiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgfQoKICAgICAgICBzdHlsZXMgewogICAgICAgICAgICBlbGVtZW50ICJFbGVtZW50IiB7CiAgICAgICAgICAgICAgICBjb2xvciAjZjg4NzI4CiAgICAgICAgICAgICAgICBzdHJva2UgI2Y4ODcyOAogICAgICAgICAgICAgICAgc3Ryb2tlV2lkdGggNwogICAgICAgICAgICAgICAgc2hhcGUgcm91bmRlZGJveAogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIlBlcnNvbiIgewogICAgICAgICAgICAgICAgY29sb3IgIzA3NzNhZgogICAgICAgICAgICAgICAgc3Ryb2tlICMwNzczYWYKICAgICAgICAgICAgICAgIHNoYXBlIHBlcnNvbgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkRhdGFiYXNlIiB7CiAgICAgICAgICAgICAgICBjb2xvciAjMDRiMDE1CiAgICAgICAgICAgICAgICBzdHJva2UgIzA0YjAxNQogICAgICAgICAgICAgICAgc2hhcGUgY3lsaW5kZXIKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJCb3VuZGFyeSIgewogICAgICAgICAgICAgICAgc3Ryb2tlV2lkdGggNQogICAgICAgICAgICB9CiAgICAgICAgICAgIAogICAgICAgICAgICBlbGVtZW50ICJFeHRlcm5hbCJ7CiAgICAgICAgICAgICAgICBjb2xvciAjZWQzMTI0CiAgICAgICAgICAgICAgICBzdHJva2UgI2VkMzEyNAogICAgICAgICAgICB9CiAgICAgICAgICAgIHJlbGF0aW9uc2hpcCAiUmVsYXRpb25zaGlwIiB7CiAgICAgICAgICAgICAgICB0aGlja25lc3MgNAogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQoKICAgIGNvbmZpZ3VyYXRpb24gewogICAgICAgIHNjb3BlIHNvZnR3YXJlc3lzdGVtCiAgICB9Cgp9"
+  },
+  "views" : {
+    "configuration" : {
+      "lastSavedView" : "Diagram2",
+      "metadataSymbols" : "SquareBrackets",
+      "styles" : {
+        "elements" : [ {
+          "strokeWidth" : 5,
+          "tag" : "Boundary"
+        }, {
+          "color" : "#04b015",
+          "shape" : "Cylinder",
+          "stroke" : "#04b015",
+          "tag" : "Database"
+        }, {
+          "color" : "#f88728",
+          "shape" : "RoundedBox",
+          "stroke" : "#f88728",
+          "strokeWidth" : 7,
+          "tag" : "Element"
+        }, {
+          "color" : "#ed3124",
+          "stroke" : "#ed3124",
+          "tag" : "External"
+        }, {
+          "color" : "#0773af",
+          "shape" : "Person",
+          "stroke" : "#0773af",
+          "tag" : "Person"
+        } ],
+        "relationships" : [ {
+          "tag" : "Relationship",
+          "thickness" : 4
+        } ]
+      },
+      "terminology" : { }
+    },
+    "containerViews" : [ {
+      "dimensions" : {
+        "height" : 1268,
+        "width" : 3270
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 200,
+        "y" : 261
+      }, {
+        "id" : "3",
+        "x" : 990,
+        "y" : 311
+      }, {
+        "id" : "4",
+        "x" : 2570,
+        "y" : 209
+      }, {
+        "id" : "5",
+        "x" : 1780,
+        "y" : 260
+      }, {
+        "id" : "6",
+        "x" : 2530,
+        "y" : 790
+      }, {
+        "id" : "7",
+        "x" : 1670,
+        "y" : 790
+      } ],
+      "externalSoftwareSystemBoundariesVisible" : false,
+      "key" : "Diagram2",
+      "name" : "Container View: Tanker24",
+      "order" : 2,
+      "relationships" : [ {
+        "id" : "10",
+        "vertices" : [ {
+          "x" : 770,
+          "y" : 360
+        }, {
+          "x" : 940,
+          "y" : 360
+        } ]
+      }, {
+        "id" : "11",
+        "vertices" : [ {
+          "x" : 1610,
+          "y" : 410
+        } ]
+      }, {
+        "id" : "12",
+        "vertices" : [ {
+          "x" : 2400,
+          "y" : 297
+        } ]
+      }, {
+        "id" : "13",
+        "vertices" : [ {
+          "x" : 2425,
+          "y" : 490
+        } ]
+      }, {
+        "id" : "14",
+        "vertices" : [ {
+          "x" : 2340,
+          "y" : 635
+        } ]
+      }, {
+        "id" : "16",
+        "vertices" : [ {
+          "x" : 1530,
+          "y" : 690
+        } ]
+      }, {
+        "id" : "8",
+        "vertices" : [ {
+          "x" : 770,
+          "y" : 552
+        }, {
+          "x" : 940,
+          "y" : 552
+        } ]
+      } ],
+      "softwareSystemId" : "2"
+    } ],
+    "systemContextViews" : [ {
+      "dimensions" : {
+        "height" : 1500,
+        "width" : 2290
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 75,
+        "y" : 530
+      }, {
+        "id" : "2",
+        "x" : 830,
+        "y" : 570
+      }, {
+        "id" : "6",
+        "x" : 1670,
+        "y" : 325
+      }, {
+        "id" : "7",
+        "x" : 1670,
+        "y" : 775
+      } ],
+      "enterpriseBoundaryVisible" : true,
+      "key" : "Diagram1",
+      "name" : "System Context View: Tanker24",
+      "order" : 1,
+      "relationships" : [ {
+        "id" : "15"
+      }, {
+        "id" : "17"
+      }, {
+        "id" : "9"
+      } ],
+      "softwareSystemId" : "2"
+    } ]
+  }
+}

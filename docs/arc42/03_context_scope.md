@@ -19,3 +19,4 @@ The system context and scope can be easily described with a C4-Model System Cont
     ```
 
 === "Structurizr"
+    [System Context Diagram](../assets/images/Context_diagram_structurizer.svg)
