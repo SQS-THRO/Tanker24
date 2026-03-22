@@ -1,3 +1,7 @@
+---
+icon: simple/fastapi
+---
+
 # ADR 001: Choosing FastAPI for the Web Framework
 
 **Date:** 2026-03-18  
@@ -31,23 +35,23 @@ We decided to adopt **FastAPI** as the primary web framework for our application
 ### Benefits of using FastAPI:
 
 - **High Performance**:
-  - On par with Node.js and Go frameworks (one of the fastest Python frameworks)
-  - Built on top of Starlette for routing and Pydantic for validation
+	- On par with Node.js and Go frameworks (one of the fastest Python frameworks)
+	- Built on top of Starlette for routing and Pydantic for validation
 - **Native Async Support**:
-  - First-class support for `async` and `await`
-  - Non-blocking I/O for improved concurrency
+	- First-class support for `async` and `await`
+	- Non-blocking I/O for improved concurrency
 - **Automatic Documentation**:
-  - Auto-generated Swagger UI and ReDoc at `/docs` and `/redoc`
-  - OpenAPI schema generation out of the box
+	- Auto-generated Swagger UI and ReDoc at `/docs` and `/redoc`
+	- OpenAPI schema generation out of the box
 - **Data Validation**:
-  - Pydantic integration for automatic request/response validation
-  - Clear error messages for validation failures
+	- Pydantic integration for automatic request/response validation
+	- Clear error messages for validation failures
 - **Type Safety**:
-  - Full type hints support
-  - Editor autocomplete and IDE integration
+	- Full type hints support
+	- Editor autocomplete and IDE integration
 - **Modern Python**:
-  - Leverages Python 3.7+ features (type hints, dataclasses)
-  - Minimal boilerplate code
+	- Leverages Python 3.7+ features (type hints, dataclasses)
+	- Minimal boilerplate code
 
 ### Alternatives considered:
 

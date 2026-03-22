@@ -1,3 +1,7 @@
+---
+icon: simple/svelte
+---
+
 # ADR 003: Choosing Svelte for the UI Framework
 
 **Date:** 2026-03-18  
@@ -30,31 +34,31 @@ We decided to adopt **Svelte** as the primary UI framework for our application.
 ### Benefits of using Svelte:
 
 - **High Performance**:
-  - Compiles components to highly efficient vanilla JavaScript at build time
-  - No virtual DOM, resulting in faster runtime performance
-  - Smaller bundle sizes compared to many traditional frameworks
+	- Compiles components to highly efficient vanilla JavaScript at build time
+	- No virtual DOM, resulting in faster runtime performance
+	- Smaller bundle sizes compared to many traditional frameworks
 
 - **Simple Reactivity Model**:
-  - Built-in reactivity with minimal boilerplate
-  - Automatic updates when state changes without complex state management libraries
+	- Built-in reactivity with minimal boilerplate
+	- Automatic updates when state changes without complex state management libraries
 
 - **Developer Experience**:
-  - Clean, concise syntax combining HTML, CSS, and JavaScript in a single file
-  - Less boilerplate compared to other frameworks
-  - Easy to learn and quick onboarding for new developers
+	- Clean, concise syntax combining HTML, CSS, and JavaScript in a single file
+	- Less boilerplate compared to other frameworks
+	- Easy to learn and quick onboarding for new developers
 
 - **Component-Based Architecture**:
-  - Strong encapsulation of logic, styles, and markup
-  - Promotes reusable and maintainable UI components
+	- Strong encapsulation of logic, styles, and markup
+	- Promotes reusable and maintainable UI components
 
 - **Modern Tooling**:
-  - Excellent integration with modern build tools like Vite
-  - Supports TypeScript out of the box
-  - Fast development server and hot module replacement (HMR)
+	- Excellent integration with modern build tools like Vite
+	- Supports TypeScript out of the box
+	- Fast development server and hot module replacement (HMR)
 
 - **No Runtime Overhead**:
-  - Most work is done at compile time, reducing client-side overhead
-  - Results in better performance on low-powered devices
+	- Most work is done at compile time, reducing client-side overhead
+	- Results in better performance on low-powered devices
 
 ---
 
