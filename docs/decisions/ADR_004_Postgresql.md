@@ -29,18 +29,18 @@ We decided to adopt **PostgreSQL** as the primary database for our application.
 ### Benefits of using PostgreSQL:
 
 - **Concurrency & Scalability**:
-  - Allows for true parallel reads/writes
-  - Handles multiple read at the same time with ease
-  - Database can be easily moved to a different server for hardware boost
+	- Allows for true parallel reads/writes
+	- Handles multiple read at the same time with ease
+	- Database can be easily moved to a different server for hardware boost
 - **Better Production Experience**
-  - server-based database proven in industry for heavy duty production settings
-  - good community support
-  - high configurability
-  - ensures data integrity under heavy loads
+	- server-based database proven in industry for heavy duty production settings
+	- good community support
+	- high configurability
+	- ensures data integrity under heavy loads
 - **Data Integrity & Reliability**
-  - ACID compliance given at all times
-  - Transaction isolation for concurrent requests
-  - Good constraint setup in tables
+	- ACID compliance given at all times
+	- Transaction isolation for concurrent requests
+	- Good constraint setup in tables
 
 ### Alternatives considered:
 

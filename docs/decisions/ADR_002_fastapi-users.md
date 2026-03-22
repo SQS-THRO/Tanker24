@@ -32,22 +32,22 @@ We decided to adopt the [`fastapi-users`](https://github.com/fastapi-users/fasta
 ### Benefits of using `fastapi-users`:
 
 - **Out-of-the-box features**:
-  - Complete user management: registration, login, reset password, verify email, etc.
-  - JWT and OAuth2 support
-  - Ready-to-use routers and dependencies
+	- Complete user management: registration, login, reset password, verify email, etc.
+	- JWT and OAuth2 support
+	- Ready-to-use routers and dependencies
 - **Security Best Practices**:
-  - Follows FastAPI and OAuth2 best practices
-  - Secure password hashing with `passlib`
-  - Automatic token revocation mechanisms via blacklist or token rotation strategies
+	- Follows FastAPI and OAuth2 best practices
+	- Secure password hashing with `passlib`
+	- Automatic token revocation mechanisms via blacklist or token rotation strategies
 - **Modularity**:
-  - Easily extensible user model
-  - Customizable database backends (SQLAlchemy, MongoDB, etc.)
+	- Easily extensible user model
+	- Customizable database backends (SQLAlchemy, MongoDB, etc.)
 - **Community Support & Maintenance**:
-  - Active open-source community
-  - Compatible with FastAPI's evolution and ecosystem
+	- Active open-source community
+	- Compatible with FastAPI's evolution and ecosystem
 - **Developer Productivity**:
-  - Minimizes boilerplate and duplicated logic
-  - Reduces onboarding time for new developers
+	- Minimizes boilerplate and duplicated logic
+	- Reduces onboarding time for new developers
 
 ### Alternatives considered:
 
