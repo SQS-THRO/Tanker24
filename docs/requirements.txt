@@ -1,6 +1,6 @@
 mkdocs-material[recommended,imaging]
 mkdocstrings-python
 
-mkdocs_puml
+git+https://github.com/VenetianMasquerade/mkdocs_puml.git@feat/request-retries
 
 griffe
