@@ -1,0 +1,46 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  sonarcloud:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Backend dependencies
+        working-directory: backend
+        run: uv pip install --system .[dev]
+
+      - name: Backend coverage
+        working-directory: backend
+        run: pytest tests/ --cov=app --cov-report=xml --cov-report=term
+
+      - name: Frontend dependencies
+        working-directory: frontend/app
+        run: npm install
+
+      - name: Frontend coverage
+        working-directory: frontend/app
+        run: npx vitest run --coverage --coverage.reporter=lcov
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
