@@ -44,7 +44,7 @@ jobs:
         run: npm install
       - name: Run tests
         working-directory: frontend/app
-        run: npx vitest --run
+        run: npx vitest --run --coverage --coverage.reporter=lcov
   
   e2e-test:
     runs-on: ubuntu-latest
