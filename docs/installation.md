@@ -14,7 +14,7 @@ cd Tanker24
 
 Then start it like this
 ```bash
-cp .env.examle .env
+cp .env.example .env
 ```
 ```bash
 docker compose up -d

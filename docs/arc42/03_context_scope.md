@@ -10,7 +10,7 @@ The system context and scope can be easily described with a C4-Model System Cont
     Person(user, "User", "German car driver")
     System(tanker24, "Tanker24", "Web system for checking gas prices in the users area.")
     System_Ext(tankerkoenig, "Tankerkönig", "Free data provider for gas price data based on the Bundeskartelamt API.")
-    System_Ext(osm, "OpenStreeMap", "Free map data provider for visualisation.")
+    System_Ext(osm, "OpenStreetMap", "Free map data provider for visualisation.")
     Rel_R(user, tanker24, "Request gas prices for area.", "Web Interface")
     Rel_R(user, tanker24, "Save filling history.", "Web Interface")
     Rel_R(tanker24, tankerkoenig, "Request gas price Data", "REST")

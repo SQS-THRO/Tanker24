@@ -2,7 +2,7 @@
 This chapter describes the fundamental architecture decisions made by the project team. These decisions shape the architecture of our product.
 
 ## Container Diagram (C4-Model Level 2)
-The container diagram shows how Tanker24 is structured internaly without putting a too big focus on implementation details.
+The container diagram shows how Tanker24 is structured internally without putting too big a focus on implementation details.
 === "PlantUML"
     ```puml
     @startuml
@@ -52,12 +52,12 @@ The container diagram shows how Tanker24 is structured internaly without putting
 
 
 ## Technology decisions
-As per organizational constrainc OC-3 all relevant technology decisions need to be documented as architecture decision records (ADR). The following page lists all ADRs: [here](../decisions/index.md) To ensure the quality of the ADRs they use a shared comprehensive template.
+As per organizational constraint OC-3 all relevant technology decisions need to be documented as architecture decision records (ADR). The following page lists all ADRs: [here](../decisions/index.md) To ensure the quality of the ADRs they use a shared comprehensive template.
 
 ## Quality Goals
 
 !!! warning
-    How to write quality goals for the functional staibility aspect?
+    How to write quality goals for the functional stability aspect?
     Maybe specify the solution approach with TDD?
 
 |Quality Goal|Scenario|Solution approach|Link to Details|
