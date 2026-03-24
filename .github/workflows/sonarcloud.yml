@@ -44,6 +44,8 @@ jobs:
         run: npx vitest run --coverage --coverage.reporter=lcov
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v6
+        uses: SonarSource/sonarqube-scan-action@v7
+        with:
+          scannerVersion: 6.2.0.4584
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
