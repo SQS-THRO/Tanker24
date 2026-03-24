@@ -17,15 +17,15 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
-      
+          python-version: "3.12"
+
       - name: Install uv
         uses: astral-sh/setup-uv@v7
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '24'
+          node-version: "24"
 
       - name: Backend dependencies
         working-directory: backend
@@ -44,6 +44,6 @@ jobs:
         run: npx vitest run --coverage --coverage.reporter=lcov
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v7.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
