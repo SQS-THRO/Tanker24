@@ -1,5 +1,5 @@
 # 1. Introduction and Goals
-This chapter describes the relevant requirements and the driving forces that influence the software architecture and development processes. The arc42 templates specificly mentions the following aspects:
+This chapter describes the relevant requirements and the driving forces that influence the software architecture and development processes. The arc42 template specifically mentions the following aspects:
 
 - underlying business goals, essential features and functional requirements for the system,
 - quality goals for the architecture,
@@ -9,7 +9,7 @@ This chapter describes the relevant requirements and the driving forces that inf
 |-----------|-------|
 |1|The system must enable users to search for gas stations in their area.|
 |2|The system must visualize the gas price for Diesel, E5 and E10 fuel types in a listing as well|
-|3| The system should enable the user to track it's fuel usage for multiple cars|
+|3| The system should enable the user to track their fuel usage for multiple cars|
 |4|The system must store the user data persistently| 
 
 ## 1.1 Requirements Overview
@@ -61,14 +61,14 @@ json Legend{
 |UC7|The user views a list of gas stations sorted by proximity to a specified location.|
 
 ## 1.2 Quality Goals
-The ISO  25010 specifies the eight quality goals goals for software applications. They are: Functional Stability, Reliability, Security, Maintainability, Performance Efficiency, Operability, Compatibility, Transferability. 
+The ISO 25010 specifies the eight quality goals for software applications. They are: Functional Stability, Reliability, Security, Maintainability, Performance Efficiency, Operability, Compatibility, Transferability. 
 
 |Prio|Quality Goal|Description|
 |----|------------|-----------|
 |1|Functional Stability|The software shall cover all specified main use cases.|
 |2|Reliability|The software shall seamlessly recover from tankerkoenig API outages.|
 |3|Security| The software shall protect the collected user data with authentication.|
-|4|Transferability|The software shall allow the user to transfer its collected user data (filling data) into JSON and csv.|
+|4|Transferability|The software shall allow the user to transfer their collected user data (filling data) into JSON and CSV.|
 
 ## 1.3 Stakeholder
 | Role/Name | Needs | Expectations |

@@ -28,7 +28,7 @@ entity "Fuel Type" as FuelType {
   Name
 }
 
-entity "Histroy Record" as HistoryRecord {
+entity "History Record" as HistoryRecord {
   *Record Id
   --
   Timestamp
