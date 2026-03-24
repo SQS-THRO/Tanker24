@@ -48,7 +48,7 @@ The container diagram shows how Tanker24 is structured internaly without putting
     ```
 
 === "Structurizr"
-    [System Context Diagram](../assets/images/Container_diagram_structurizer.svg)
+    ![System Context Diagram](../assets/images/Container_diagram_structurizer.svg)
 
 
 ## Technology decisions
