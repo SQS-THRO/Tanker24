@@ -94,4 +94,19 @@ nav:
     - decisions/ADR_002_fastapi-users.md
     - decisions/ADR_003_Svelte.md
     - decisions/ADR_004_Postgresql.md
+  - arc42:
+    - arc42.md
+    - arc42/01_intro_goals.md
+    - arc42/02_constraints.md
+    - arc42/03_context_scope.md
+    - arc42/04_solution_strategy.md
+    - arc42/05_building_block_view.md
+    - arc42/06_runtime_view.md
+    - arc42/07_deployment_view.md
+    - arc42/08_crosscutting_concepts.md
+    - arc42/09_architecture_decisions.md
+    - arc42/10_quality.md
+    - arc42/11_risks_technical_debt.md
+    - arc42/12_glossary.md
+
 
