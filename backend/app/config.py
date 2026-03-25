@@ -11,7 +11,7 @@ class Settings(BaseSettings):
 
 	jwt_lifetime_minutes: int = 60
 
-	CORSorigins: list = [
+	CORSorigins: list[str] = [
 		"http://localhost:5173",
 		"http://localhost:3000",
 	]
