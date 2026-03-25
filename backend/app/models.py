@@ -17,7 +17,7 @@ class Base(DeclarativeBase):
 	pass
 
 
-class User(SQLAlchemyBaseUserTable, Base):
+class User(SQLAlchemyBaseUserTable[int], Base):
 	__tablename__ = "users"
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
