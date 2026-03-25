@@ -1,8 +1,15 @@
+from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
+
 import pytest
 from unittest.mock import Mock, AsyncMock
 
 from app.auth import CustomUserManager
+from app.auth import get_user_db
+from app.models import User
 from app.schemas.user import UserRead
+
+
+
 
 class TestAuthEndpoints:
 
@@ -38,3 +45,11 @@ class TestAuthEndpoints:
         request = Mock()
         result = await user_manager.on_after_register(user, request)
         assert result is None
+
+    def test_get_user_db_returns_sqlalchemy_user_database(self,test_db_session):
+        user_db = get_user_db(test_db_session)
+
+        # Test that the db instance exists, the user table is actually returned and that the sessions is a user db session
+        assert isinstance(user_db, SQLAlchemyUserDatabase)
+        assert user_db.session is test_db_session
+        assert user_db.user_table is User
