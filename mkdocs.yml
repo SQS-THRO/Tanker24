@@ -95,6 +95,7 @@ nav:
     - decisions/ADR_003_Svelte.md
     - decisions/ADR_004_Postgresql.md
     - decisions/ADR_005_SonarQube.md
+    - decisions/ADR_006_OpenStreetMap.md
   - arc42:
     - arc42.md
     - arc42/01_intro_goals.md
