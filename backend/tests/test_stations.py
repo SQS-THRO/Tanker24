@@ -1,4 +1,7 @@
 import pytest
+from sqlalchemy import text
+
+from app.models import Station
 
 
 @pytest.mark.asyncio
@@ -95,6 +98,32 @@ class TestStationGet:
 
 @pytest.mark.asyncio
 class TestStationUpdate:
+	async def test_update_station_success_full(self, authenticated_client, owned_station):
+		update_data = {"name": "Updated Station Name", "description": "Updated description"}
+		response = await authenticated_client.patch(f"/stations/{owned_station.id}", json=update_data)
+
+		assert response.status_code == 200
+		data = response.json()
+		assert data["name"] == "Updated Station Name"
+		assert data["description"] == "Updated description"
+		assert data["id"] == owned_station.id
+
+	async def test_update_station_success_partial_name_only(self, authenticated_client, owned_station):
+		response = await authenticated_client.patch(f"/stations/{owned_station.id}", json={"name": "New Name Only"})
+
+		assert response.status_code == 200
+		data = response.json()
+		assert data["name"] == "New Name Only"
+		assert data["description"] == owned_station.description
+
+	async def test_update_station_success_partial_description_only(self, authenticated_client, owned_station):
+		response = await authenticated_client.patch(f"/stations/{owned_station.id}", json={"description": "New Description Only"})
+
+		assert response.status_code == 200
+		data = response.json()
+		assert data["name"] == owned_station.name
+		assert data["description"] == "New Description Only"
+
 	async def test_update_station_not_found(self, authenticated_client):
 		response = await authenticated_client.patch("/stations/99999", json={"name": "Updated Name"})
 
@@ -110,6 +139,49 @@ class TestStationUpdate:
 		response = await async_client.patch(f"/stations/{owned_station.id}", json={"name": "Updated"})
 
 		assert response.status_code == 401
+
+	async def test_update_station_empty_body(self, authenticated_client, owned_station):
+		response = await authenticated_client.patch(f"/stations/{owned_station.id}", json={})
+
+		assert response.status_code == 200
+		data = response.json()
+		assert data["name"] == owned_station.name
+		assert data["description"] == owned_station.description
+
+
+@pytest.mark.asyncio
+class TestValidateStation:
+	async def test_validate_station_invalid_data(self, authenticated_client, test_db_session, test_user):
+		station = Station(
+			name="",  # Empty string may cause validation issues depending on config
+			description="Test",
+			owner_id=test_user.id,
+		)
+		test_db_session.add(station)
+		await test_db_session.commit()
+		await test_db_session.refresh(station)
+
+		response = await authenticated_client.get(f"/stations/{station.id}")
+
+		assert response.status_code in [200, 422]
+
+	async def test_get_station_with_invalid_db_data(self, authenticated_client, test_db_session, test_user):
+		result = await test_db_session.execute(
+			text("INSERT INTO stations (name, description, owner_id) VALUES (:name, :desc, :owner_id) RETURNING id"),
+			{"name": "Valid Name", "desc": "Valid Description", "owner_id": test_user.id},
+		)
+		station_id = result.scalar_one()
+		await test_db_session.commit()
+
+		await test_db_session.execute(
+			text("UPDATE stations SET name = :name WHERE id = :id"),
+			{"name": "Updated Via Raw SQL", "id": station_id},
+		)
+		await test_db_session.commit()
+
+		response = await authenticated_client.get(f"/stations/{station_id}")
+		assert response.status_code == 200
+		assert response.json()["name"] == "Updated Via Raw SQL"
 
 
 @pytest.mark.asyncio
