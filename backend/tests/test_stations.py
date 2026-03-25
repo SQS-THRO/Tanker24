@@ -166,6 +166,40 @@ class TestStationUpdate:
 		assert update_response.status_code == 404
 		assert update_response.json()["detail"] == "Station not found"
 
+	async def test_update_station_with_null_description(self, authenticated_client, owned_station):
+		response = await authenticated_client.patch(
+			f"/stations/{owned_station.id}", json={"description": None}
+		)
+
+		assert response.status_code == 200
+		data = response.json()
+		assert data["name"] == owned_station.name
+		assert data["description"] is None
+
+	async def test_update_station_persists_changes(self, authenticated_client, owned_station):
+		update_response = await authenticated_client.patch(
+			f"/stations/{owned_station.id}",
+			json={"name": "Persisted Name", "description": "Persisted Description"},
+		)
+		assert update_response.status_code == 200
+
+		get_response = await authenticated_client.get(f"/stations/{owned_station.id}")
+		assert get_response.status_code == 200
+		data = get_response.json()
+		assert data["name"] == "Persisted Name"
+		assert data["description"] == "Persisted Description"
+
+	async def test_update_station_with_zero_id(self, authenticated_client):
+		response = await authenticated_client.patch("/stations/0", json={"name": "Test"})
+
+		assert response.status_code == 404
+		assert response.json()["detail"] == "Station not found"
+
+	async def test_update_station_with_negative_id(self, authenticated_client):
+		response = await authenticated_client.patch("/stations/-1", json={"name": "Test"})
+
+		assert response.status_code == 404
+
 
 @pytest.mark.asyncio
 class TestValidateStation:
