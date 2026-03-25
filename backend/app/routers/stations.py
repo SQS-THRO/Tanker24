@@ -11,6 +11,8 @@ from app.schemas.station import StationCreate, StationUpdate
 
 router = APIRouter(prefix="/stations", tags=["stations"])
 
+STATION_NOT_FOUND = "Station not found"
+
 
 def _validate_station(station: Station | StationSchema) -> StationSchema:
 	try:
@@ -61,7 +63,7 @@ async def create_station(
 	response_model=StationSchema,
 	summary="Get a station by ID",
 	description="Retrieve details of a specific gas station by its ID. Only accessible by the station owner.",
-	responses={404: {"description": "Station not found"}},
+	responses={404: {"description": STATION_NOT_FOUND}},
 )
 async def get_station(
 	station_id: int,
@@ -71,7 +73,7 @@ async def get_station(
 	result = await db.execute(select(Station).where(Station.id == station_id, Station.owner_id == user.id))
 	station = result.scalar_one_or_none()
 	if not station:
-		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
+		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=STATION_NOT_FOUND)
 	return _validate_station(station)
 
 
@@ -80,7 +82,7 @@ async def get_station(
 	response_model=StationSchema,
 	summary="Update a station",
 	description="Update an existing gas station. Only station attributes provided in the request body will be modified (partial update).",
-	responses={404: {"description": "Station not found"}},
+	responses={404: {"description": STATION_NOT_FOUND}},
 )
 async def update_station(
 	station_id: int,
@@ -91,10 +93,10 @@ async def update_station(
 	result = await db.execute(select(Station).where(Station.id == station_id, Station.owner_id == user.id))
 	station = result.scalar_one_or_none()
 	if not station:
-		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
+		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=STATION_NOT_FOUND)
 
 	update_data = station_update.model_dump(exclude_unset=True)
-	for key, value in update_data.stations():
+	for key, value in update_data.items():
 		setattr(station, key, value)
 
 	await db.commit()
@@ -107,7 +109,7 @@ async def update_station(
 	status_code=status.HTTP_204_NO_CONTENT,
 	summary="Delete a station",
 	description="Delete a gas station by its ID. This action is permanent and cannot be undone. Only accessible by the station owner.",
-	responses={404: {"description": "Station not found"}},
+	responses={404: {"description": STATION_NOT_FOUND}},
 )
 async def delete_station(
 	station_id: int,
@@ -117,7 +119,7 @@ async def delete_station(
 	result = await db.execute(select(Station).where(Station.id == station_id, Station.owner_id == user.id))
 	station = result.scalar_one_or_none()
 	if not station:
-		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
+		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=STATION_NOT_FOUND)
 
 	await db.delete(station)
 	await db.commit()

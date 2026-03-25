@@ -1,3 +1,5 @@
+from typing import Any
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -20,7 +22,7 @@ class UserRead(UserBase):
 class UserCreate(UserBase):
 	password: str
 
-	def create_update_dict(self) -> dict:
+	def create_update_dict(self) -> dict[str, Any]:
 		return self.model_dump()
 
 

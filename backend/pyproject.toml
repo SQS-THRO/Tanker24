@@ -118,3 +118,9 @@ unused-ignore-comment = "warn"
 redundant-cast = "ignore"
 possibly-missing-attribute = "error"
 possibly-missing-import = "error"
+
+[tool.coverage.run]
+# https://github.com/coveragepy/coveragepy/issues/1082
+# https://github.com/coveragepy/coveragepy/issues/1012
+concurrency = ["greenlet"]
+

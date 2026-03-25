@@ -95,7 +95,7 @@ class TankerkoenigGasStationService(GasStationService):
 			"apikey": self.api_key,
 		}
 
-		response = httpx.get(self.BASE_URL + endpoint_url, params=params, timeout=10.0)
+		response = httpx.get(self.BASE_URL + endpoint_url, params=params, timeout=10.0)  # type: ignore[arg-type]
 		response.raise_for_status()
 
 		data = response.json()

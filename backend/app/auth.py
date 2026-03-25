@@ -20,6 +20,12 @@ class CustomUserManager(BaseUserManager[User, int]):
 	user_create_model = UserCreate
 
 	async def on_after_register(self, user: User, request: Request | None = None) -> None:
+		"""
+		Hook called after a user registers.
+
+		Intentionally empty: no additional actions (e.g., sending welcome emails,
+		activating accounts, or triggering workflows) currently.
+		"""
 		pass
 
 	def parse_id(self, normalized_id: str) -> int:
@@ -41,7 +47,7 @@ async def get_user_manager(
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
 
-def get_jwt_strategy() -> JWTStrategy:
+def get_jwt_strategy() -> JWTStrategy[User, int]:
 	return JWTStrategy(
 		secret=settings.secret,
 		lifetime_seconds=settings.jwt_lifetime_minutes * 60,
