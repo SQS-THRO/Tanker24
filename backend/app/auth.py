@@ -47,7 +47,7 @@ async def get_user_manager(
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
 
-def get_jwt_strategy() -> JWTStrategy:
+def get_jwt_strategy() -> JWTStrategy[User, int]:
 	return JWTStrategy(
 		secret=settings.secret,
 		lifetime_seconds=settings.jwt_lifetime_minutes * 60,
