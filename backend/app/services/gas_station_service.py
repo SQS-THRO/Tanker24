@@ -1,16 +1,28 @@
 from app.dtos.gas_station_dtos import GasStation, OpeningTime
-
+from abc import ABC, abstractmethod
 import httpx
 from typing import List
 
 
-""" The actual GasStation Service which communicates with the tankerkoenig api.
+class GasStationService(ABC):
+	def __init__(self, api_key: str = "00000000-0000-0000-0000-000000000002") -> None:
+		...
+
+	@abstractmethod
+	def get_gas_station_by_id(self, id: str) -> GasStation:
+		...
+
+	@abstractmethod
+	def get_gas_stations(self, latitude: float, longitude: float, radius: float) -> List[GasStation]:
+		...
+
+
+
+""" The actual Tankerkoenig Gas Station Service which communicates with the tankerkoenig api.
 It offers function for using an area search and getting data for a specific 
 station. The service will throw any errors which occur during the processing.
 """
-
-
-class GasStationService:
+class TankerkoenigGasStationService(GasStationService):
 	# Static base url
 	BASE_URL = "https://creativecommons.tankerkoenig.de/json/"
 
