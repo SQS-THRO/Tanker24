@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { authService } from '$lib/services/api';
+	import { authService } from '$lib/services/auth_api';
 	import { goto } from '$app/navigation';
 
 	let email = $state('');

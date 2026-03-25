@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Button from '$lib/components/button.svelte';
-	import { authService } from '$lib/services/api';
+	import { authService } from '$lib/services/auth_api';
 	import { resolve } from '$app/paths';
 
 	let user = $state<{ forename: string } | null>(null);

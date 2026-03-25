@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import Button from '$lib/components/button.svelte';
 	import { browser } from '$app/environment';
-	import { stationService, type Station } from '$lib/services/stations';
+	import { stationService, type Station } from '$lib/services/stations_api';
 
 	let mapContainer: HTMLDivElement;
 	let stations: Station[] = $state([]);

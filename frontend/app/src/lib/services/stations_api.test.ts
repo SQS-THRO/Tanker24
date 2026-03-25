@@ -44,7 +44,7 @@ beforeEach(() => {
 });
 
 test('getStations sends correct request with auth header', async () => {
-	const { stationService } = await import('./stations');
+	const { stationService } = await import('./stations_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: true,
@@ -65,7 +65,7 @@ test('getStations sends correct request with auth header', async () => {
 });
 
 test('getStations returns empty array when no stations', async () => {
-	const { stationService } = await import('./stations');
+	const { stationService } = await import('./stations_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: true,
@@ -78,7 +78,7 @@ test('getStations returns empty array when no stations', async () => {
 });
 
 test('getStations throws error on failure', async () => {
-	const { stationService } = await import('./stations');
+	const { stationService } = await import('./stations_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: false,
@@ -89,7 +89,7 @@ test('getStations throws error on failure', async () => {
 });
 
 test('getStation sends correct request with id and auth header', async () => {
-	const { stationService } = await import('./stations');
+	const { stationService } = await import('./stations_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: true,
@@ -110,7 +110,7 @@ test('getStation sends correct request with id and auth header', async () => {
 });
 
 test('getStation throws error on failure', async () => {
-	const { stationService } = await import('./stations');
+	const { stationService } = await import('./stations_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: false,
@@ -121,7 +121,7 @@ test('getStation throws error on failure', async () => {
 });
 
 test('getStation handles malformed error JSON', async () => {
-	const { stationService } = await import('./stations');
+	const { stationService } = await import('./stations_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: false,
@@ -132,7 +132,7 @@ test('getStation handles malformed error JSON', async () => {
 });
 
 test('createStation sends correct data to API', async () => {
-	const { stationService } = await import('./stations');
+	const { stationService } = await import('./stations_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: true,
@@ -150,7 +150,7 @@ test('createStation sends correct data to API', async () => {
 });
 
 test('createStation throws error on failure', async () => {
-	const { stationService } = await import('./stations');
+	const { stationService } = await import('./stations_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: false,
@@ -161,7 +161,7 @@ test('createStation throws error on failure', async () => {
 });
 
 test('createStation parses generic error when JSON has no detail', async () => {
-	const { stationService } = await import('./stations');
+	const { stationService } = await import('./stations_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: false,
