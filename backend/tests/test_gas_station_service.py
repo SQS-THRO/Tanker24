@@ -1,16 +1,24 @@
 import pytest
 import httpx
 import respx
-from app.services.gas_station_service import GasStationService
+from app.services.gas_station_service import TankerkoenigGasStationService, GasStationService
 from datetime import datetime
 
 
 class TestGasStationService:
-	def test_get_stations(self):
-		service = GasStationService()
-		result = service.get_gas_stations(latitude=52.521, longitude=13.438, radius=5)
 
+	# Smoke test
+	def test_get_stations(self):
+		service = TankerkoenigGasStationService()
+		assert isinstance(service, GasStationService)
+
+		result = service.get_gas_stations(latitude=52.521, longitude=13.438, radius=5)
 		assert isinstance(result, list)
+
+	#Test api_key assignment through interface
+	def test_tankerkoenig_service_stores_api_key(self):
+		service = TankerkoenigGasStationService(api_key="test-key")
+		assert service.api_key == "test-key"
 
 	# Helper test fixture to reduce duplicate code
 	@pytest.fixture
@@ -52,7 +60,7 @@ class TestGasStationService:
 			)
 		)
 
-		service = GasStationService(api_key="test-api-key")
+		service = TankerkoenigGasStationService(api_key="test-api-key")
 		result = service.get_gas_station_by_id("123")
 
 		assert route.called
@@ -76,7 +84,7 @@ class TestGasStationService:
 			)
 		)
 
-		service = GasStationService(api_key="test-api-key")
+		service = TankerkoenigGasStationService(api_key="test-api-key")
 		result = service.get_gas_station_by_id("123")
 
 		assert result.id == "123"
@@ -111,7 +119,7 @@ class TestGasStationService:
 			)
 		)
 
-		service = GasStationService()
+		service = TankerkoenigGasStationService()
 		result = service.get_gas_station_by_id("123")
 
 		assert result.opening_times == []
@@ -126,7 +134,7 @@ class TestGasStationService:
 			)
 		)
 
-		service = GasStationService()
+		service = TankerkoenigGasStationService()
 
 		with pytest.raises(
 			RuntimeError,
@@ -140,7 +148,7 @@ class TestGasStationService:
 			return_value=httpx.Response(500, json={}),
 		)
 
-		service = GasStationService()
+		service = TankerkoenigGasStationService()
 
 		with pytest.raises(httpx.HTTPStatusError):
 			service.get_gas_station_by_id("123")
@@ -155,7 +163,7 @@ class TestGasStationService:
 			)
 		)
 
-		service = GasStationService(api_key="test-api-key")
+		service = TankerkoenigGasStationService(api_key="test-api-key")
 		service.get_gas_station_by_id("123")
 
 		assert route.called
@@ -209,7 +217,7 @@ class TestGasStationService:
 			)
 		)
 
-		service = GasStationService(api_key="test-api-key")
+		service = TankerkoenigGasStationService(api_key="test-api-key")
 		result = service.get_gas_stations(52.52, 13.405, 5.0)
 
 		assert len(result) == 2
@@ -246,7 +254,7 @@ class TestGasStationService:
 			)
 		)
 
-		service = GasStationService()
+		service = TankerkoenigGasStationService()
 		result = service.get_gas_stations(52.52, 13.405, 5.0)
 
 		assert result == []
@@ -261,7 +269,7 @@ class TestGasStationService:
 			)
 		)
 
-		service = GasStationService()
+		service = TankerkoenigGasStationService()
 
 		with pytest.raises(RuntimeError, match="Tankerkoenig API returned an error"):
 			service.get_gas_stations(52.52, 13.405, 5.0)
@@ -274,7 +282,7 @@ class TestGasStationService:
 			return_value=httpx.Response(500, json={}),
 		)
 
-		service = GasStationService()
+		service = TankerkoenigGasStationService()
 
 		with pytest.raises(httpx.HTTPStatusError):
 			service.get_gas_stations(52.52, 13.405, 5.0)
@@ -292,7 +300,7 @@ class TestGasStationService:
 			)
 		)
 
-		service = GasStationService(api_key="test-api-key")
+		service = TankerkoenigGasStationService(api_key="test-api-key")
 		service.get_gas_stations(52.52, 13.405, 5.0)
 
 		assert route.called
