@@ -3,11 +3,14 @@ from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from typing import Annotated
+
 from app.auth import get_current_active_user
 from app.database import get_db
-from app.models import Station, User
+from app.models import Station
 from app.schemas.station import Station as StationSchema
 from app.schemas.station import StationCreate, StationUpdate
+from app.schemas.user import UserRead
 
 router = APIRouter(prefix="/stations", tags=["stations"])
 
@@ -26,13 +29,12 @@ def _validate_station(station: Station | StationSchema) -> StationSchema:
 
 @router.get(
 	"/",
-	response_model=list[StationSchema],
 	summary="List all stations",
 	description="Retrieve a list of all gas stations owned by the authenticated user.",
 )
 async def list_stations(
-	db: AsyncSession = Depends(get_db),
-	user: User = Depends(get_current_active_user),
+	db: Annotated[AsyncSession, Depends(get_db)],
+	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> list[StationSchema]:
 	result = await db.execute(select(Station).where(Station.owner_id == user.id))
 	stations = result.scalars().all()
@@ -41,15 +43,14 @@ async def list_stations(
 
 @router.post(
 	"/",
-	response_model=StationSchema,
 	status_code=status.HTTP_201_CREATED,
 	summary="Create a new station",
 	description="Create a new gas station owned by the authenticated user.",
 )
 async def create_station(
 	station: StationCreate,
-	db: AsyncSession = Depends(get_db),
-	user: User = Depends(get_current_active_user),
+	db: Annotated[AsyncSession, Depends(get_db)],
+	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> StationSchema:
 	db_station = Station(**station.model_dump(), owner_id=user.id)
 	db.add(db_station)
@@ -60,15 +61,14 @@ async def create_station(
 
 @router.get(
 	"/{station_id}",
-	response_model=StationSchema,
 	summary="Get a station by ID",
 	description="Retrieve details of a specific gas station by its ID. Only accessible by the station owner.",
 	responses={404: {"description": STATION_NOT_FOUND}},
 )
 async def get_station(
 	station_id: int,
-	db: AsyncSession = Depends(get_db),
-	user: User = Depends(get_current_active_user),
+	db: Annotated[AsyncSession, Depends(get_db)],
+	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> StationSchema:
 	result = await db.execute(select(Station).where(Station.id == station_id, Station.owner_id == user.id))
 	station = result.scalar_one_or_none()
@@ -79,7 +79,6 @@ async def get_station(
 
 @router.patch(
 	"/{station_id}",
-	response_model=StationSchema,
 	summary="Update a station",
 	description="Update an existing gas station. Only station attributes provided in the request body will be modified (partial update).",
 	responses={404: {"description": STATION_NOT_FOUND}},
@@ -87,8 +86,8 @@ async def get_station(
 async def update_station(
 	station_id: int,
 	station_update: StationUpdate,
-	db: AsyncSession = Depends(get_db),
-	user: User = Depends(get_current_active_user),
+	db: Annotated[AsyncSession, Depends(get_db)],
+	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> StationSchema:
 	result = await db.execute(select(Station).where(Station.id == station_id, Station.owner_id == user.id))
 	station = result.scalar_one_or_none()
@@ -113,8 +112,8 @@ async def update_station(
 )
 async def delete_station(
 	station_id: int,
-	db: AsyncSession = Depends(get_db),
-	user: User = Depends(get_current_active_user),
+	db: Annotated[AsyncSession, Depends(get_db)],
+	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> None:
 	result = await db.execute(select(Station).where(Station.id == station_id, Station.owner_id == user.id))
 	station = result.scalar_one_or_none()

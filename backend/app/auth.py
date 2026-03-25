@@ -9,6 +9,8 @@ from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users.manager import BaseUserManager
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from typing import Annotated
+
 from app.config import settings
 from app.database import get_db
 from app.models import User
@@ -68,18 +70,18 @@ fastapi_users = FastAPIUsers[User, int](
 
 
 async def get_current_user(
-	user: User = Depends(fastapi_users.current_user(active=True)),
-) -> User:
-	return user
+	user: Annotated[User, Depends(fastapi_users.current_user(active=True))],
+) -> UserRead:
+	return UserRead.model_validate(user)
 
 
 async def get_current_active_user(
-	user: User = Depends(fastapi_users.current_user(active=True)),
-) -> User:
-	return user
+    user: Annotated[User, Depends(fastapi_users.current_user(active=True))],
+) -> UserRead:
+    return UserRead.model_validate(user)
 
 
 async def get_current_superuser(
-	user: User = Depends(fastapi_users.current_user(active=True, superuser=True)),
-) -> User:
-	return user
+	user: Annotated[User, Depends(fastapi_users.current_user(active=True, superuser=True))],
+) -> UserRead:
+	return UserRead.model_validate(user)
