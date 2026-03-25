@@ -95,6 +95,14 @@ class TestStationGet:
 
 		assert response.status_code == 401
 
+	async def test_get_station_not_found_after_delete(self, authenticated_client, owned_station):
+		delete_response = await authenticated_client.delete(f"/stations/{owned_station.id}")
+		assert delete_response.status_code == 204
+
+		get_response = await authenticated_client.get(f"/stations/{owned_station.id}")
+		assert get_response.status_code == 404
+		assert get_response.json()["detail"] == "Station not found"
+
 
 @pytest.mark.asyncio
 class TestStationUpdate:
@@ -149,6 +157,14 @@ class TestStationUpdate:
 		data = response.json()
 		assert data["name"] == owned_station.name
 		assert data["description"] == owned_station.description
+
+	async def test_update_station_not_found_after_delete(self, authenticated_client, owned_station):
+		delete_response = await authenticated_client.delete(f"/stations/{owned_station.id}")
+		assert delete_response.status_code == 204
+
+		update_response = await authenticated_client.patch(f"/stations/{owned_station.id}", json={"name": "New Name"})
+		assert update_response.status_code == 404
+		assert update_response.json()["detail"] == "Station not found"
 
 
 @pytest.mark.asyncio
@@ -211,3 +227,17 @@ class TestStationDelete:
 		response = await async_client.delete(f"/stations/{owned_station.id}")
 
 		assert response.status_code == 401
+
+	async def test_delete_station_not_found_after_delete(self, authenticated_client, owned_station):
+		delete_response = await authenticated_client.delete(f"/stations/{owned_station.id}")
+		assert delete_response.status_code == 204
+
+		second_delete_response = await authenticated_client.delete(f"/stations/{owned_station.id}")
+		assert second_delete_response.status_code == 404
+		assert second_delete_response.json()["detail"] == "Station not found"
+
+	async def test_delete_station_with_nonexistent_id(self, authenticated_client):
+		response = await authenticated_client.delete("/stations/0")
+
+		assert response.status_code == 404
+		assert response.json()["detail"] == "Station not found"
