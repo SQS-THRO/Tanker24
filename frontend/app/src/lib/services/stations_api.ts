@@ -1,6 +1,4 @@
-import { env } from '$env/dynamic/public';
-
-const API_BASE = env.PUBLIC_BACKEND_URL ?? 'http://localhost:8000';
+import { request } from '$lib/utils/request';
 
 export interface Station {
 	id: number;
@@ -9,23 +7,6 @@ export interface Station {
 	latitude: number | null;
 	longitude: number | null;
 	owner_id: number;
-}
-
-async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-	const response = await fetch(`${API_BASE}${endpoint}`, {
-		headers: {
-			'Content-Type': 'application/json',
-			...options.headers
-		},
-		...options
-	});
-
-	if (!response.ok) {
-		const error = await response.json().catch(() => ({ detail: 'Request failed' }));
-		throw new Error(error.detail || 'Request failed');
-	}
-
-	return response.json();
 }
 
 export const stationService = {
