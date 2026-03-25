@@ -7,9 +7,10 @@ from typing import Annotated
 
 from app.auth import get_current_active_user
 from app.database import get_db
-from app.models import Station, User
+from app.models import Station
 from app.schemas.station import Station as StationSchema
 from app.schemas.station import StationCreate, StationUpdate
+from app.schemas.user import UserRead
 
 router = APIRouter(prefix="/stations", tags=["stations"])
 
@@ -33,7 +34,7 @@ def _validate_station(station: Station | StationSchema) -> StationSchema:
 )
 async def list_stations(
 	db: Annotated[AsyncSession, Depends(get_db)],
-	user: User = Annotated[User, Depends(get_current_active_user)],
+	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> list[StationSchema]:
 	result = await db.execute(select(Station).where(Station.owner_id == user.id))
 	stations = result.scalars().all()
@@ -49,7 +50,7 @@ async def list_stations(
 async def create_station(
 	station: StationCreate,
 	db: Annotated[AsyncSession, Depends(get_db)],
-	user: User = Annotated[User, Depends(get_current_active_user)],
+	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> StationSchema:
 	db_station = Station(**station.model_dump(), owner_id=user.id)
 	db.add(db_station)
@@ -67,7 +68,7 @@ async def create_station(
 async def get_station(
 	station_id: int,
 	db: Annotated[AsyncSession, Depends(get_db)],
-	user: Annotated[User, Depends(get_current_active_user)],
+	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> StationSchema:
 	result = await db.execute(select(Station).where(Station.id == station_id, Station.owner_id == user.id))
 	station = result.scalar_one_or_none()
@@ -86,7 +87,7 @@ async def update_station(
 	station_id: int,
 	station_update: StationUpdate,
 	db: Annotated[AsyncSession, Depends(get_db)],
-	user: Annotated[User, Depends(get_current_active_user)],
+	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> StationSchema:
 	result = await db.execute(select(Station).where(Station.id == station_id, Station.owner_id == user.id))
 	station = result.scalar_one_or_none()
@@ -112,7 +113,7 @@ async def update_station(
 async def delete_station(
 	station_id: int,
 	db: Annotated[AsyncSession, Depends(get_db)],
-	user: Annotated[User, Depends(get_current_active_user)],
+	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> None:
 	result = await db.execute(select(Station).where(Station.id == station_id, Station.owner_id == user.id))
 	station = result.scalar_one_or_none()
