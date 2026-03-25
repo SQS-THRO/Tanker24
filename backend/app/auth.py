@@ -20,6 +20,12 @@ class CustomUserManager(BaseUserManager[User, int]):
 	user_create_model = UserCreate
 
 	async def on_after_register(self, user: User, request: Request | None = None) -> None:
+		"""
+		Hook called after a user registers.
+
+		Intentionally empty: no additional actions (e.g., sending welcome emails,
+		activating accounts, or triggering workflows) currently.
+		"""
 		pass
 
 	def parse_id(self, normalized_id: str) -> int:
