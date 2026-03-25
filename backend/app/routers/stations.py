@@ -96,7 +96,7 @@ async def update_station(
 		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=STATION_NOT_FOUND)
 
 	update_data = station_update.model_dump(exclude_unset=True)
-	for key, value in update_data.stations():
+	for key, value in update_data.items():
 		setattr(station, key, value)
 
 	await db.commit()
