@@ -12,6 +12,7 @@ from app.schemas.user import UserRead
 
 
 class TestAuthEndpoints:
+    TEST_PASSWORD = "test-password"
 
     @pytest.fixture
     def mock_user_db(self):
@@ -32,7 +33,7 @@ class TestAuthEndpoints:
             is_active=True,
             is_superuser=False,
             is_verified=False,
-            hashed_password="hashed",
+            hashed_password=self.TEST_PASSWORD,
         )
 
     @pytest.mark.asyncio
