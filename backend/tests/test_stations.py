@@ -117,7 +117,9 @@ class TestStationUpdate:
 		assert data["description"] == owned_station.description
 
 	async def test_update_station_success_partial_description_only(self, authenticated_client, owned_station):
-		response = await authenticated_client.patch(f"/stations/{owned_station.id}", json={"description": "New Description Only"})
+		response = await authenticated_client.patch(
+			f"/stations/{owned_station.id}", json={"description": "New Description Only"}
+		)
 
 		assert response.status_code == 200
 		data = response.json()
