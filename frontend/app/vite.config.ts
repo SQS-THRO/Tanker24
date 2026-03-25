@@ -33,6 +33,6 @@ export default defineConfig({
 		provider: 'v8',
 		reporter: ['text', 'lcov', 'html'],
 		include: ['src/**/*.{js,ts,svelte}'],
-		exclude: ['src/**/*.d.ts', 'node_modules', 'src/app.html', 'src/service-worker.ts']
+		exclude: ['src/**/*.d.ts', 'node_modules', 'src/app.html', 'src/service-worker.ts', 'src/**/*.{test,e2e}.ts']
 	}
 });
