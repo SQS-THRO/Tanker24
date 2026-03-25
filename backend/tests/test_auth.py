@@ -1,0 +1,40 @@
+import pytest
+from unittest.mock import Mock, AsyncMock
+
+from app.auth import CustomUserManager
+from app.schemas.user import UserRead
+
+class TestAuthEndpoints:
+
+    @pytest.fixture
+    def mock_user_db(self):
+        return AsyncMock()
+
+    @pytest.fixture
+    def user_manager(self, mock_user_db):
+        return CustomUserManager(mock_user_db)
+
+    @pytest.fixture
+    def user(self):
+        return UserRead(
+            id=1,
+            email="test@example.com",
+            forename="Max",
+            surname="Mustermann",
+            pin="1234",
+            is_active=True,
+            is_superuser=False,
+            is_verified=False,
+            hashed_password="hashed",
+        )
+
+    @pytest.mark.asyncio
+    async def test_on_after_register_returns_none(self,user_manager, user):
+        result = await user_manager.on_after_register(user)
+        assert result is None
+
+    @pytest.mark.asyncio
+    async def test_on_after_register_with_request_returns_none(self, user_manager, user):
+        request = Mock()
+        result = await user_manager.on_after_register(user, request)
+        assert result is None
