@@ -10,7 +10,7 @@
 </script>
 
 <div class="lang-switcher">
-	<button class="lang-btn" onclick={() => showDropdown = !showDropdown}>
+	<button class="lang-btn" onclick={() => (showDropdown = !showDropdown)}>
 		<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 			<circle cx="12" cy="12" r="10" />
 			<line x1="2" y1="12" x2="22" y2="12" />
@@ -21,22 +21,14 @@
 			<path d="M6 9l6 6 6-6" />
 		</svg>
 	</button>
-	
+
 	{#if showDropdown}
 		<div class="lang-dropdown">
-			<button 
-				class="lang-option" 
-				class:active={$locale === 'en'}
-				onclick={() => setLocale('en')}
-			>
+			<button class="lang-option" class:active={$locale === 'en'} onclick={() => setLocale('en')}>
 				<span class="lang-flag">🇬🇧</span>
 				English
 			</button>
-			<button 
-				class="lang-option" 
-				class:active={$locale === 'de'}
-				onclick={() => setLocale('de')}
-			>
+			<button class="lang-option" class:active={$locale === 'de'} onclick={() => setLocale('de')}>
 				<span class="lang-flag">🇩🇪</span>
 				Deutsch
 			</button>
@@ -44,12 +36,14 @@
 	{/if}
 </div>
 
-<svelte:window onclick={(e) => {
-	const target = e.target as HTMLElement;
-	if (!target.closest('.lang-switcher')) {
-		showDropdown = false;
-	}
-}} />
+<svelte:window
+	onclick={(e) => {
+		const target = e.target as HTMLElement;
+		if (!target.closest('.lang-switcher')) {
+			showDropdown = false;
+		}
+	}}
+/>
 
 <style>
 	.lang-switcher {

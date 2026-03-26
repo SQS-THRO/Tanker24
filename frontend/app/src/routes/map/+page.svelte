@@ -130,9 +130,7 @@
 						${station.description ? `<p>${station.description}</p>` : ''}
 					</div>
 				`;
-				L.marker([station.latitude, station.longitude], { icon: stationIcon })
-					.addTo(map)
-					.bindPopup(popupContent);
+				L.marker([station.latitude, station.longitude], { icon: stationIcon }).addTo(map).bindPopup(popupContent);
 			}
 		});
 	});

@@ -4,23 +4,23 @@ import { translations, type Locale, type TranslationKeys } from '$lib/i18n/index
 
 function detectLocale(): Locale {
 	if (!browser) return 'en';
-	
+
 	const stored = localStorage.getItem('locale');
 	if (stored === 'en' || stored === 'de') {
 		return stored;
 	}
-	
+
 	const navLang = navigator.language || navigator.languages?.[0] || '';
 	if (navLang.toLowerCase().startsWith('de')) {
 		return 'de';
 	}
-	
+
 	return 'en';
 }
 
 function createLocaleStore() {
 	const { subscribe, set, update } = writable<Locale>(browser ? detectLocale() : 'en');
-	
+
 	return {
 		subscribe,
 		set: (locale: Locale) => {
@@ -30,7 +30,7 @@ function createLocaleStore() {
 			set(locale);
 		},
 		toggle: () => {
-			update(current => {
+			update((current) => {
 				const newLocale = current === 'en' ? 'de' : 'en';
 				if (browser) {
 					localStorage.setItem('locale', newLocale);
