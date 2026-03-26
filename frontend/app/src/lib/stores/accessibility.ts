@@ -15,24 +15,9 @@ const COLORBLIND_MODES: Set<ColorBlindMode> = new Set([
 	'achromatomaly'
 ]);
 
-function detectSystemPreference(): ColorBlindMode {
-	if (!browser) return 'none';
-
-	try {
-		const prefersReducedMotion = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		if (prefersReducedMotion) {
-			return 'none';
-		}
-	} catch {
-		return 'none';
-	}
-
-	return 'none';
-}
-
 function createAccessibilityStore() {
 	const stored = browser ? localStorage.getItem('colorblindMode') : null;
-	const initial: ColorBlindMode = stored && COLORBLIND_MODES.has(stored as ColorBlindMode) ? (stored as ColorBlindMode) : detectSystemPreference();
+	const initial: ColorBlindMode = stored && COLORBLIND_MODES.has(stored as ColorBlindMode) ? (stored as ColorBlindMode) : 'none';
 
 	const { subscribe, set } = writable<ColorBlindMode>(initial);
 

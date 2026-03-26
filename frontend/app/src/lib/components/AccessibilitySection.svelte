@@ -1,11 +1,13 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { colorblindMode, type ColorBlindMode } from '$lib/stores/accessibility';
 	import { t } from '$lib/stores/locale';
 	import IshiharaPlate from './IshiharaPlate.svelte';
 
 	const modes: ColorBlindMode[] = ['none', 'protanopia', 'protanomaly', 'deuteranopia', 'deuteranomaly', 'tritanopia', 'tritanomaly', 'achromatopsia', 'achromatomaly'];
 
-	let showToggles = $state(true);
+	let isFirstVisit = $derived(!browser || !localStorage.getItem('colorblindMode'));
+	let showToggles = $state(isFirstVisit);
 	let showIshihara = $state(false);
 
 	function selectMode(mode: ColorBlindMode) {
