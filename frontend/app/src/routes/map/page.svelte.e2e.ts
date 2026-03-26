@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('has expected h1', async ({ page }) => {
+test('has expected heading', async ({ page }) => {
 	await page.goto('/map');
-	await expect(page.locator('h3')).toBeVisible();
+	await expect(page.locator('.map-header')).toBeVisible();
 });
