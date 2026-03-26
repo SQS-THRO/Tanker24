@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Button from '$lib/components/button.svelte';
 	import { authService } from '$lib/services/auth_api';
 	import { resolve } from '$app/paths';
+	import Logo from '$lib/components/Logo.svelte';
 
-	let user = $state<{ forename: string } | null>(null);
+	let user = $state<{ forename: string; surname?: string } | null>(null);
 	let showDropdown = $state(false);
+	let scrolled = $state(false);
 
 	onMount(async () => {
 		const token = localStorage.getItem('token');
@@ -17,6 +18,12 @@
 				localStorage.removeItem('token');
 			}
 		}
+
+		const handleScroll = () => {
+			scrolled = window.scrollY > 50;
+		};
+		window.addEventListener('scroll', handleScroll);
+		return () => window.removeEventListener('scroll', handleScroll);
 	});
 
 	function toggleDropdown() {
@@ -36,158 +43,656 @@
 			showDropdown = false;
 		}
 	}
+
+	const features = [
+		{
+			icon: 'zap',
+			title: 'Real-time Data',
+			description: 'Live fuel prices updated every few minutes from stations across the region'
+		},
+		{
+			icon: 'map-pin',
+			title: 'Smart Mapping',
+			description: 'Find the nearest and cheapest fuel stations with our intelligent routing'
+		},
+		{
+			icon: 'shield',
+			title: 'Secure & Private',
+			description: 'Your data is encrypted and we never share your personal information'
+		}
+	];
 </script>
 
 <svelte:window onclick={handleWindowClick} />
 
 <main>
-	<!-- HERO -->
-	<section class="hero">
-		<h1>Fill your Gas cheaper with Tanker24</h1>
-		<p>The modern way to fill you Gas</p>
-		<Button label="Go to Map" href="/map" />
-	</section>
-
-	{#if user}
-		<div class="profile-wrapper">
-			<button class="profile-btn" onclick={toggleDropdown}>
-				{user.forename}
-			</button>
-			{#if showDropdown}
-				<div class="dropdown">
-					<button class="dropdown-item" onclick={logout}>Logout</button>
-				</div>
-			{/if}
-		</div>
-	{:else}
-		<div class="profile-wrapper">
-			<a href={resolve('/login')} class="profile-btn login-btn" aria-label="Login">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="24"
-					height="24"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-					<circle cx="12" cy="7" r="4" />
-				</svg>
+	<nav class="navbar" class:scrolled>
+		<div class="nav-content">
+			<a href={resolve('/')} class="logo">
+				<Logo size={32} />
+				<span>Tanker24</span>
 			</a>
-		</div>
-	{/if}
 
-	<!-- FEATURES -->
-	<section class="features">
-		<div class="card">
-			<h3>⚡ Fast</h3>
+			<div class="nav-actions">
+				<a href={resolve('/map')} class="btn btn-ghost nav-link">Map</a>
+				{#if user}
+					<div class="profile-wrapper">
+						<button class="profile-btn" onclick={toggleDropdown}>
+							<span class="avatar">
+								{user.forename[0]}{user.surname?.[0] || ''}
+							</span>
+							<span class="username">{user.forename}</span>
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M6 9l6 6 6-6" />
+							</svg>
+						</button>
+						{#if showDropdown}
+							<div class="dropdown">
+								<a href={resolve('/account')} class="dropdown-item">
+									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+										<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+										<circle cx="12" cy="7" r="4" />
+									</svg>
+									Account
+								</a>
+								<button class="dropdown-item logout" onclick={logout}>
+									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+										<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+										<polyline points="16,17 21,12 16,7" />
+										<line x1="21" y1="12" x2="9" y2="12" />
+									</svg>
+									Logout
+								</button>
+							</div>
+						{/if}
+					</div>
+				{:else}
+					<a href={resolve('/login')} class="btn btn-secondary">Sign In</a>
+					<a href={resolve('/register')} class="btn btn-primary">Get Started</a>
+				{/if}
+			</div>
 		</div>
-		<div class="card">
-			<h3>🧩 Simple</h3>
+	</nav>
+
+	<section class="hero">
+		<div class="hero-bg">
+			<div class="gradient-orb orb-1"></div>
+			<div class="gradient-orb orb-2"></div>
+			<div class="grid-pattern"></div>
 		</div>
-		<div class="card">
-			<h3>🚀 Powerful</h3>
+		<div class="hero-content">
+			<div class="badge">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+				</svg>
+				Save up to 15% on fuel
+			</div>
+			<h1>
+				Find the <span class="gradient-text">cheapest gas</span><br />
+				stations near you
+			</h1>
+			<p class="hero-subtitle">Compare real-time fuel prices across thousands of stations. Never overpay at the pump again.</p>
+			<div class="hero-actions">
+				<a href={resolve('/map')} class="btn btn-primary btn-lg">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
+						<line x1="9" y1="3" x2="9" y2="18" />
+						<line x1="15" y1="6" x2="15" y2="21" />
+					</svg>
+					Explore Map
+				</a>
+				<a href={resolve('/register')} class="btn btn-secondary btn-lg">Create Account</a>
+			</div>
+			<div class="stats">
+				<div class="stat">
+					<span class="stat-value">500+</span>
+					<span class="stat-label">Fuel Stations</span>
+				</div>
+				<div class="stat-divider"></div>
+				<div class="stat">
+					<span class="stat-value">Real-time</span>
+					<span class="stat-label">Price Updates</span>
+				</div>
+				<div class="stat-divider"></div>
+				<div class="stat">
+					<span class="stat-value">Free</span>
+					<span class="stat-label">Forever</span>
+				</div>
+			</div>
 		</div>
 	</section>
+
+	<section class="features">
+		<div class="section-header">
+			<span class="section-badge">Features</span>
+			<h2>Everything you need to save on fuel</h2>
+			<p>Powerful features to help you find the best deals</p>
+		</div>
+		<div class="features-grid">
+			{#each features as feature, i}
+				<div class="feature-card" style="animation-delay: {i * 100}ms">
+					<div class="feature-icon">
+						{#if feature.icon === 'zap'}
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+							</svg>
+						{:else if feature.icon === 'map-pin'}
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+								<circle cx="12" cy="10" r="3" />
+							</svg>
+						{:else if feature.icon === 'shield'}
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+							</svg>
+						{/if}
+					</div>
+					<h3>{feature.title}</h3>
+					<p>{feature.description}</p>
+				</div>
+			{/each}
+		</div>
+	</section>
+
+	<section class="cta">
+		<div class="cta-content">
+			<h2>Ready to start saving?</h2>
+			<p>Join thousands of drivers who already use Tanker24</p>
+			<a href={resolve('/register')} class="btn btn-primary btn-lg">Get Started Free</a>
+		</div>
+	</section>
+
+	<footer class="footer">
+		<div class="footer-content">
+			<div class="footer-brand">
+				<div class="logo">
+					<Logo size={28} />
+					<span>Tanker24</span>
+				</div>
+				<p>Your trusted companion for finding the best fuel prices.</p>
+			</div>
+			<div class="footer-links">
+				<div class="footer-column">
+					<h4>Product</h4>
+					<a href={resolve('/map')}>Map</a>
+					<a href={resolve('/register')}>Sign Up</a>
+					<a href={resolve('/login')}>Sign In</a>
+				</div>
+				<div class="footer-column">
+					<h4>Company</h4>
+					<a href="#">About</a>
+					<a href="#">Contact</a>
+					<a href="#">Privacy</a>
+				</div>
+			</div>
+		</div>
+		<div class="footer-bottom">
+			<p>&copy; 2026 Tanker24. All rights reserved.</p>
+		</div>
+	</footer>
 </main>
 
 <style>
 	main {
-		font-family: system-ui, sans-serif;
-		text-align: center;
-		position: relative;
+		min-height: 100vh;
 	}
 
-	section {
-		padding: 4rem 2rem;
+	.navbar {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 100;
+		padding: 1rem 2rem;
+		transition: all var(--transition-base);
+	}
+
+	.navbar.scrolled {
+		background: rgba(10, 10, 11, 0.9);
+		backdrop-filter: blur(20px);
+		-webkit-backdrop-filter: blur(20px);
+		border-bottom: 1px solid var(--border-subtle);
+	}
+
+	.nav-content {
+		max-width: 1200px;
+		margin: 0 auto;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.logo {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		text-decoration: none;
+		color: var(--text-primary);
+		font-weight: 700;
+		font-size: 1.25rem;
+	}
+
+	.nav-actions {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.nav-link {
+		padding: 0.5rem 1rem;
+		font-weight: 500;
 	}
 
 	.profile-wrapper {
-		position: absolute;
-		top: 1rem;
-		right: 1rem;
+		position: relative;
 	}
 
 	.profile-btn {
-		width: auto;
-		min-width: 48px;
-		height: 48px;
-		padding: 0 16px;
-		border-radius: 24px;
-		background: white;
-		color: #111;
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		text-decoration: none;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-		transition:
-			transform 0.2s ease,
-			box-shadow 0.2s ease;
-		font-weight: 500;
-		font-size: 1rem;
-		font-family: inherit;
-		border: none;
+		gap: 0.5rem;
+		padding: 0.5rem 0.75rem;
+		background: var(--bg-card);
+		border: 1px solid var(--border-light);
+		border-radius: var(--radius-full);
+		color: var(--text-primary);
 		cursor: pointer;
+		transition: all var(--transition-base);
+		font-family: inherit;
+		font-size: 0.875rem;
+		font-weight: 500;
 	}
 
 	.profile-btn:hover {
-		transform: scale(1.1);
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+		background: var(--bg-card-hover);
+		border-color: var(--accent-primary);
+	}
+
+	.avatar {
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		background: var(--accent-gradient);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.75rem;
+		font-weight: 600;
+		text-transform: uppercase;
+	}
+
+	.username {
+		display: none;
+	}
+
+	@media (min-width: 640px) {
+		.username {
+			display: inline;
+		}
 	}
 
 	.dropdown {
 		position: absolute;
-		top: 100%;
+		top: calc(100% + 0.5rem);
 		right: 0;
-		margin-top: 8px;
-		background: white;
-		border-radius: 8px;
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-		overflow: hidden;
-		min-width: 120px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-light);
+		border-radius: var(--radius-md);
+		padding: 0.5rem;
+		min-width: 180px;
+		box-shadow: var(--shadow-xl);
+		animation: fadeIn 0.15s ease;
 	}
 
 	.dropdown-item {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
 		width: 100%;
-		padding: 12px 16px;
+		padding: 0.75rem 1rem;
 		border: none;
 		background: none;
-		text-align: left;
+		color: var(--text-secondary);
+		font-size: 0.875rem;
+		font-weight: 500;
+		border-radius: var(--radius-sm);
 		cursor: pointer;
-		font-size: 1rem;
-		color: #111;
-		transition: background 0.2s ease;
+		transition: all var(--transition-fast);
+		text-decoration: none;
+		font-family: inherit;
 	}
 
 	.dropdown-item:hover {
-		background: #f5f5f5;
+		background: var(--bg-card-hover);
+		color: var(--text-primary);
+	}
+
+	.dropdown-item.logout:hover {
+		background: rgba(239, 68, 68, 0.1);
+		color: var(--error);
 	}
 
 	.hero {
-		background: #111;
-		color: white;
+		position: relative;
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 8rem 2rem 4rem;
+		overflow: hidden;
+	}
+
+	.hero-bg {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+	}
+
+	.gradient-orb {
+		position: absolute;
+		border-radius: 50%;
+		filter: blur(80px);
+		opacity: 0.5;
+	}
+
+	.orb-1 {
+		width: 600px;
+		height: 600px;
+		background: var(--accent-primary);
+		top: -200px;
+		right: -100px;
+		opacity: 0.15;
+	}
+
+	.orb-2 {
+		width: 400px;
+		height: 400px;
+		background: #8b5cf6;
+		bottom: -100px;
+		left: -100px;
+		opacity: 0.1;
+	}
+
+	.grid-pattern {
+		position: absolute;
+		inset: 0;
+		background-image: linear-gradient(var(--border-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+		background-size: 60px 60px;
+		mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+		-webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+	}
+
+	.hero-content {
+		position: relative;
+		max-width: 900px;
+		text-align: center;
+		animation: slideUp 0.8s ease forwards;
+	}
+
+	.badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		background: rgba(99, 102, 241, 0.1);
+		border: 1px solid rgba(99, 102, 241, 0.3);
+		border-radius: var(--radius-full);
+		font-size: 0.875rem;
+		font-weight: 500;
+		color: var(--accent-secondary);
+		margin-bottom: 2rem;
 	}
 
 	.hero h1 {
-		font-size: 3rem;
-		margin-bottom: 1rem;
+		font-size: clamp(2.5rem, 6vw, 4.5rem);
+		font-weight: 800;
+		line-height: 1.1;
+		margin-bottom: 1.5rem;
+		letter-spacing: -0.02em;
 	}
 
-	.features {
+	.hero-subtitle {
+		font-size: clamp(1.125rem, 2vw, 1.375rem);
+		color: var(--text-secondary);
+		max-width: 600px;
+		margin: 0 auto 2.5rem;
+		line-height: 1.7;
+	}
+
+	.hero-actions {
 		display: flex;
 		gap: 1rem;
 		justify-content: center;
 		flex-wrap: wrap;
+		margin-bottom: 4rem;
 	}
 
-	.card {
-		background: #f5f5f5;
-		padding: 1.5rem;
-		border-radius: 10px;
-		width: 200px;
+	.btn-lg {
+		padding: 1rem 2rem;
+		font-size: 1rem;
+	}
+
+	.stats {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 2rem;
+		flex-wrap: wrap;
+	}
+
+	.stat {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.stat-value {
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: var(--text-primary);
+	}
+
+	.stat-label {
+		font-size: 0.875rem;
+		color: var(--text-muted);
+	}
+
+	.stat-divider {
+		width: 1px;
+		height: 40px;
+		background: var(--border-light);
+	}
+
+	.features {
+		padding: 6rem 2rem;
+		max-width: 1200px;
+		margin: 0 auto;
+	}
+
+	.section-header {
+		text-align: center;
+		margin-bottom: 4rem;
+	}
+
+	.section-badge {
+		display: inline-block;
+		padding: 0.375rem 0.875rem;
+		background: rgba(99, 102, 241, 0.1);
+		border: 1px solid rgba(99, 102, 241, 0.2);
+		border-radius: var(--radius-full);
+		font-size: 0.75rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--accent-secondary);
+		margin-bottom: 1rem;
+	}
+
+	.section-header h2 {
+		font-size: clamp(2rem, 4vw, 3rem);
+		font-weight: 700;
+		margin-bottom: 1rem;
+		letter-spacing: -0.02em;
+	}
+
+	.section-header p {
+		font-size: 1.125rem;
+		color: var(--text-secondary);
+	}
+
+	.features-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 1.5rem;
+	}
+
+	.feature-card {
+		background: var(--bg-card);
+		border: 1px solid var(--border-subtle);
+		border-radius: var(--radius-lg);
+		padding: 2rem;
+		transition: all var(--transition-base);
+		animation: slideUp 0.6s ease forwards;
+		opacity: 0;
+	}
+
+	.feature-card:hover {
+		border-color: var(--accent-primary);
+		transform: translateY(-4px);
+		box-shadow: var(--shadow-glow);
+	}
+
+	.feature-icon {
+		width: 48px;
+		height: 48px;
+		border-radius: var(--radius-md);
+		background: rgba(99, 102, 241, 0.1);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--accent-primary);
+		margin-bottom: 1.5rem;
+	}
+
+	.feature-card h3 {
+		font-size: 1.25rem;
+		font-weight: 600;
+		margin-bottom: 0.75rem;
+	}
+
+	.feature-card p {
+		color: var(--text-secondary);
+		line-height: 1.6;
+	}
+
+	.cta {
+		padding: 6rem 2rem;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.cta::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+	}
+
+	.cta-content {
+		position: relative;
+		max-width: 600px;
+		margin: 0 auto;
+		text-align: center;
+		background: var(--bg-card);
+		border: 1px solid var(--border-subtle);
+		border-radius: var(--radius-xl);
+		padding: 4rem 2rem;
+	}
+
+	.cta-content h2 {
+		font-size: 2rem;
+		font-weight: 700;
+		margin-bottom: 0.75rem;
+	}
+
+	.cta-content p {
+		color: var(--text-secondary);
+		margin-bottom: 2rem;
+		font-size: 1.125rem;
+	}
+
+	.footer {
+		border-top: 1px solid var(--border-subtle);
+		padding: 4rem 2rem 2rem;
+	}
+
+	.footer-content {
+		max-width: 1200px;
+		margin: 0 auto;
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 3rem;
+	}
+
+	@media (min-width: 768px) {
+		.footer-content {
+			grid-template-columns: 2fr 1fr;
+		}
+	}
+
+	.footer-brand {
+		max-width: 300px;
+	}
+
+	.footer-brand .logo {
+		margin-bottom: 1rem;
+	}
+
+	.footer-brand p {
+		color: var(--text-secondary);
+		font-size: 0.875rem;
+		line-height: 1.6;
+	}
+
+	.footer-links {
+		display: flex;
+		gap: 4rem;
+	}
+
+	.footer-column {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.footer-column h4 {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		margin-bottom: 0.25rem;
+	}
+
+	.footer-column a {
+		color: var(--text-secondary);
+		text-decoration: none;
+		font-size: 0.875rem;
+		transition: color var(--transition-fast);
+	}
+
+	.footer-column a:hover {
+		color: var(--text-primary);
+	}
+
+	.footer-bottom {
+		max-width: 1200px;
+		margin: 3rem auto 0;
+		padding-top: 2rem;
+		border-top: 1px solid var(--border-subtle);
+		text-align: center;
+	}
+
+	.footer-bottom p {
+		color: var(--text-muted);
+		font-size: 0.875rem;
 	}
 </style>
