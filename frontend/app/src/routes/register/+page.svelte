@@ -41,7 +41,9 @@
 				pin,
 				password
 			});
-			await goto(resolve('/login'));
+			const response = await authService.login({ email, password });
+			localStorage.setItem('token', response.access_token);
+			await goto(resolve('/account'));
 		} catch {
 			error = $t.register.registerFailed;
 		} finally {
