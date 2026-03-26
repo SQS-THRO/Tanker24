@@ -5,6 +5,7 @@
 	import { goto } from '$app/navigation';
 	import Logo from '$lib/components/Logo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+	import AccessibilitySection from '$lib/components/AccessibilitySection.svelte';
 	import { t } from '$lib/stores/locale';
 
 	let user = $state<{
@@ -148,6 +149,8 @@
 					</a>
 				</div>
 			</div>
+
+			<AccessibilitySection />
 
 			<div class="danger-zone">
 				<h3>{$t.account.accountSection}</h3>

@@ -23,7 +23,7 @@
 		try {
 			const response = await authService.login({ email, password });
 			localStorage.setItem('token', response.access_token);
-			await goto(resolve('/'));
+			await goto(resolve('/account'));
 		} catch {
 			error = $t.login.loginFailed;
 		} finally {
