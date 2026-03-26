@@ -147,6 +147,7 @@
 					<span class="stat-value">{$t.hero.foreverLabel}</span>
 				</div>
 			</div>
+			<p class="data-source">{$t.hero.dataSource}</p>
 		</div>
 	</section>
 
@@ -489,6 +490,13 @@
 		width: 1px;
 		height: 40px;
 		background: var(--border-light);
+	}
+
+	.data-source {
+		margin-top: 1.5rem;
+		font-size: 0.75rem;
+		color: var(--text-muted);
+		text-align: center;
 	}
 
 	.features {

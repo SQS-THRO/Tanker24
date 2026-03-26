@@ -8,14 +8,15 @@ export const translations = {
 			getStarted: 'Get Started'
 		},
 		hero: {
-			badge: 'Save up to 15% on fuel',
+			badge: 'Save money on fuel',
 			title: 'Find the cheapest gas stations near you',
 			subtitle: 'Compare real-time fuel prices across thousands of stations. Never overpay at the pump again.',
 			exploreMap: 'Explore Map',
 			createAccount: 'Create Account',
 			fuelStationsLabel: 'Fuel Stations',
 			priceUpdatesLabel: 'Price Updates',
-			foreverLabel: 'Forever'
+			foreverLabel: 'Forever',
+			dataSource: 'Price data provided by the German Bundeskartellamt'
 		},
 		features: {
 			title: 'Features',
@@ -123,14 +124,15 @@ export const translations = {
 			getStarted: 'Loslegen'
 		},
 		hero: {
-			badge: 'Bis zu 15% bei Kraftstoff sparen',
+			badge: 'Bei Kraftstoff sparen',
 			title: 'Finde die günstigsten Tankstellen in deiner Nähe',
 			subtitle: 'Vergleiche Kraftstoffpreise in Echtzeit über Tausende von Tankstellen. Nie wieder zu viel an der Zapfsäule zahlen.',
 			exploreMap: 'Karte erkunden',
 			createAccount: 'Konto erstellen',
 			fuelStationsLabel: 'Tankstellen',
 			priceUpdatesLabel: 'Preis-Updates',
-			foreverLabel: 'Kostenlos'
+			foreverLabel: 'Kostenlos',
+			dataSource: 'Preisdaten bereitgestellt vom deutschen Bundeskartellamt'
 		},
 		features: {
 			title: 'Funktionen',
