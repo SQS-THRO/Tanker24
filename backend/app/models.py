@@ -39,6 +39,8 @@ class Station(Base):
 	id: Mapped[int] = mapped_column(primary_key=True)
 	name: Mapped[str] = mapped_column(String(100))
 	description: Mapped[str | None] = mapped_column(Text, default=None)
+	latitude: Mapped[float | None] = mapped_column(Float, default=None)
+	longitude: Mapped[float | None] = mapped_column(Float, default=None)
 	owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
 	owner: Mapped[User] = relationship(back_populates="stations", lazy="selectin")

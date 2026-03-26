@@ -38,7 +38,7 @@ beforeEach(() => {
 });
 
 test('register sends correct data to API', async () => {
-	const { authService } = await import('./api');
+	const { authService } = await import('./auth_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: true,
@@ -61,7 +61,7 @@ test('register sends correct data to API', async () => {
 });
 
 test('register throws error on failure', async () => {
-	const { authService } = await import('./api');
+	const { authService } = await import('./auth_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: false,
@@ -72,7 +72,7 @@ test('register throws error on failure', async () => {
 });
 
 test('register parses generic error when JSON has no detail', async () => {
-	const { authService } = await import('./api');
+	const { authService } = await import('./auth_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: false,
@@ -83,7 +83,7 @@ test('register parses generic error when JSON has no detail', async () => {
 });
 
 test('register handles malformed error JSON', async () => {
-	const { authService } = await import('./api');
+	const { authService } = await import('./auth_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: false,
@@ -94,7 +94,7 @@ test('register handles malformed error JSON', async () => {
 });
 
 test('login sends form data to correct endpoint', async () => {
-	const { authService } = await import('./api');
+	const { authService } = await import('./auth_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: true,
@@ -114,7 +114,7 @@ test('login sends form data to correct endpoint', async () => {
 });
 
 test('login throws error on failure', async () => {
-	const { authService } = await import('./api');
+	const { authService } = await import('./auth_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: false,
@@ -125,7 +125,7 @@ test('login throws error on failure', async () => {
 });
 
 test('logout calls correct endpoint', async () => {
-	const { authService } = await import('./api');
+	const { authService } = await import('./auth_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: true
@@ -137,7 +137,7 @@ test('logout calls correct endpoint', async () => {
 });
 
 test('logout does not throw on failure', async () => {
-	const { authService } = await import('./api');
+	const { authService } = await import('./auth_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: false
@@ -147,7 +147,7 @@ test('logout does not throw on failure', async () => {
 });
 
 test('getCurrentUser sends authorization header', async () => {
-	const { authService } = await import('./api');
+	const { authService } = await import('./auth_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: true,
@@ -168,7 +168,7 @@ test('getCurrentUser sends authorization header', async () => {
 });
 
 test('getCurrentUser throws error on failure', async () => {
-	const { authService } = await import('./api');
+	const { authService } = await import('./auth_api');
 
 	mockFetch.mockResolvedValueOnce({
 		ok: false,
