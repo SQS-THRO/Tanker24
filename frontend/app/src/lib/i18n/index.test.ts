@@ -49,19 +49,6 @@ describe('translations', () => {
 		expect(translations.de.nav).toHaveProperty('getStarted');
 	});
 
-	test('account.colorBlindnessModes has all color blind modes', () => {
-		const modes = translations.en.account.colorBlindnessModes;
-		expect(modes).toHaveProperty('none');
-		expect(modes).toHaveProperty('protanopia');
-		expect(modes).toHaveProperty('protanomaly');
-		expect(modes).toHaveProperty('deuteranopia');
-		expect(modes).toHaveProperty('deuteranomaly');
-		expect(modes).toHaveProperty('tritanopia');
-		expect(modes).toHaveProperty('tritanomaly');
-		expect(modes).toHaveProperty('achromatopsia');
-		expect(modes).toHaveProperty('achromatomaly');
-	});
-
 	test('Locale type is correct', () => {
 		const locale: Locale = 'en';
 		expect(locale).toBe('en');

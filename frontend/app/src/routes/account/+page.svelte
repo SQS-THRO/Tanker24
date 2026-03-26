@@ -5,7 +5,6 @@
 	import { goto } from '$app/navigation';
 	import Logo from '$lib/components/Logo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
-	import AccessibilitySection from '$lib/components/AccessibilitySection.svelte';
 	import { t } from '$lib/stores/locale';
 
 	let user = $state<{
@@ -148,11 +147,9 @@
 						</svg>
 					</a>
 				</div>
-			</div>
+		</div>
 
-			<AccessibilitySection />
-
-			<div class="danger-zone">
+		<div class="danger-zone">
 				<h3>{$t.account.accountSection}</h3>
 				<button class="btn btn-danger" onclick={handleLogout}>
 					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
