@@ -10,12 +10,11 @@ export const translations = {
 		hero: {
 			badge: 'Save money on fuel',
 			title: 'Find the cheapest gas stations near you',
-			subtitle: 'Compare real-time fuel prices across thousands of stations. Never overpay at the pump again.',
+			subtitle: 'Compare real-time fuel prices across stations. Never overpay at the pump again.',
 			exploreMap: 'Explore Map',
 			createAccount: 'Create Account',
 			fuelStationsLabel: 'Fuel Stations',
 			priceUpdatesLabel: 'Price Updates',
-			foreverLabel: 'Forever',
 			dataSource: 'Price data provided by the German Bundeskartellamt'
 		},
 		features: {
@@ -31,7 +30,7 @@ export const translations = {
 		},
 		cta: {
 			title: 'Ready to start saving?',
-			subtitle: 'Join thousands of drivers who already use Tanker24',
+			subtitle: 'Join drivers who already use Tanker24',
 			getStartedFree: 'Get Started Free'
 		},
 		footer: {
@@ -137,12 +136,11 @@ export const translations = {
 		hero: {
 			badge: 'Bei Kraftstoff sparen',
 			title: 'Finde die günstigsten Tankstellen in deiner Nähe',
-			subtitle: 'Vergleiche Kraftstoffpreise in Echtzeit über Tausende von Tankstellen. Nie wieder zu viel an der Zapfsäule zahlen.',
+			subtitle: 'Vergleiche Kraftstoffpreise in Echtzeit über Tankstellen. Nie wieder zu viel an der Zapfsäule zahlen.',
 			exploreMap: 'Karte erkunden',
 			createAccount: 'Konto erstellen',
 			fuelStationsLabel: 'Tankstellen',
 			priceUpdatesLabel: 'Preis-Updates',
-			foreverLabel: 'Kostenlos',
 			dataSource: 'Preisdaten bereitgestellt vom deutschen Bundeskartellamt'
 		},
 		features: {
@@ -158,7 +156,7 @@ export const translations = {
 		},
 		cta: {
 			title: 'Bereit zum Sparen?',
-			subtitle: 'Tausende von Fahrern nutzen bereits Tanker24',
+			subtitle: 'Fahrer die bereits Tanker24 nutzen',
 			getStartedFree: 'Kostenlos loslegen'
 		},
 		footer: {

@@ -143,9 +143,6 @@
 					<span class="stat-value">{$t.hero.priceUpdatesLabel}</span>
 				</div>
 				<div class="stat-divider"></div>
-				<div class="stat">
-					<span class="stat-value">{$t.hero.foreverLabel}</span>
-				</div>
 			</div>
 			<p class="data-source">{$t.hero.dataSource}</p>
 		</div>
