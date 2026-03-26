@@ -4,7 +4,7 @@
 	import { resolve } from '$app/paths';
 	import Logo from '$lib/components/Logo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
-	import { locale, t } from '$lib/stores/locale';
+	import { t } from '$lib/stores/locale';
 
 	let user = $state<{ forename: string; surname?: string } | null>(null);
 	let showDropdown = $state(false);
@@ -158,7 +158,7 @@
 			<p>{$t.features.description}</p>
 		</div>
 		<div class="features-grid">
-			{#each featureKeys as { key, desc }, i}
+			{#each featureKeys as { key, desc }, i (key)}
 				<div class="feature-card" style="animation-delay: {i * 100}ms">
 					<div class="feature-icon">
 						{#if key === 'realtimeData'}

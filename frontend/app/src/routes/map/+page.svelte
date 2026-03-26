@@ -7,7 +7,8 @@
 	import { goto } from '$app/navigation';
 	import Logo from '$lib/components/Logo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
-	import { locale, t } from '$lib/stores/locale';
+	import { t } from '$lib/stores/locale';
+	import type { Map } from 'leaflet';
 
 	const DEFAULT_LAT = 47.79;
 	const DEFAULT_LNG = 12.1;
@@ -20,7 +21,7 @@
 	let userLng = $state<number | null>(null);
 	let user = $state<{ forename: string; surname?: string } | null>(null);
 	let showUserMenu = $state(false);
-	let map: any = null;
+	let map: Map | null = null;
 
 	function getUserLocation(): Promise<{ lat: number; lng: number }> {
 		return new Promise((resolve) => {
@@ -76,7 +77,7 @@
 
 		try {
 			stations = await stationService.getStations(token);
-		} catch (e) {
+		} catch {
 			error = $t.map.loginRequired;
 		}
 

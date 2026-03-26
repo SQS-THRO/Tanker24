@@ -42,7 +42,7 @@
 				password
 			});
 			await goto(resolve('/login'));
-		} catch (e) {
+		} catch {
 			error = $t.register.registerFailed;
 		} finally {
 			loading = false;

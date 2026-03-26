@@ -24,7 +24,7 @@
 
 		try {
 			user = await authService.getCurrentUser(token);
-		} catch (e) {
+		} catch {
 			error = $t.account.loadUserFailed;
 			localStorage.removeItem('token');
 			await goto(resolve('/login'));

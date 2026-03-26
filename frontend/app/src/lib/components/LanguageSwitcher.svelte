@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { locale, t } from '$lib/stores/locale';
+	import { locale } from '$lib/stores/locale';
 
 	let showDropdown = $state(false);
 

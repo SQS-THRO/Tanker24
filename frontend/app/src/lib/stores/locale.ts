@@ -49,7 +49,7 @@ export const t = derived(locale, ($locale) => {
 
 export function getTranslation(obj: TranslationKeys, path: string): string {
 	const keys = path.split('.');
-	let result: any = obj;
+	let result: TranslationKeys | string = obj;
 	for (const key of keys) {
 		if (result && typeof result === 'object' && key in result) {
 			result = result[key];
