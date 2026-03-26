@@ -1,0 +1,235 @@
+export const translations = {
+	en: {
+		nav: {
+			map: 'Map',
+			account: 'Account',
+			logout: 'Logout',
+			signIn: 'Sign In',
+			getStarted: 'Get Started'
+		},
+		hero: {
+			badge: 'Save up to 15% on fuel',
+			title: 'Find the cheapest gas stations near you',
+			subtitle: 'Compare real-time fuel prices across thousands of stations. Never overpay at the pump again.',
+			exploreMap: 'Explore Map',
+			createAccount: 'Create Account',
+			fuelStationsLabel: 'Fuel Stations',
+			priceUpdatesLabel: 'Price Updates',
+			foreverLabel: 'Forever'
+		},
+		features: {
+			title: 'Features',
+			subtitle: 'Everything you need to save on fuel',
+			description: 'Powerful features to help you find the best deals',
+			realtimeData: 'Real-time Data',
+			realtimeDataDesc: 'Live fuel prices updated every few minutes from stations across the region',
+			smartMapping: 'Smart Mapping',
+			smartMappingDesc: 'Find the nearest and cheapest fuel stations with our intelligent routing',
+			securePrivate: 'Secure & Private',
+			securePrivateDesc: 'Your data is encrypted and we never share your personal information'
+		},
+		cta: {
+			title: 'Ready to start saving?',
+			subtitle: 'Join thousands of drivers who already use Tanker24',
+			getStartedFree: 'Get Started Free'
+		},
+		footer: {
+			brand: 'Your trusted companion for finding the best fuel prices.',
+			product: 'Product',
+			company: 'Company',
+			map: 'Map',
+			signUp: 'Sign Up',
+			signIn: 'Sign In',
+			about: 'About',
+			contact: 'Contact',
+			privacy: 'Privacy',
+			copyright: '2026 Tanker24. All rights reserved.'
+		},
+		login: {
+			title: 'Welcome back',
+			subtitle: 'Sign in to your account to continue',
+			email: 'Email',
+			emailPlaceholder: 'you@example.com',
+			password: 'Password',
+			passwordPlaceholder: 'Enter your password',
+			signIn: 'Sign in',
+			signingIn: 'Signing in...',
+			or: 'or',
+			noAccount: "Don't have an account?",
+			createOne: 'Create one',
+			fillAllFields: 'Please fill in all fields',
+			loginFailed: 'Login failed'
+		},
+		register: {
+			title: 'Create your account',
+			subtitle: 'Start saving on fuel today',
+			firstName: 'First Name',
+			firstNamePlaceholder: 'John',
+			lastName: 'Last Name',
+			lastNamePlaceholder: 'Doe',
+			email: 'Email',
+			emailPlaceholder: 'you@example.com',
+			pin: 'PIN',
+			pinPlaceholder: '4-digit PIN',
+			pinHint: 'Used for station authentication',
+			password: 'Password',
+			passwordPlaceholder: 'At least 8 characters',
+			confirmPassword: 'Confirm Password',
+			confirmPasswordPlaceholder: 'Repeat your password',
+			createAccount: 'Create account',
+			creatingAccount: 'Creating account...',
+			or: 'or',
+			hasAccount: 'Already have an account?',
+			signIn: 'Sign in',
+			fillAllFields: 'Please fill in all fields',
+			passwordsNotMatch: 'Passwords do not match',
+			passwordTooShort: 'Password must be at least 8 characters',
+			registerFailed: 'Registration failed'
+		},
+		account: {
+			title: 'Account',
+			viewMap: 'View Map',
+			loading: 'Loading account...',
+			somethingWrong: 'Something went wrong',
+			goHome: 'Go Home',
+			member: 'Member',
+			emailLabel: 'Email',
+			nameLabel: 'Name',
+			statusLabel: 'Status',
+			planLabel: 'Plan',
+			statusActive: 'Active',
+			planFree: 'Free',
+			quickActions: 'Quick Actions',
+			viewFuelMap: 'View Fuel Map',
+			accountSection: 'Account',
+			signOut: 'Sign Out',
+			loadUserFailed: 'Failed to load user data'
+		},
+		map: {
+			searchPlaceholder: 'Search stations...',
+			stations: 'Stations',
+			back: 'Back',
+			yourLocation: 'Your Location',
+			loginRequired: 'Please log in to view stations',
+			login: 'Login'
+		}
+	},
+	de: {
+		nav: {
+			map: 'Karte',
+			account: 'Konto',
+			logout: 'Abmelden',
+			signIn: 'Anmelden',
+			getStarted: 'Loslegen'
+		},
+		hero: {
+			badge: 'Bis zu 15% bei Kraftstoff sparen',
+			title: 'Finde die günstigsten Tankstellen in deiner Nähe',
+			subtitle: 'Vergleiche Kraftstoffpreise in Echtzeit über Tausende von Tankstellen. Nie wieder zu viel an der Zapfsäule zahlen.',
+			exploreMap: 'Karte erkunden',
+			createAccount: 'Konto erstellen',
+			fuelStationsLabel: 'Tankstellen',
+			priceUpdatesLabel: 'Preis-Updates',
+			foreverLabel: 'Kostenlos'
+		},
+		features: {
+			title: 'Funktionen',
+			subtitle: 'Alles was du brauchst um Kraftstoff zu sparen',
+			description: 'Leistungsstarke Funktionen um die besten Angebote zu finden',
+			realtimeData: 'Echtzeit-Daten',
+			realtimeDataDesc: 'Live-Kraftstoffpreise, die alle paar Minuten von Tankstellen in der Region aktualisiert werden',
+			smartMapping: 'Intelligente Karten',
+			smartMappingDesc: 'Finde die nächstgelegenen und günstigsten Tankstellen mit unserer intelligenten Routenplanung',
+			securePrivate: 'Sicher & Privat',
+			securePrivateDesc: 'Deine Daten werden verschlüsselt und wir teilen deine persönlichen Informationen nie'
+		},
+		cta: {
+			title: 'Bereit zum Sparen?',
+			subtitle: 'Tausende von Fahrern nutzen bereits Tanker24',
+			getStartedFree: 'Kostenlos loslegen'
+		},
+		footer: {
+			brand: 'Dein vertrauenswürdiger Begleiter für das Finden der besten Kraftstoffpreise.',
+			product: 'Produkt',
+			company: 'Unternehmen',
+			map: 'Karte',
+			signUp: 'Registrieren',
+			signIn: 'Anmelden',
+			about: 'Über uns',
+			contact: 'Kontakt',
+			privacy: 'Datenschutz',
+			copyright: '2026 Tanker24. Alle Rechte vorbehalten.'
+		},
+		login: {
+			title: 'Willkommen zurück',
+			subtitle: 'Melde dich an um fortzufahren',
+			email: 'E-Mail',
+			emailPlaceholder: 'du@beispiel.de',
+			password: 'Passwort',
+			passwordPlaceholder: 'Passwort eingeben',
+			signIn: 'Anmelden',
+			signingIn: 'Anmeldung läuft...',
+			or: 'oder',
+			noAccount: 'Noch kein Konto?',
+			createOne: 'Erstellen',
+			fillAllFields: 'Bitte fülle alle Felder aus',
+			loginFailed: 'Anmeldung fehlgeschlagen'
+		},
+		register: {
+			title: 'Konto erstellen',
+			subtitle: 'Beginne heute Kraftstoff zu sparen',
+			firstName: 'Vorname',
+			firstNamePlaceholder: 'Max',
+			lastName: 'Nachname',
+			lastNamePlaceholder: 'Mustermann',
+			email: 'E-Mail',
+			emailPlaceholder: 'du@beispiel.de',
+			pin: 'PIN',
+			pinPlaceholder: '4-stellige PIN',
+			pinHint: 'Wird für Tankstellen-Authentifizierung verwendet',
+			password: 'Passwort',
+			passwordPlaceholder: 'Mindestens 8 Zeichen',
+			confirmPassword: 'Passwort bestätigen',
+			confirmPasswordPlaceholder: 'Passwort wiederholen',
+			createAccount: 'Konto erstellen',
+			creatingAccount: 'Konto wird erstellt...',
+			or: 'oder',
+			hasAccount: 'Bereits ein Konto?',
+			signIn: 'Anmelden',
+			fillAllFields: 'Bitte fülle alle Felder aus',
+			passwordsNotMatch: 'Passwörter stimmen nicht überein',
+			passwordTooShort: 'Passwort muss mindestens 8 Zeichen haben',
+			registerFailed: 'Registrierung fehlgeschlagen'
+		},
+		account: {
+			title: 'Konto',
+			viewMap: 'Karte anzeigen',
+			loading: 'Konto wird geladen...',
+			somethingWrong: 'Etwas ist schief gelaufen',
+			goHome: 'Zur Startseite',
+			member: 'Mitglied',
+			emailLabel: 'E-Mail',
+			nameLabel: 'Name',
+			statusLabel: 'Status',
+			planLabel: 'Plan',
+			statusActive: 'Aktiv',
+			planFree: 'Kostenlos',
+			quickActions: 'Schnellaktionen',
+			viewFuelMap: 'Kraftstoffkarte anzeigen',
+			accountSection: 'Konto',
+			signOut: 'Abmelden',
+			loadUserFailed: 'Benutzerdaten konnten nicht geladen werden'
+		},
+		map: {
+			searchPlaceholder: 'Tankstellen suchen...',
+			stations: 'Tankstellen',
+			back: 'Zurück',
+			yourLocation: 'Dein Standort',
+			loginRequired: 'Bitte melde dich an um Tankstellen anzuzeigen',
+			login: 'Anmelden'
+		}
+	}
+};
+
+export type Locale = 'en' | 'de';
+export type TranslationKeys = typeof translations.en;

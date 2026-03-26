@@ -6,6 +6,8 @@
 	import { authService } from '$lib/services/auth_api';
 	import { goto } from '$app/navigation';
 	import Logo from '$lib/components/Logo.svelte';
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+	import { locale, t } from '$lib/stores/locale';
 
 	const DEFAULT_LAT = 47.79;
 	const DEFAULT_LNG = 12.1;
@@ -75,7 +77,7 @@
 		try {
 			stations = await stationService.getStations(token);
 		} catch (e) {
-			error = e instanceof Error ? e.message : 'Failed to load stations';
+			error = $t.map.loginRequired;
 		}
 
 		const { lat, lng } = await getUserLocation();
@@ -103,7 +105,7 @@
 				iconSize: [24, 24],
 				iconAnchor: [12, 12]
 			});
-			L.marker([userLat, userLng], { icon: userIcon }).addTo(map).bindPopup('<div class="popup user-popup"><strong>Your Location</strong></div>').openPopup();
+			L.marker([userLat, userLng], { icon: userIcon }).addTo(map).bindPopup(`<div class="popup user-popup"><strong>${$t.map.yourLocation}</strong></div>`).openPopup();
 		}
 
 		stations.forEach((station) => {
@@ -128,7 +130,9 @@
 						${station.description ? `<p>${station.description}</p>` : ''}
 					</div>
 				`;
-				L.marker([station.latitude, station.longitude], { icon: stationIcon }).addTo(map).bindPopup(popupContent);
+				L.marker([station.latitude, station.longitude], { icon: stationIcon })
+					.addTo(map)
+					.bindPopup(popupContent);
 			}
 		});
 	});
@@ -147,11 +151,12 @@
 					<circle cx="11" cy="11" r="8" />
 					<path d="M21 21l-4.35-4.35" />
 				</svg>
-				<input type="text" placeholder="Search stations..." class="search-input" />
+				<input type="text" placeholder={$t.map.searchPlaceholder} class="search-input" />
 			</div>
 		</div>
 
 		<div class="header-actions">
+			<LanguageSwitcher />
 			{#if user}
 				<div class="user-menu-wrapper">
 					<button class="user-btn" onclick={() => (showUserMenu = !showUserMenu)}>
@@ -172,7 +177,7 @@
 									<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
 									<circle cx="12" cy="7" r="4" />
 								</svg>
-								Account
+								{$t.nav.account}
 							</a>
 							<button class="dropdown-item logout" onclick={logout}>
 								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -180,13 +185,13 @@
 									<polyline points="16,17 21,12 16,7" />
 									<line x1="21" y1="12" x2="9" y2="12" />
 								</svg>
-								Sign Out
+								{$t.nav.logout}
 							</button>
 						</div>
 					{/if}
 				</div>
 			{:else}
-				<a href={resolve('/login')} class="btn btn-secondary">Sign In</a>
+				<a href={resolve('/login')} class="btn btn-secondary">{$t.nav.signIn}</a>
 			{/if}
 		</div>
 	</div>
@@ -199,7 +204,7 @@
 				<line x1="12" y1="16" x2="12.01" y2="16" />
 			</svg>
 			{error}
-			<a href={resolve('/login')} class="btn btn-sm">Login</a>
+			<a href={resolve('/login')} class="btn btn-sm">{$t.map.login}</a>
 		</div>
 	{/if}
 
@@ -211,13 +216,13 @@
 				<path d="M3 22V8l9-6 9 6v14H3z" />
 				<path d="M9 22V12h6v10" />
 			</svg>
-			<span>{stations.length} Stations</span>
+			<span>{stations.length} {$t.map.stations}</span>
 		</div>
 		<a href={resolve('/')} class="btn btn-secondary btn-sm">
 			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 				<path d="M19 12H5M12 19l-7-7 7-7" />
 			</svg>
-			Back
+			{$t.map.back}
 		</a>
 	</div>
 

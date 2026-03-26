@@ -3,6 +3,8 @@
 	import { authService } from '$lib/services/auth_api';
 	import { resolve } from '$app/paths';
 	import Logo from '$lib/components/Logo.svelte';
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+	import { locale, t } from '$lib/stores/locale';
 
 	let user = $state<{ forename: string; surname?: string } | null>(null);
 	let showDropdown = $state(false);
@@ -44,23 +46,11 @@
 		}
 	}
 
-	const features = [
-		{
-			icon: 'zap',
-			title: 'Real-time Data',
-			description: 'Live fuel prices updated every few minutes from stations across the region'
-		},
-		{
-			icon: 'map-pin',
-			title: 'Smart Mapping',
-			description: 'Find the nearest and cheapest fuel stations with our intelligent routing'
-		},
-		{
-			icon: 'shield',
-			title: 'Secure & Private',
-			description: 'Your data is encrypted and we never share your personal information'
-		}
-	];
+	const featureKeys = [
+		{ key: 'realtimeData', desc: 'realtimeDataDesc' },
+		{ key: 'smartMapping', desc: 'smartMappingDesc' },
+		{ key: 'securePrivate', desc: 'securePrivateDesc' }
+	] as const;
 </script>
 
 <svelte:window onclick={handleWindowClick} />
@@ -74,7 +64,8 @@
 			</a>
 
 			<div class="nav-actions">
-				<a href={resolve('/map')} class="btn btn-ghost nav-link">Map</a>
+				<LanguageSwitcher />
+				<a href={resolve('/map')} class="btn btn-ghost nav-link">{$t.nav.map}</a>
 				{#if user}
 					<div class="profile-wrapper">
 						<button class="profile-btn" onclick={toggleDropdown}>
@@ -93,7 +84,7 @@
 										<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
 										<circle cx="12" cy="7" r="4" />
 									</svg>
-									Account
+									{$t.nav.account}
 								</a>
 								<button class="dropdown-item logout" onclick={logout}>
 									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -101,14 +92,14 @@
 										<polyline points="16,17 21,12 16,7" />
 										<line x1="21" y1="12" x2="9" y2="12" />
 									</svg>
-									Logout
+									{$t.nav.logout}
 								</button>
 							</div>
 						{/if}
 					</div>
 				{:else}
-					<a href={resolve('/login')} class="btn btn-secondary">Sign In</a>
-					<a href={resolve('/register')} class="btn btn-primary">Get Started</a>
+					<a href={resolve('/login')} class="btn btn-secondary">{$t.nav.signIn}</a>
+					<a href={resolve('/register')} class="btn btn-primary">{$t.nav.getStarted}</a>
 				{/if}
 			</div>
 		</div>
@@ -125,13 +116,12 @@
 				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 					<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
 				</svg>
-				Save up to 15% on fuel
+				{$t.hero.badge}
 			</div>
 			<h1>
-				Find the <span class="gradient-text">cheapest gas</span><br />
-				stations near you
+				{$t.hero.title}
 			</h1>
-			<p class="hero-subtitle">Compare real-time fuel prices across thousands of stations. Never overpay at the pump again.</p>
+			<p class="hero-subtitle">{$t.hero.subtitle}</p>
 			<div class="hero-actions">
 				<a href={resolve('/map')} class="btn btn-primary btn-lg">
 					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -139,24 +129,22 @@
 						<line x1="9" y1="3" x2="9" y2="18" />
 						<line x1="15" y1="6" x2="15" y2="21" />
 					</svg>
-					Explore Map
+					{$t.hero.exploreMap}
 				</a>
-				<a href={resolve('/register')} class="btn btn-secondary btn-lg">Create Account</a>
+				<a href={resolve('/register')} class="btn btn-secondary btn-lg">{$t.hero.createAccount}</a>
 			</div>
 			<div class="stats">
 				<div class="stat">
 					<span class="stat-value">500+</span>
-					<span class="stat-label">Fuel Stations</span>
+					<span class="stat-label">{$t.hero.fuelStationsLabel}</span>
 				</div>
 				<div class="stat-divider"></div>
 				<div class="stat">
-					<span class="stat-value">Real-time</span>
-					<span class="stat-label">Price Updates</span>
+					<span class="stat-value">{$t.hero.priceUpdatesLabel}</span>
 				</div>
 				<div class="stat-divider"></div>
 				<div class="stat">
-					<span class="stat-value">Free</span>
-					<span class="stat-label">Forever</span>
+					<span class="stat-value">{$t.hero.foreverLabel}</span>
 				</div>
 			</div>
 		</div>
@@ -164,31 +152,31 @@
 
 	<section class="features">
 		<div class="section-header">
-			<span class="section-badge">Features</span>
-			<h2>Everything you need to save on fuel</h2>
-			<p>Powerful features to help you find the best deals</p>
+			<span class="section-badge">{$t.features.title}</span>
+			<h2>{$t.features.subtitle}</h2>
+			<p>{$t.features.description}</p>
 		</div>
 		<div class="features-grid">
-			{#each features as feature, i}
+			{#each featureKeys as { key, desc }, i}
 				<div class="feature-card" style="animation-delay: {i * 100}ms">
 					<div class="feature-icon">
-						{#if feature.icon === 'zap'}
+						{#if key === 'realtimeData'}
 							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
 							</svg>
-						{:else if feature.icon === 'map-pin'}
+						{:else if key === 'smartMapping'}
 							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
 								<circle cx="12" cy="10" r="3" />
 							</svg>
-						{:else if feature.icon === 'shield'}
+						{:else if key === 'securePrivate'}
 							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
 							</svg>
 						{/if}
 					</div>
-					<h3>{feature.title}</h3>
-					<p>{feature.description}</p>
+					<h3>{$t.features[key]}</h3>
+					<p>{$t.features[desc]}</p>
 				</div>
 			{/each}
 		</div>
@@ -196,9 +184,9 @@
 
 	<section class="cta">
 		<div class="cta-content">
-			<h2>Ready to start saving?</h2>
-			<p>Join thousands of drivers who already use Tanker24</p>
-			<a href={resolve('/register')} class="btn btn-primary btn-lg">Get Started Free</a>
+			<h2>{$t.cta.title}</h2>
+			<p>{$t.cta.subtitle}</p>
+			<a href={resolve('/register')} class="btn btn-primary btn-lg">{$t.cta.getStartedFree}</a>
 		</div>
 	</section>
 
@@ -209,25 +197,25 @@
 					<Logo size={28} />
 					<span>Tanker24</span>
 				</div>
-				<p>Your trusted companion for finding the best fuel prices.</p>
+				<p>{$t.footer.brand}</p>
 			</div>
 			<div class="footer-links">
 				<div class="footer-column">
-					<h4>Product</h4>
-					<a href={resolve('/map')}>Map</a>
-					<a href={resolve('/register')}>Sign Up</a>
-					<a href={resolve('/login')}>Sign In</a>
+					<h4>{$t.footer.product}</h4>
+					<a href={resolve('/map')}>{$t.footer.map}</a>
+					<a href={resolve('/register')}>{$t.footer.signUp}</a>
+					<a href={resolve('/login')}>{$t.footer.signIn}</a>
 				</div>
 				<div class="footer-column">
-					<h4>Company</h4>
-					<a href="#">About</a>
-					<a href="#">Contact</a>
-					<a href="#">Privacy</a>
+					<h4>{$t.footer.company}</h4>
+					<a href="#">{$t.footer.about}</a>
+					<a href="#">{$t.footer.contact}</a>
+					<a href="#">{$t.footer.privacy}</a>
 				</div>
 			</div>
 		</div>
 		<div class="footer-bottom">
-			<p>&copy; 2026 Tanker24. All rights reserved.</p>
+			<p>&copy; {$t.footer.copyright}</p>
 		</div>
 	</footer>
 </main>

@@ -4,6 +4,8 @@
 	import { authService } from '$lib/services/auth_api';
 	import { goto } from '$app/navigation';
 	import Logo from '$lib/components/Logo.svelte';
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+	import { t } from '$lib/stores/locale';
 
 	let user = $state<{
 		forename: string;
@@ -23,7 +25,7 @@
 		try {
 			user = await authService.getCurrentUser(token);
 		} catch (e) {
-			error = e instanceof Error ? e.message : 'Failed to load user data';
+			error = $t.account.loadUserFailed;
 			localStorage.removeItem('token');
 			await goto(resolve('/login'));
 		} finally {
@@ -50,21 +52,24 @@
 			<Logo size={32} />
 			<span>Tanker24</span>
 		</a>
-		<a href={resolve('/map')} class="btn btn-secondary nav-btn">
-			<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-				<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
-				<line x1="9" y1="3" x2="9" y2="18" />
-				<line x1="15" y1="6" x2="15" y2="21" />
-			</svg>
-			View Map
-		</a>
+		<div class="nav-right">
+			<LanguageSwitcher />
+			<a href={resolve('/map')} class="btn btn-secondary nav-btn">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
+					<line x1="9" y1="3" x2="9" y2="18" />
+					<line x1="15" y1="6" x2="15" y2="21" />
+				</svg>
+				{$t.account.viewMap}
+			</a>
+		</div>
 	</nav>
 
 	<div class="container">
 		{#if loading}
 			<div class="loading">
 				<div class="spinner-large"></div>
-				<p>Loading account...</p>
+				<p>{$t.account.loading}</p>
 			</div>
 		{:else if error}
 			<div class="card error-card">
@@ -73,9 +78,9 @@
 					<line x1="12" y1="8" x2="12" y2="12" />
 					<line x1="12" y1="16" x2="12.01" y2="16" />
 				</svg>
-				<h2>Something went wrong</h2>
+				<h2>{$t.account.somethingWrong}</h2>
 				<p>{error}</p>
-				<a href={resolve('/')} class="btn btn-primary">Go Home</a>
+				<a href={resolve('/')} class="btn btn-primary">{$t.account.goHome}</a>
 			</div>
 		{:else if user}
 			<div class="profile-header">
@@ -83,7 +88,7 @@
 					{user.forename[0]}{user.surname?.[0] || ''}
 				</div>
 				<h1>{user.forename} {user.surname || ''}</h1>
-				<p class="member-since">Member</p>
+				<p class="member-since">{$t.account.member}</p>
 			</div>
 
 			<div class="cards-grid">
@@ -95,7 +100,7 @@
 						</svg>
 					</div>
 					<div class="card-content">
-						<span class="card-label">Email</span>
+						<span class="card-label">{$t.account.emailLabel}</span>
 						<span class="card-value">{user.email}</span>
 					</div>
 				</div>
@@ -108,25 +113,25 @@
 						</svg>
 					</div>
 					<div class="card-content">
-						<span class="card-label">Name</span>
+						<span class="card-label">{$t.account.nameLabel}</span>
 						<span class="card-value">{user.forename} {user.surname || ''}</span>
 					</div>
 				</div>
 
 				<div class="card stats-card">
 					<div class="stat-item">
-						<span class="stat-value">Active</span>
-						<span class="stat-label">Status</span>
+						<span class="stat-value">{$t.account.statusActive}</span>
+						<span class="stat-label">{$t.account.statusLabel}</span>
 					</div>
 					<div class="stat-item">
-						<span class="stat-value">Free</span>
-						<span class="stat-label">Plan</span>
+						<span class="stat-value">{$t.account.planFree}</span>
+						<span class="stat-label">{$t.account.planLabel}</span>
 					</div>
 				</div>
 			</div>
 
 			<div class="actions-section">
-				<h2>Quick Actions</h2>
+				<h2>{$t.account.quickActions}</h2>
 				<div class="actions-grid">
 					<a href={resolve('/map')} class="action-card">
 						<div class="action-icon">
@@ -136,7 +141,7 @@
 								<line x1="15" y1="6" x2="15" y2="21" />
 							</svg>
 						</div>
-						<span>View Fuel Map</span>
+						<span>{$t.account.viewFuelMap}</span>
 						<svg class="action-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<path d="M5 12h14M12 5l7 7-7 7" />
 						</svg>
@@ -145,14 +150,14 @@
 			</div>
 
 			<div class="danger-zone">
-				<h3>Account</h3>
+				<h3>{$t.account.accountSection}</h3>
 				<button class="btn btn-danger" onclick={handleLogout}>
 					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 						<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
 						<polyline points="16,17 21,12 16,7" />
 						<line x1="21" y1="12" x2="9" y2="12" />
 					</svg>
-					Sign Out
+					{$t.account.signOut}
 				</button>
 			</div>
 		{/if}
@@ -226,6 +231,12 @@
 		color: var(--text-primary);
 		font-weight: 700;
 		font-size: 1.25rem;
+	}
+
+	.nav-right {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
 	}
 
 	.nav-btn {

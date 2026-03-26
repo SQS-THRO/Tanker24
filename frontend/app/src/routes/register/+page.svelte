@@ -3,6 +3,8 @@
 	import { authService } from '$lib/services/auth_api';
 	import { goto } from '$app/navigation';
 	import Logo from '$lib/components/Logo.svelte';
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+	import { t } from '$lib/stores/locale';
 
 	let last_name = $state('');
 	let first_name = $state('');
@@ -18,15 +20,15 @@
 	async function handleRegister() {
 		error = '';
 		if (!first_name || !last_name || !email || !pin || !password || !confirmPassword) {
-			error = 'Please fill in all fields';
+			error = $t.register.fillAllFields;
 			return;
 		}
 		if (password !== confirmPassword) {
-			error = 'Passwords do not match';
+			error = $t.register.passwordsNotMatch;
 			return;
 		}
 		if (password.length < 8) {
-			error = 'Password must be at least 8 characters';
+			error = $t.register.passwordTooShort;
 			return;
 		}
 
@@ -41,7 +43,7 @@
 			});
 			await goto(resolve('/login'));
 		} catch (e) {
-			error = e instanceof Error ? e.message : 'Registration failed';
+			error = $t.register.registerFailed;
 		} finally {
 			loading = false;
 		}
@@ -60,13 +62,14 @@
 			<Logo size={32} />
 			<span>Tanker24</span>
 		</a>
+		<LanguageSwitcher />
 	</nav>
 
 	<div class="container">
 		<div class="card">
 			<div class="card-header">
-				<h1>Create your account</h1>
-				<p>Start saving on fuel today</p>
+				<h1>{$t.register.title}</h1>
+				<p>{$t.register.subtitle}</p>
 			</div>
 
 			<form
@@ -88,52 +91,50 @@
 
 				<div class="form-row">
 					<div class="form-group">
-						<label for="first_name">First Name</label>
-						<input type="text" id="first_name" bind:value={first_name} placeholder="John" class="input" disabled={loading} />
+						<label for="first_name">{$t.register.firstName}</label>
+						<input type="text" id="first_name" bind:value={first_name} placeholder={$t.register.firstNamePlaceholder} class="input" disabled={loading} />
 					</div>
 					<div class="form-group">
-						<label for="last_name">Last Name</label>
-						<input type="text" id="last_name" bind:value={last_name} placeholder="Doe" class="input" disabled={loading} />
+						<label for="last_name">{$t.register.lastName}</label>
+						<input type="text" id="last_name" bind:value={last_name} placeholder={$t.register.lastNamePlaceholder} class="input" disabled={loading} />
 					</div>
 				</div>
 
 				<div class="form-group">
-					<label for="email">Email</label>
+					<label for="email">{$t.register.email}</label>
 					<div class="input-wrapper">
 						<svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
 							<polyline points="22,6 12,13 2,6" />
 						</svg>
-						<input type="email" id="email" bind:value={email} placeholder="you@example.com" class="input with-icon" disabled={loading} />
+						<input type="email" id="email" bind:value={email} placeholder={$t.register.emailPlaceholder} class="input with-icon" disabled={loading} />
 					</div>
 				</div>
 
 				<div class="form-group">
-					<label for="pin">PIN</label>
+					<label for="pin">{$t.register.pin}</label>
 					<div class="input-wrapper">
 						<svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
 							<path d="M7 11V7a5 5 0 0 1 10 0v4" />
 						</svg>
-						<input type="text" id="pin" bind:value={pin} placeholder="4-digit PIN" class="input with-icon" maxlength="4" inputmode="numeric" disabled={loading} />
+						<input type="text" id="pin" bind:value={pin} placeholder={$t.register.pinPlaceholder} class="input with-icon" maxlength="4" inputmode="numeric" disabled={loading} />
 					</div>
-					<span class="hint">Used for station authentication</span>
+					<span class="hint">{$t.register.pinHint}</span>
 				</div>
 
 				<div class="form-group">
-					<label for="password">Password</label>
+					<label for="password">{$t.register.password}</label>
 					<div class="input-wrapper">
 						<svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
 							<path d="M7 11V7a5 5 0 0 1 10 0v4" />
 						</svg>
-						<input type={showPassword ? 'text' : 'password'} id="password" bind:value={password} placeholder="At least 8 characters" class="input with-icon" disabled={loading} />
+						<input type={showPassword ? 'text' : 'password'} id="password" bind:value={password} placeholder={$t.register.passwordPlaceholder} class="input with-icon" disabled={loading} />
 						<button type="button" class="toggle-password" onclick={() => (showPassword = !showPassword)}>
 							{#if showPassword}
 								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-									<path
-										d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
-									/>
+									<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
 									<line x1="1" y1="1" x2="23" y2="23" />
 								</svg>
 							{:else}
@@ -147,7 +148,7 @@
 				</div>
 
 				<div class="form-group">
-					<label for="confirmPassword">Confirm Password</label>
+					<label for="confirmPassword">{$t.register.confirmPassword}</label>
 					<div class="input-wrapper">
 						<svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
@@ -157,16 +158,14 @@
 							type={showConfirmPassword ? 'text' : 'password'}
 							id="confirmPassword"
 							bind:value={confirmPassword}
-							placeholder="Repeat your password"
+							placeholder={$t.register.confirmPasswordPlaceholder}
 							class="input with-icon"
 							disabled={loading}
 						/>
 						<button type="button" class="toggle-password" onclick={() => (showConfirmPassword = !showConfirmPassword)}>
 							{#if showConfirmPassword}
 								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-									<path
-										d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
-									/>
+									<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
 									<line x1="1" y1="1" x2="23" y2="23" />
 								</svg>
 							{:else}
@@ -182,19 +181,19 @@
 				<button type="submit" class="btn btn-primary submit-btn" disabled={loading}>
 					{#if loading}
 						<span class="spinner"></span>
-						Creating account...
+						{$t.register.creatingAccount}
 					{:else}
-						Create account
+						{$t.register.createAccount}
 					{/if}
 				</button>
 			</form>
 
 			<div class="divider">
-				<span>or</span>
+				<span>{$t.register.or}</span>
 			</div>
 
 			<p class="footer-text">
-				Already have an account? <a href={resolve('/login')}>Sign in</a>
+				{$t.register.hasAccount} <a href={resolve('/login')}>{$t.register.signIn}</a>
 			</p>
 		</div>
 	</div>
@@ -252,6 +251,12 @@
 		position: relative;
 		z-index: 10;
 		padding: 1.5rem 2rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		max-width: 1200px;
+		margin: 0 auto;
+		width: 100%;
 	}
 
 	.logo {
@@ -262,8 +267,6 @@
 		color: var(--text-primary);
 		font-weight: 700;
 		font-size: 1.25rem;
-		max-width: 1200px;
-		margin: 0 auto;
 	}
 
 	.container {
