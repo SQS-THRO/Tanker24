@@ -104,7 +104,18 @@ export const translations = {
 			viewFuelMap: 'View Fuel Map',
 			accountSection: 'Account',
 			signOut: 'Sign Out',
-			loadUserFailed: 'Failed to load user data'
+			loadUserFailed: 'Failed to load user data',
+			themeSettings: 'Theme Settings',
+			globalTheme: 'Global Theme',
+			colorBlindOverride: 'Color Accessibility',
+			colorBlindDescription: 'Override colors to improve visibility for color vision deficiencies',
+			preview: 'Live Preview',
+			previewBackground: 'Background',
+			previewText: 'Text',
+			previewAccent: 'Accent',
+			previewSuccess: 'Success',
+			previewError: 'Error',
+			previewWarning: 'Warning'
 		},
 		map: {
 			searchPlaceholder: 'Search stations...',
@@ -220,7 +231,18 @@ export const translations = {
 			viewFuelMap: 'Kraftstoffkarte anzeigen',
 			accountSection: 'Konto',
 			signOut: 'Abmelden',
-			loadUserFailed: 'Benutzerdaten konnten nicht geladen werden'
+			loadUserFailed: 'Benutzerdaten konnten nicht geladen werden',
+			themeSettings: 'Design-Einstellungen',
+			globalTheme: 'Globales Design',
+			colorBlindOverride: 'Farbzugänglichkeit',
+			colorBlindDescription: 'Farben anpassen für bessere Sichtbarkeit bei Farbenblindheit',
+			preview: 'Live-Vorschau',
+			previewBackground: 'Hintergrund',
+			previewText: 'Text',
+			previewAccent: 'Akzent',
+			previewSuccess: 'Erfolg',
+			previewError: 'Fehler',
+			previewWarning: 'Warnung'
 		},
 		map: {
 			searchPlaceholder: 'Tankstellen suchen...',
@@ -235,3 +257,19 @@ export const translations = {
 
 export type Locale = 'en' | 'de';
 export type TranslationKeys = typeof translations.en;
+
+declare module '$lib/stores/locale' {
+	interface AccountTranslations {
+		themeSettings: string;
+		globalTheme: string;
+		colorBlindOverride: string;
+		colorBlindDescription: string;
+		preview: string;
+		previewBackground: string;
+		previewText: string;
+		previewAccent: string;
+		previewSuccess: string;
+		previewError: string;
+		previewWarning: string;
+	}
+}

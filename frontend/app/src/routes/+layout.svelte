@@ -1,7 +1,66 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
+	import { themeStore, CVD_PALETTES } from '$lib/stores/theme';
+	import { onMount } from 'svelte';
 
 	let { children } = $props();
+
+	function applyThemeVariables(override: keyof typeof CVD_PALETTES) {
+		if (typeof document === 'undefined') return;
+
+		const palette = CVD_PALETTES[override];
+		const root = document.documentElement;
+
+		if (palette) {
+			root.style.setProperty('--bg-primary', palette.bgPrimary);
+			root.style.setProperty('--bg-secondary', palette.bgSecondary);
+			root.style.setProperty('--bg-card', palette.bgCard);
+			root.style.setProperty('--bg-card-hover', palette.bgCardHover);
+			root.style.setProperty('--bg-elevated', palette.bgElevated);
+			root.style.setProperty('--text-primary', palette.textPrimary);
+			root.style.setProperty('--text-secondary', palette.textSecondary);
+			root.style.setProperty('--text-muted', palette.textMuted);
+			root.style.setProperty('--accent-primary', palette.accentPrimary);
+			root.style.setProperty('--accent-secondary', palette.accentSecondary);
+			root.style.setProperty('--accent-gradient', palette.accentGradient);
+			root.style.setProperty('--success', palette.success);
+			root.style.setProperty('--error', palette.error);
+			root.style.setProperty('--warning', palette.warning);
+		} else {
+			root.style.setProperty('--bg-primary', '#0a0a0b');
+			root.style.setProperty('--bg-secondary', '#141416');
+			root.style.setProperty('--bg-card', '#1a1a1d');
+			root.style.setProperty('--bg-card-hover', '#222225');
+			root.style.setProperty('--bg-elevated', '#2a2a2e');
+			root.style.setProperty('--text-primary', '#ffffff');
+			root.style.setProperty('--text-secondary', '#a1a1aa');
+			root.style.setProperty('--text-muted', '#71717a');
+			root.style.setProperty('--accent-primary', '#6366f1');
+			root.style.setProperty('--accent-secondary', '#818cf8');
+			root.style.setProperty('--accent-gradient', 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%)');
+			root.style.setProperty('--success', '#22c55e');
+			root.style.setProperty('--error', '#ef4444');
+			root.style.setProperty('--warning', '#f59e0b');
+		}
+	}
+
+	onMount(() => {
+		const stored = localStorage.getItem('theme-settings');
+		let override: keyof typeof CVD_PALETTES = 'none';
+		if (stored) {
+			try {
+				const settings = JSON.parse(stored);
+				override = settings.colorBlindOverride || 'none';
+			} catch {
+				override = 'none';
+			}
+		}
+		applyThemeVariables(override);
+	});
+
+	$effect(() => {
+		applyThemeVariables($themeStore.colorBlindOverride);
+	});
 </script>
 
 <svelte:head>

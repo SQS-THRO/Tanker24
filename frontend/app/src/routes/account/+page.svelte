@@ -6,6 +6,7 @@
 	import Logo from '$lib/components/Logo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import { t } from '$lib/stores/locale';
+	import { themeStore, GLOBAL_THEMES, COLOR_BLIND_OPTIONS, CVD_PALETTES, type ThemePalette } from '$lib/stores/theme';
 
 	let user = $state<{
 		forename: string;
@@ -14,6 +15,28 @@
 	} | null>(null);
 	let loading = $state(true);
 	let error = $state('');
+
+	function getPreviewColors(): ThemePalette {
+		const override = $themeStore.colorBlindOverride;
+		const palette = CVD_PALETTES[override];
+		if (palette) return palette;
+		return {
+			bgPrimary: '#0a0a0b',
+			bgSecondary: '#141416',
+			bgCard: '#1a1a1d',
+			bgCardHover: '#222225',
+			bgElevated: '#2a2a2e',
+			textPrimary: '#ffffff',
+			textSecondary: '#a1a1aa',
+			textMuted: '#71717a',
+			accentPrimary: '#6366f1',
+			accentSecondary: '#818cf8',
+			accentGradient: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%)',
+			success: '#22c55e',
+			error: '#ef4444',
+			warning: '#f59e0b'
+		};
+	}
 
 	onMount(async () => {
 		const token = localStorage.getItem('token');
@@ -91,6 +114,72 @@
 				<p class="member-since">{$t.account.member}</p>
 			</div>
 
+			<div class="theme-settings">
+				<h2>{$t.account.themeSettings}</h2>
+
+				<div class="setting-group">
+					<label class="setting-label">{$t.account.globalTheme}</label>
+					<select class="input theme-select">
+						{#each GLOBAL_THEMES as theme (theme.id)}
+							<option value={theme.id}>{theme.name}</option>
+						{/each}
+					</select>
+				</div>
+
+				<div class="setting-group">
+					<label class="setting-label">{$t.account.colorBlindOverride}</label>
+					<p class="setting-description">{$t.account.colorBlindDescription}</p>
+					<div class="color-blind-options">
+						{#each COLOR_BLIND_OPTIONS as option (option.id)}
+							<label class="radio-option">
+								<input
+									type="radio"
+									name="colorBlind"
+									value={option.id}
+									checked={$themeStore.colorBlindOverride === option.id}
+									onchange={() => themeStore.setColorBlindOverride(option.id)}
+								/>
+								<span class="radio-label">{option.name}</span>
+								<span class="radio-description">{option.description}</span>
+							</label>
+						{/each}
+					</div>
+				</div>
+
+				<div class="setting-group">
+					<label class="setting-label">{$t.account.preview}</label>
+					<div class="color-preview">
+						<div class="preview-row">
+							<span class="preview-label">{$t.account.previewBackground}</span>
+							<div class="preview-swatch" style="background-color: {getPreviewColors().bgPrimary}"></div>
+							<div class="preview-swatch" style="background-color: {getPreviewColors().bgCard}"></div>
+						</div>
+						<div class="preview-row">
+							<span class="preview-label">{$t.account.previewText}</span>
+							<div class="preview-swatch" style="background-color: {getPreviewColors().textPrimary}"></div>
+							<div class="preview-swatch" style="background-color: {getPreviewColors().textSecondary}"></div>
+						</div>
+						<div class="preview-row">
+							<span class="preview-label">{$t.account.previewAccent}</span>
+							<div class="preview-swatch" style="background-color: {getPreviewColors().accentPrimary}"></div>
+							<div class="preview-swatch" style="background-color: {getPreviewColors().accentSecondary}"></div>
+						</div>
+						<div class="preview-row">
+							<span class="preview-label">{$t.account.previewSuccess}</span>
+							<div class="preview-swatch" style="background-color: {getPreviewColors().success}"></div>
+						</div>
+						<div class="preview-row">
+							<span class="preview-label">{$t.account.previewError}</span>
+							<div class="preview-swatch" style="background-color: {getPreviewColors().error}"></div>
+						</div>
+						<div class="preview-row">
+							<span class="preview-label">{$t.account.previewWarning}</span>
+							<div class="preview-swatch" style="background-color: {getPreviewColors().warning}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div class="cards-grid">
 				<div class="card">
 					<div class="card-icon">
@@ -147,9 +236,9 @@
 						</svg>
 					</a>
 				</div>
-		</div>
+			</div>
 
-		<div class="danger-zone">
+			<div class="danger-zone">
 				<h3>{$t.account.accountSection}</h3>
 				<button class="btn btn-danger" onclick={handleLogout}>
 					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -501,5 +590,131 @@
 	.btn-danger:hover {
 		background: rgba(239, 68, 68, 0.2);
 		border-color: rgba(239, 68, 68, 0.4);
+	}
+
+	.theme-settings {
+		background: var(--bg-card);
+		border: 1px solid var(--border-subtle);
+		border-radius: var(--radius-lg);
+		padding: 1.5rem;
+		margin-bottom: 2rem;
+	}
+
+	.theme-settings h2 {
+		font-size: 1.125rem;
+		font-weight: 600;
+		margin-bottom: 1.5rem;
+		color: var(--text-primary);
+	}
+
+	.setting-group {
+		margin-bottom: 1.5rem;
+	}
+
+	.setting-group:last-child {
+		margin-bottom: 0;
+	}
+
+	.setting-label {
+		display: block;
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		margin-bottom: 0.5rem;
+	}
+
+	.setting-description {
+		font-size: 0.8125rem;
+		color: var(--text-muted);
+		margin-bottom: 0.75rem;
+	}
+
+	.theme-select {
+		width: 100%;
+		max-width: 300px;
+		padding: 0.75rem 1rem;
+		font-size: 0.9375rem;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-light);
+		border-radius: var(--radius-md);
+		color: var(--text-primary);
+		cursor: pointer;
+	}
+
+	.theme-select:focus {
+		outline: none;
+		border-color: var(--accent-primary);
+	}
+
+	.color-blind-options {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+		gap: 0.75rem;
+	}
+
+	.radio-option {
+		display: flex;
+		flex-direction: column;
+		padding: 0.875rem 1rem;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-light);
+		border-radius: var(--radius-md);
+		cursor: pointer;
+		transition: all var(--transition-base);
+	}
+
+	.radio-option:hover {
+		border-color: var(--accent-primary);
+	}
+
+	.radio-option:has(input:checked) {
+		border-color: var(--accent-primary);
+		background: rgba(99, 102, 241, 0.1);
+	}
+
+	.radio-option input {
+		appearance: none;
+		width: 0;
+		height: 0;
+		opacity: 0;
+		position: absolute;
+	}
+
+	.radio-label {
+		font-size: 0.9375rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		margin-bottom: 0.25rem;
+	}
+
+	.radio-description {
+		font-size: 0.75rem;
+		color: var(--text-muted);
+	}
+
+	.color-preview {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+		gap: 1rem;
+	}
+
+	.preview-row {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.preview-label {
+		font-size: 0.75rem;
+		font-weight: 500;
+		color: var(--text-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.preview-swatch {
+		height: 32px;
+		border-radius: var(--radius-sm);
+		border: 1px solid var(--border-light);
 	}
 </style>
