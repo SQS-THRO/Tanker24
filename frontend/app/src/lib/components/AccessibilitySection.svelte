@@ -13,13 +13,10 @@
 	}
 
 	function getModeLabel(mode: ColorBlindMode): string {
-		const locale = document.documentElement.lang || 'en';
-		const key = `account.colorBlindnessModes.${mode}` as const;
 		return ($t as Record<string, Record<string, Record<string, string>>>).account?.colorBlindnessModes?.[mode] || mode;
 	}
 
 	function getModeDescription(mode: ColorBlindMode): string {
-		const key = `account.colorBlindnessDescriptions.${mode}` as const;
 		return ($t as Record<string, Record<string, Record<string, string>>>).account?.colorBlindnessDescriptions?.[mode] || '';
 	}
 </script>
@@ -35,7 +32,7 @@
 	</div>
 
 	<div class="segmented-control" role="radiogroup" aria-labelledby="colorblindness-label">
-		{#each modes as mode}
+		{#each modes as mode (mode)}
 			<button
 				role="radio"
 				aria-checked={$colorblindMode === mode}
@@ -59,7 +56,7 @@
 
 		{#if showToggles}
 			<div class="toggle-grid" role="group" aria-label="Color blindness toggle options">
-				{#each modes as mode}
+				{#each modes as mode (mode)}
 					<label class="toggle-card" class:enabled={$colorblindMode === mode}>
 						<input type="radio" name="colorblind-mode" value={mode} checked={$colorblindMode === mode} onchange={() => selectMode(mode)} />
 						<div class="toggle-content">

@@ -134,7 +134,7 @@
 			<div class="plate-card">
 				<svg viewBox="0 0 130 130" class="ishihara-svg" aria-label="Ishihara Plate 1 - Demonstration plate">
 					<circle cx="65" cy="65" r="65" fill="#1a1a1d" />
-					{#each plate1Circles as circle}
+					{#each plate1Circles as circle, i (i)}
 						<circle cx={circle.cx} cy={circle.cy} r={circle.r} fill={circle.fill} />
 					{/each}
 				</svg>
@@ -147,7 +147,7 @@
 			<div class="plate-card">
 				<svg viewBox="0 0 130 130" class="ishihara-svg" aria-label="Ishihara Plate 6 - Transformation plate">
 					<circle cx="65" cy="65" r="65" fill="#1a1a1d" />
-					{#each plate6Circles as circle}
+					{#each plate6Circles as circle, i (i)}
 						<circle cx={circle.cx} cy={circle.cy} r={circle.r} fill={circle.fill} />
 					{/each}
 				</svg>

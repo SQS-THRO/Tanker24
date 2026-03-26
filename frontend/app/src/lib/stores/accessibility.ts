@@ -24,7 +24,7 @@ function createAccessibilityStore() {
 	const stored = browser ? localStorage.getItem('colorblindMode') : null;
 	const initial: ColorBlindMode = stored && COLORBLIND_MODES.includes(stored as ColorBlindMode) ? (stored as ColorBlindMode) : detectSystemPreference();
 
-	const { subscribe, set, update } = writable<ColorBlindMode>(initial);
+	const { subscribe, set } = writable<ColorBlindMode>(initial);
 
 	return {
 		subscribe,
