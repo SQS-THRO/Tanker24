@@ -72,10 +72,7 @@
 				iconSize: [16, 16],
 				iconAnchor: [8, 8]
 			});
-			L.marker([userLat, userLng], { icon: userIcon })
-				.addTo(map)
-				.bindPopup('Your location')
-				.openPopup();
+			L.marker([userLat, userLng], { icon: userIcon }).addTo(map).bindPopup('Your location').openPopup();
 		}
 
 		stations.forEach((station) => {
