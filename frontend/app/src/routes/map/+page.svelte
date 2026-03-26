@@ -4,9 +4,37 @@
 	import { browser } from '$app/environment';
 	import { stationService, type Station } from '$lib/services/stations_api';
 
+	const DEFAULT_LAT = 47.79;
+	const DEFAULT_LNG = 12.1;
+	const DEFAULT_ZOOM = 11;
+
 	let mapContainer: HTMLDivElement;
 	let stations: Station[] = $state([]);
 	let error = $state('');
+	let userLat = $state<number | null>(null);
+	let userLng = $state<number | null>(null);
+
+	function getUserLocation(): Promise<{ lat: number; lng: number }> {
+		return new Promise((resolve) => {
+			if (!navigator.geolocation) {
+				resolve({ lat: DEFAULT_LAT, lng: DEFAULT_LNG });
+				return;
+			}
+
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					resolve({
+						lat: position.coords.latitude,
+						lng: position.coords.longitude
+					});
+				},
+				() => {
+					resolve({ lat: DEFAULT_LAT, lng: DEFAULT_LNG });
+				},
+				{ timeout: 5000 }
+			);
+		});
+	}
 
 	onMount(async () => {
 		if (!browser) return;
@@ -24,14 +52,31 @@
 			return;
 		}
 
+		const { lat, lng } = await getUserLocation();
+		userLat = lat;
+		userLng = lng;
+
 		const L = (await import('leaflet')).default;
 
-		const map = L.map(mapContainer).setView([47.79, 12.1], 11);
+		const map = L.map(mapContainer).setView([lat, lng], DEFAULT_ZOOM);
 
 		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			maxZoom: 19,
 			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 		}).addTo(map);
+
+		if (userLat !== null && userLng !== null) {
+			const userIcon = L.divIcon({
+				className: 'user-marker',
+				html: '<div style="background-color: #3b82f6; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+				iconSize: [16, 16],
+				iconAnchor: [8, 8]
+			});
+			L.marker([userLat, userLng], { icon: userIcon })
+				.addTo(map)
+				.bindPopup('Your location')
+				.openPopup();
+		}
 
 		stations.forEach((station) => {
 			if (station.latitude !== null && station.longitude !== null) {
@@ -78,5 +123,10 @@
 	.error {
 		color: #ff6b6b;
 		margin: 0.5rem 0;
+	}
+
+	:global(.user-marker) {
+		background: transparent;
+		border: none;
 	}
 </style>
