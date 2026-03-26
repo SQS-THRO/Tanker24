@@ -3,17 +3,7 @@
 	import { t } from '$lib/stores/locale';
 	import IshiharaPlate from './IshiharaPlate.svelte';
 
-	const modes: ColorBlindMode[] = [
-		'none',
-		'protanopia',
-		'protanomaly',
-		'deuteranopia',
-		'deuteranomaly',
-		'tritanopia',
-		'tritanomaly',
-		'achromatopsia',
-		'achromatomaly'
-	];
+	const modes: ColorBlindMode[] = ['none', 'protanopia', 'protanomaly', 'deuteranopia', 'deuteranomaly', 'tritanopia', 'tritanomaly', 'achromatopsia', 'achromatomaly'];
 
 	let showToggles = $state(true);
 	let showIshihara = $state(false);
@@ -36,7 +26,7 @@
 
 <section class="accessibility-section" aria-labelledby="accessibility-heading">
 	<h2 id="accessibility-heading">{$t.account.accessibility}</h2>
-	
+
 	<div class="setting-header">
 		<div class="setting-info">
 			<h3 id="colorblindness-label">{$t.account.colorBlindnessMode}</h3>
@@ -60,22 +50,9 @@
 	</div>
 
 	<div class="toggle-section">
-		<button
-			class="toggle-header"
-			onclick={() => (showToggles = !showToggles)}
-			aria-expanded={showToggles}
-		>
+		<button class="toggle-header" onclick={() => (showToggles = !showToggles)} aria-expanded={showToggles}>
 			<span>{showToggles ? $t.account.hideToggles : $t.account.showToggles}</span>
-			<svg
-				class="toggle-chevron"
-				class:open={showToggles}
-				width="16"
-				height="16"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-			>
+			<svg class="toggle-chevron" class:open={showToggles} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 				<path d="M6 9l6 6 6-6" />
 			</svg>
 		</button>
@@ -84,13 +61,7 @@
 			<div class="toggle-grid" role="group" aria-label="Color blindness toggle options">
 				{#each modes as mode}
 					<label class="toggle-card" class:enabled={$colorblindMode === mode}>
-						<input
-							type="radio"
-							name="colorblind-mode"
-							value={mode}
-							checked={$colorblindMode === mode}
-							onchange={() => selectMode(mode)}
-						/>
+						<input type="radio" name="colorblind-mode" value={mode} checked={$colorblindMode === mode} onchange={() => selectMode(mode)} />
 						<div class="toggle-content">
 							<span class="toggle-label">{getModeLabel(mode)}</span>
 							<span class="toggle-desc">{getModeDescription(mode)}</span>
@@ -109,11 +80,7 @@
 	</div>
 
 	<div class="ishihara-toggle">
-		<button
-			class="ishihara-toggle-btn"
-			onclick={() => (showIshihara = !showIshihara)}
-			aria-expanded={showIshihara}
-		>
+		<button class="ishihara-toggle-btn" onclick={() => (showIshihara = !showIshihara)} aria-expanded={showIshihara}>
 			<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 				<circle cx="12" cy="12" r="10" />
 				<circle cx="12" cy="12" r="4" />
@@ -121,17 +88,8 @@
 				<line x1="3.95" y1="6.06" x2="8.54" y2="14" />
 				<line x1="10.88" y1="21.94" x2="15.46" y2="14" />
 			</svg>
-			<span>{showIshihara ? ($t.account.ishiharaHide || 'Hide Test Plates') : ($t.account.ishiharaShow || 'Show Test Plates')}</span>
-			<svg
-				class="toggle-chevron"
-				class:open={showIshihara}
-				width="16"
-				height="16"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-			>
+			<span>{showIshihara ? $t.account.ishiharaHide || 'Hide Test Plates' : $t.account.ishiharaShow || 'Show Test Plates'}</span>
+			<svg class="toggle-chevron" class:open={showIshihara} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 				<path d="M6 9l6 6 6-6" />
 			</svg>
 		</button>
@@ -285,7 +243,7 @@
 		background: rgba(99, 102, 241, 0.08);
 	}
 
-	.toggle-card input[type="radio"] {
+	.toggle-card input[type='radio'] {
 		position: absolute;
 		opacity: 0;
 		pointer-events: none;

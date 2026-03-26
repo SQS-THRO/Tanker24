@@ -62,7 +62,7 @@
 		{ cx: 85, cy: 65, r: 5, fill: '#d4622a' },
 		{ cx: 75, cy: 80, r: 6, fill: '#c75820' },
 		{ cx: 65, cy: 85, r: 4, fill: '#d4622a' },
-		{ cx: 90, cy: 75, r: 5, fill: '#d4622a' },
+		{ cx: 90, cy: 75, r: 5, fill: '#d4622a' }
 	];
 
 	const plate6Circles: Circle[] = [
@@ -119,15 +119,16 @@
 		{ cx: 35, cy: 70, r: 4, fill: '#d4622a' },
 		{ cx: 95, cy: 40, r: 4, fill: '#c75820' },
 		{ cx: 30, cy: 55, r: 3, fill: '#d4622a' },
-		{ cx: 100, cy: 80, r: 3, fill: '#c75820' },
+		{ cx: 100, cy: 80, r: 3, fill: '#c75820' }
 	];
-
 </script>
 
 <div class="ishihara-container" class:hidden={!showTest}>
 	<h3 class="ishihara-title">{$t.account.ishiharaTest || 'Color Blindness Test'}</h3>
-	<p class="ishihara-instructions">{$t.account.ishiharaInstructions || 'Look at each plate and identify the number. Compare what you see with and without the color filter to verify it works correctly.'}</p>
-	
+	<p class="ishihara-instructions">
+		{$t.account.ishiharaInstructions || 'Look at each plate and identify the number. Compare what you see with and without the color filter to verify it works correctly.'}
+	</p>
+
 	<div class="plates-wrapper">
 		<div class="plate-item">
 			<div class="plate-card">
@@ -141,7 +142,7 @@
 			<p class="plate-label">{$t.account.ishiharaPlate1 || 'Plate 1: Demonstration'}</p>
 			<p class="plate-answer">{$t.account.ishiharaPlate1Answer || 'You should see: 12'}</p>
 		</div>
-		
+
 		<div class="plate-item">
 			<div class="plate-card">
 				<svg viewBox="0 0 130 130" class="ishihara-svg" aria-label="Ishihara Plate 6 - Transformation plate">
@@ -155,7 +156,7 @@
 			<p class="plate-answer">{$t.account.ishiharaPlate6Answer || 'Normal: 5 | Red/Green color blind: 2'}</p>
 		</div>
 	</div>
-	
+
 	<div class="current-mode">
 		<span class="mode-label">Current filter:</span>
 		<span class="mode-value">{$colorblindMode}</span>

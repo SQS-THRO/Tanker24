@@ -1,28 +1,9 @@
 import { writable, derived } from 'svelte/store';
 import { browser } from '$app/environment';
 
-export type ColorBlindMode =
-	| 'none'
-	| 'protanopia'
-	| 'protanomaly'
-	| 'deuteranopia'
-	| 'deuteranomaly'
-	| 'tritanopia'
-	| 'tritanomaly'
-	| 'achromatopsia'
-	| 'achromatomaly';
+export type ColorBlindMode = 'none' | 'protanopia' | 'protanomaly' | 'deuteranopia' | 'deuteranomaly' | 'tritanopia' | 'tritanomaly' | 'achromatopsia' | 'achromatomaly';
 
-const COLORBLIND_MODES: ColorBlindMode[] = [
-	'none',
-	'protanopia',
-	'protanomaly',
-	'deuteranopia',
-	'deuteranomaly',
-	'tritanopia',
-	'tritanomaly',
-	'achromatopsia',
-	'achromatomaly'
-];
+const COLORBLIND_MODES: ColorBlindMode[] = ['none', 'protanopia', 'protanomaly', 'deuteranopia', 'deuteranomaly', 'tritanopia', 'tritanomaly', 'achromatopsia', 'achromatomaly'];
 
 function detectSystemPreference(): ColorBlindMode {
 	if (!browser) return 'none';
@@ -41,9 +22,7 @@ function detectSystemPreference(): ColorBlindMode {
 
 function createAccessibilityStore() {
 	const stored = browser ? localStorage.getItem('colorblindMode') : null;
-	const initial: ColorBlindMode = stored && COLORBLIND_MODES.includes(stored as ColorBlindMode)
-		? (stored as ColorBlindMode)
-		: detectSystemPreference();
+	const initial: ColorBlindMode = stored && COLORBLIND_MODES.includes(stored as ColorBlindMode) ? (stored as ColorBlindMode) : detectSystemPreference();
 
 	const { subscribe, set, update } = writable<ColorBlindMode>(initial);
 

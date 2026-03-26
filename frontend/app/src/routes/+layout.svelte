@@ -315,35 +315,35 @@
 		transition: filter var(--transition-base);
 	}
 
-	.cvd-wrapper[data-cvd-mode="protanopia"] {
+	.cvd-wrapper[data-cvd-mode='protanopia'] {
 		filter: url('#protanopia');
 	}
 
-	.cvd-wrapper[data-cvd-mode="protanomaly"] {
+	.cvd-wrapper[data-cvd-mode='protanomaly'] {
 		filter: url('#protanomaly');
 	}
 
-	.cvd-wrapper[data-cvd-mode="deuteranopia"] {
+	.cvd-wrapper[data-cvd-mode='deuteranopia'] {
 		filter: url('#deuteranopia');
 	}
 
-	.cvd-wrapper[data-cvd-mode="deuteranomaly"] {
+	.cvd-wrapper[data-cvd-mode='deuteranomaly'] {
 		filter: url('#deuteranomaly');
 	}
 
-	.cvd-wrapper[data-cvd-mode="tritanopia"] {
+	.cvd-wrapper[data-cvd-mode='tritanopia'] {
 		filter: url('#tritanopia');
 	}
 
-	.cvd-wrapper[data-cvd-mode="tritanomaly"] {
+	.cvd-wrapper[data-cvd-mode='tritanomaly'] {
 		filter: url('#tritanomaly');
 	}
 
-	.cvd-wrapper[data-cvd-mode="achromatopsia"] {
+	.cvd-wrapper[data-cvd-mode='achromatopsia'] {
 		filter: url('#achromatopsia');
 	}
 
-	.cvd-wrapper[data-cvd-mode="achromatomaly"] {
+	.cvd-wrapper[data-cvd-mode='achromatomaly'] {
 		filter: url('#achromatomaly');
 	}
 </style>

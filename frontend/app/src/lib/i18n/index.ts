@@ -290,7 +290,8 @@ export const translations = {
 			ishiharaTest: 'Farbenblindheitstest',
 			ishiharaShow: 'Testplatten anzeigen',
 			ishiharaHide: 'Testplatten ausblenden',
-			ishiharaInstructions: 'Schauen Sie sich jede Platte an und identifizieren Sie die Zahl. Vergleichen Sie, was Sie mit und ohne Farbfilter sehen, um zu überprüfen, ob er richtig funktioniert.',
+			ishiharaInstructions:
+				'Schauen Sie sich jede Platte an und identifizieren Sie die Zahl. Vergleichen Sie, was Sie mit und ohne Farbfilter sehen, um zu überprüfen, ob er richtig funktioniert.',
 			ishiharaPlate1: 'Platte 1: Demonstration',
 			ishiharaPlate6: 'Platte 6: Transformation',
 			ishiharaPlate1Answer: 'Sie sollten sehen: 12',
