@@ -1,5 +1,6 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
+	import faviconDark from '$lib/assets/favicon-dark.svg';
 	import { themeStore, CVD_PALETTES } from '$lib/stores/theme';
 	import { onMount } from 'svelte';
 
@@ -64,7 +65,7 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" href={$themeStore.globalTheme === 'dark-modern' ? faviconDark : favicon} />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
