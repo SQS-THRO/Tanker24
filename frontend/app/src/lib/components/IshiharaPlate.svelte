@@ -11,116 +11,100 @@
 		fill: string;
 	}
 
-	const plate1Circles: Circle[] = [
-		// Background circles (various greens/yellows)
-		{ cx: 50, cy: 50, r: 8, fill: '#8c9c3d' },
-		{ cx: 70, cy: 30, r: 10, fill: '#a4b84d' },
-		{ cx: 90, cy: 50, r: 9, fill: '#9ab44e' },
-		{ cx: 60, cy: 70, r: 11, fill: '#8fa23d' },
-		{ cx: 80, cy: 90, r: 8, fill: '#9cb44e' },
-		{ cx: 30, cy: 50, r: 10, fill: '#9ab44e' },
-		{ cx: 50, cy: 90, r: 9, fill: '#8c9c3d' },
-		{ cx: 70, cy: 70, r: 12, fill: '#9cb44e' },
-		{ cx: 90, cy: 30, r: 8, fill: '#8fa23d' },
-		{ cx: 40, cy: 30, r: 9, fill: '#9ab44e' },
-		{ cx: 20, cy: 70, r: 10, fill: '#8c9c3d' },
-		{ cx: 100, cy: 70, r: 11, fill: '#9cb44e' },
-		{ cx: 30, cy: 90, r: 8, fill: '#8fa23d' },
-		{ cx: 110, cy: 50, r: 9, fill: '#9ab44e' },
-		{ cx: 60, cy: 110, r: 10, fill: '#8c9c3d' },
-		{ cx: 80, cy: 110, r: 8, fill: '#9cb44e' },
-		{ cx: 25, cy: 25, r: 7, fill: '#9ab44e' },
-		{ cx: 105, cy: 25, r: 9, fill: '#8fa23d' },
-		{ cx: 115, cy: 85, r: 8, fill: '#8c9c3d' },
-		{ cx: 15, cy: 85, r: 10, fill: '#9cb44e' },
-		{ cx: 45, cy: 115, r: 7, fill: '#9ab44e' },
-		{ cx: 95, cy: 115, r: 9, fill: '#8fa23d' },
-		{ cx: 10, cy: 40, r: 6, fill: '#8c9c3d' },
-		{ cx: 120, cy: 40, r: 8, fill: '#9cb44e' },
-		{ cx: 10, cy: 100, r: 7, fill: '#9ab44e' },
-		{ cx: 120, cy: 100, r: 9, fill: '#8fa23d' },
-		{ cx: 35, cy: 10, r: 8, fill: '#8c9c3d' },
-		{ cx: 65, cy: 10, r: 6, fill: '#9cb44e' },
-		{ cx: 95, cy: 10, r: 7, fill: '#9ab44e' },
-		{ cx: 125, cy: 70, r: 5, fill: '#8fa23d' },
-		{ cx: 5, cy: 70, r: 6, fill: '#8c9c3d' },
-		{ cx: 55, cy: 125, r: 8, fill: '#9cb44e' },
-		{ cx: 85, cy: 125, r: 6, fill: '#9ab44e' },
-		// Number "12" circles (orange/red - visible to normal, blends for colorblind)
-		{ cx: 35, cy: 55, r: 6, fill: '#d4622a' },
-		{ cx: 45, cy: 45, r: 5, fill: '#d4622a' },
-		{ cx: 40, cy: 65, r: 5, fill: '#c75820' },
-		{ cx: 55, cy: 55, r: 6, fill: '#d4622a' },
-		{ cx: 50, cy: 45, r: 5, fill: '#c75820' },
-		{ cx: 60, cy: 55, r: 5, fill: '#d4622a' },
-		{ cx: 55, cy: 70, r: 6, fill: '#c75820' },
-		{ cx: 45, cy: 75, r: 5, fill: '#d4622a' },
-		{ cx: 65, cy: 45, r: 4, fill: '#d4622a' },
-		{ cx: 70, cy: 70, r: 5, fill: '#c75820' },
-		{ cx: 75, cy: 55, r: 6, fill: '#d4622a' },
-		{ cx: 80, cy: 45, r: 4, fill: '#c75820' },
-		{ cx: 85, cy: 65, r: 5, fill: '#d4622a' },
-		{ cx: 75, cy: 80, r: 6, fill: '#c75820' },
-		{ cx: 65, cy: 85, r: 4, fill: '#d4622a' },
-		{ cx: 90, cy: 75, r: 5, fill: '#d4622a' }
-	];
+	// Seed-based pseudo-random for deterministic jitter
+	function seededRandom(seed: number): number {
+		const x = Math.sin(seed * 9301 + 49297) * 49297;
+		return x - Math.floor(x);
+	}
 
-	const plate6Circles: Circle[] = [
-		// Background circles
-		{ cx: 50, cy: 50, r: 9, fill: '#8c9c3d' },
-		{ cx: 70, cy: 30, r: 11, fill: '#9ab44e' },
-		{ cx: 90, cy: 50, r: 10, fill: '#8fa23d' },
-		{ cx: 60, cy: 70, r: 12, fill: '#9cb44e' },
-		{ cx: 80, cy: 90, r: 9, fill: '#8c9c3d' },
-		{ cx: 30, cy: 50, r: 11, fill: '#9ab44e' },
-		{ cx: 50, cy: 90, r: 10, fill: '#8fa23d' },
-		{ cx: 70, cy: 70, r: 13, fill: '#9cb44e' },
-		{ cx: 90, cy: 30, r: 9, fill: '#8c9c3d' },
-		{ cx: 40, cy: 30, r: 10, fill: '#9ab44e' },
-		{ cx: 20, cy: 70, r: 11, fill: '#8fa23d' },
-		{ cx: 100, cy: 70, r: 12, fill: '#9cb44e' },
-		{ cx: 30, cy: 90, r: 9, fill: '#8c9c3d' },
-		{ cx: 110, cy: 50, r: 10, fill: '#9ab44e' },
-		{ cx: 60, cy: 110, r: 11, fill: '#8fa23d' },
-		{ cx: 80, cy: 110, r: 9, fill: '#9cb44e' },
-		{ cx: 25, cy: 25, r: 8, fill: '#9ab44e' },
-		{ cx: 105, cy: 25, r: 10, fill: '#8fa23d' },
-		{ cx: 115, cy: 85, r: 9, fill: '#8c9c3d' },
-		{ cx: 15, cy: 85, r: 11, fill: '#9cb44e' },
-		{ cx: 45, cy: 115, r: 8, fill: '#9ab44e' },
-		{ cx: 95, cy: 115, r: 10, fill: '#8fa23d' },
-		{ cx: 10, cy: 40, r: 7, fill: '#8c9c3d' },
-		{ cx: 120, cy: 40, r: 9, fill: '#9cb44e' },
-		{ cx: 10, cy: 100, r: 8, fill: '#9ab44e' },
-		{ cx: 120, cy: 100, r: 10, fill: '#8fa23d' },
-		{ cx: 35, cy: 10, r: 9, fill: '#8c9c3d' },
-		{ cx: 65, cy: 10, r: 7, fill: '#9cb44e' },
-		{ cx: 95, cy: 10, r: 8, fill: '#9ab44e' },
-		{ cx: 125, cy: 70, r: 6, fill: '#8fa23d' },
-		{ cx: 5, cy: 70, r: 7, fill: '#8c9c3d' },
-		{ cx: 55, cy: 125, r: 9, fill: '#9cb44e' },
-		{ cx: 85, cy: 125, r: 7, fill: '#9ab44e' },
-		// Number "5" / "2" circles (orange - normal sees 5, colorblind sees 2)
-		{ cx: 40, cy: 50, r: 5, fill: '#d4622a' },
-		{ cx: 50, cy: 40, r: 6, fill: '#c75820' },
-		{ cx: 55, cy: 55, r: 5, fill: '#d4622a' },
-		{ cx: 45, cy: 65, r: 6, fill: '#c75820' },
-		{ cx: 65, cy: 45, r: 5, fill: '#d4622a' },
-		{ cx: 70, cy: 60, r: 6, fill: '#c75820' },
-		{ cx: 80, cy: 50, r: 5, fill: '#d4622a' },
-		{ cx: 75, cy: 70, r: 6, fill: '#c75820' },
-		{ cx: 90, cy: 65, r: 5, fill: '#d4622a' },
-		{ cx: 60, cy: 75, r: 6, fill: '#c75820' },
-		{ cx: 85, cy: 80, r: 5, fill: '#d4622a' },
-		{ cx: 50, cy: 85, r: 5, fill: '#d4622a' },
-		{ cx: 65, cy: 95, r: 6, fill: '#c75820' },
-		{ cx: 80, cy: 95, r: 5, fill: '#d4622a' },
-		{ cx: 70, cy: 85, r: 4, fill: '#c75820' },
-		{ cx: 35, cy: 70, r: 4, fill: '#d4622a' },
-		{ cx: 95, cy: 40, r: 4, fill: '#c75820' },
-		{ cx: 30, cy: 55, r: 3, fill: '#d4622a' },
-		{ cx: 100, cy: 80, r: 3, fill: '#c75820' }
-	];
+	function isInsidePlate(cx: number, cy: number, r: number): boolean {
+		const dx = cx - 65;
+		const dy = cy - 65;
+		return Math.sqrt(dx * dx + dy * dy) + r < 63;
+	}
+
+	// Check if a point is part of the digit shape for "1" (left side of plate 1)
+	function isDigit1(cx: number, cy: number): boolean {
+		// Vertical stroke of "1" - centered around x=48, from y=30 to y=100
+		const inVertical = cx >= 44 && cx <= 54 && cy >= 32 && cy <= 98;
+		// Top serif/angle
+		const inSerif = cx >= 36 && cx <= 48 && cy >= 32 && cy <= 42;
+		// Bottom bar
+		const inBase = cx >= 36 && cx <= 60 && cy >= 90 && cy <= 98;
+		return inVertical || inSerif || inBase;
+	}
+
+	// Check if a point is part of the digit shape for "2" (right side of plate 1)
+	function isDigit2ForPlate1(cx: number, cy: number): boolean {
+		// "2" centered around x=82
+		// Top curve - horizontal bar at top
+		const topBar = cx >= 68 && cx <= 96 && cy >= 30 && cy <= 40;
+		// Right side going down
+		const rightSide = cx >= 88 && cx <= 96 && cy >= 36 && cy <= 58;
+		// Middle horizontal
+		const midBar = cx >= 68 && cx <= 96 && cy >= 56 && cy <= 66;
+		// Left side going down
+		const leftSide = cx >= 68 && cx <= 76 && cy >= 62 && cy <= 90;
+		// Bottom bar
+		const bottomBar = cx >= 68 && cx <= 96 && cy >= 88 && cy <= 98;
+		return topBar || rightSide || midBar || leftSide || bottomBar;
+	}
+
+	// Check if a point is part of the digit "5" for plate 6
+	function isDigit5(cx: number, cy: number): boolean {
+		// "5" centered in plate
+		// Top horizontal bar
+		const topBar = cx >= 40 && cx <= 90 && cy >= 28 && cy <= 38;
+		// Left vertical from top to middle
+		const leftVert = cx >= 40 && cx <= 50 && cy >= 34 && cy <= 62;
+		// Middle horizontal bar
+		const midBar = cx >= 40 && cx <= 85 && cy >= 56 && cy <= 66;
+		// Right vertical from middle to bottom
+		const rightVert = cx >= 80 && cx <= 90 && cy >= 62 && cy <= 90;
+		// Bottom horizontal bar
+		const bottomBar = cx >= 40 && cx <= 90 && cy >= 86 && cy <= 96;
+		// Bottom-left corner connector
+		const blCorner = cx >= 40 && cx <= 50 && cy >= 82 && cy <= 96;
+		return topBar || leftVert || midBar || rightVert || bottomBar || blCorner;
+	}
+
+	function generatePlateCircles(digitTest: (cx: number, cy: number) => boolean): Circle[] {
+		const circles: Circle[] = [];
+		const bgColors = ['#7a8a2e', '#8c9c3d', '#9ab44e', '#a4b84d', '#8fa23d', '#6b7d28', '#b0c858', '#95a83e'];
+		const fgColors = ['#cb4a1c', '#d4622a', '#c75820', '#e07040', '#b84418', '#d95a24'];
+
+		let seed = 1;
+
+		// Generate a grid of circles with slight random offsets
+		for (let row = 0; row < 18; row++) {
+			for (let col = 0; col < 18; col++) {
+				const baseX = 8 + col * 7;
+				const baseY = 8 + row * 7;
+				// Jitter
+				const jx = (seededRandom(seed++) - 0.5) * 3;
+				const jy = (seededRandom(seed++) - 0.5) * 3;
+				const cx = baseX + jx;
+				const cy = baseY + jy;
+				const r = 2.2 + seededRandom(seed++) * 1.6;
+
+				if (!isInsidePlate(cx, cy, r)) continue;
+
+				const isNumber = digitTest(cx, cy);
+				const fill = isNumber ? fgColors[Math.floor(seededRandom(seed++) * fgColors.length)] : bgColors[Math.floor(seededRandom(seed++) * bgColors.length)];
+
+				circles.push({ cx: Math.round(cx * 10) / 10, cy: Math.round(cy * 10) / 10, r: Math.round(r * 10) / 10, fill });
+			}
+		}
+
+		return circles;
+	}
+
+	function digitTestPlate1(cx: number, cy: number): boolean {
+		return isDigit1(cx, cy) || isDigit2ForPlate1(cx, cy);
+	}
+
+	const plate1Circles = generatePlateCircles(digitTestPlate1);
+	const plate6Circles = generatePlateCircles(isDigit5);
 </script>
 
 <div class="ishihara-container" class:hidden={!showTest}>
@@ -132,7 +116,7 @@
 	<div class="plates-wrapper">
 		<div class="plate-item">
 			<div class="plate-card">
-				<svg viewBox="0 0 130 130" class="ishihara-svg" aria-label="Ishihara Plate 1 - Demonstration plate">
+				<svg viewBox="0 0 130 130" class="ishihara-svg" aria-label="Ishihara Plate 1 - Demonstration plate showing number 12">
 					<circle cx="65" cy="65" r="65" fill="#1a1a1d" />
 					{#each plate1Circles as circle, i (i)}
 						<circle cx={circle.cx} cy={circle.cy} r={circle.r} fill={circle.fill} />
@@ -145,7 +129,7 @@
 
 		<div class="plate-item">
 			<div class="plate-card">
-				<svg viewBox="0 0 130 130" class="ishihara-svg" aria-label="Ishihara Plate 6 - Transformation plate">
+				<svg viewBox="0 0 130 130" class="ishihara-svg" aria-label="Ishihara Plate 6 - Transformation plate showing number 5">
 					<circle cx="65" cy="65" r="65" fill="#1a1a1d" />
 					{#each plate6Circles as circle, i (i)}
 						<circle cx={circle.cx} cy={circle.cy} r={circle.r} fill={circle.fill} />
