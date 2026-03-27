@@ -6,7 +6,6 @@ from datetime import datetime
 
 
 class TestGasStationService:
-
 	# Smoke test
 	def test_get_stations(self):
 		service = TankerkoenigGasStationService()
@@ -15,7 +14,7 @@ class TestGasStationService:
 		result = service.get_gas_stations(latitude=52.521, longitude=13.438, radius=5)
 		assert isinstance(result, list)
 
-	#Test api_key assignment through interface
+	# Test api_key assignment through interface
 	def test_tankerkoenig_service_stores_api_key(self):
 		service = TankerkoenigGasStationService(api_key="test-key")
 		assert service.api_key == "test-key"

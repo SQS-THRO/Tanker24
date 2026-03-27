@@ -167,9 +167,7 @@ class TestStationUpdate:
 		assert update_response.json()["detail"] == "Station not found"
 
 	async def test_update_station_with_null_description(self, authenticated_client, owned_station):
-		response = await authenticated_client.patch(
-			f"/stations/{owned_station.id}", json={"description": None}
-		)
+		response = await authenticated_client.patch(f"/stations/{owned_station.id}", json={"description": None})
 
 		assert response.status_code == 200
 		data = response.json()

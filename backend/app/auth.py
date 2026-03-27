@@ -76,9 +76,9 @@ def get_current_user(
 
 
 def get_current_active_user(
-    user: Annotated[User, Depends(fastapi_users.current_user(active=True))],
+	user: Annotated[User, Depends(fastapi_users.current_user(active=True))],
 ) -> UserRead:
-    return UserRead.model_validate(user)
+	return UserRead.model_validate(user)
 
 
 def get_current_superuser(
