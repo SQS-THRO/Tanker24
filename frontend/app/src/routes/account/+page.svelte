@@ -435,38 +435,6 @@
 		border-color: var(--border-light);
 	}
 
-	.card-icon {
-		width: 48px;
-		height: 48px;
-		border-radius: var(--radius-md);
-		background: rgba(99, 102, 241, 0.1);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: var(--accent-primary);
-		flex-shrink: 0;
-	}
-
-	.card-content {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-
-	.card-label {
-		font-size: 0.75rem;
-		font-weight: 500;
-		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-	}
-
-	.card-value {
-		font-size: 1rem;
-		font-weight: 500;
-		color: var(--text-primary);
-	}
-
 	.stats-card {
 		display: flex;
 		justify-content: space-around;

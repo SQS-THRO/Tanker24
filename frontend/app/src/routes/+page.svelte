@@ -206,9 +206,9 @@
 				</div>
 				<div class="footer-column">
 					<h4>{$t.footer.company}</h4>
-					<a href="#">{$t.footer.about}</a>
-					<a href="#">{$t.footer.contact}</a>
-					<a href="#">{$t.footer.privacy}</a>
+					<a href="/">{$t.footer.about}</a>
+					<a href="/">{$t.footer.contact}</a>
+					<a href="/">{$t.footer.privacy}</a>
 				</div>
 			</div>
 		</div>
