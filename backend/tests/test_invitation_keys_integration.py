@@ -1,4 +1,3 @@
-import os
 import pytest
 import pytest_asyncio
 from unittest.mock import patch
@@ -6,8 +5,7 @@ from unittest.mock import patch
 from sqlalchemy import select
 
 from app.database import get_db
-from app.invitation_keys import sync_invitation_keys
-from app.models import Base, InvitationKey
+from app.models import InvitationKey
 
 
 @pytest_asyncio.fixture
