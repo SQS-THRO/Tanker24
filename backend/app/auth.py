@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from typing import Annotated
 
+from fastapi_users import schemas
 from app.config import settings
 from app.database import get_db
 from app.models import InvitationKey, User
@@ -25,7 +26,7 @@ class CustomUserManager(BaseUserManager[User, int]):
 
 	async def create(
 		self,
-		user_create: UserCreate,
+		user_create: schemas.UC,
 		safe: bool = False,
 		request: Request | None = None,
 	) -> User:
@@ -40,7 +41,7 @@ class CustomUserManager(BaseUserManager[User, int]):
 		invitation_key_str = user_dict.pop("invitation_key", "")
 
 		if settings.invitation_keys:
-			result = await self.user_db.session.execute(
+			result = await self.user_db.session.execute(  # type: ignore[attr-defined]
 				select(InvitationKey).where(InvitationKey.key == invitation_key_str)
 			)
 			invitation_key = result.scalar_one_or_none()
@@ -50,8 +51,8 @@ class CustomUserManager(BaseUserManager[User, int]):
 
 		hashed_password = self.password_helper.hash(password)
 		db_obj = User(**user_dict, hashed_password=hashed_password)
-		self.user_db.session.add(db_obj)
-		await self.user_db.session.commit()
+		self.user_db.session.add(db_obj)  # type: ignore[attr-defined]
+		await self.user_db.session.commit()  # type: ignore[attr-defined]
 
 		await self.on_after_register(db_obj, request)
 

@@ -17,7 +17,7 @@ async def sync_invitation_keys(session: AsyncSession) -> None:
 		result = await session.execute(
 			select(User).join(InvitationKey).where(InvitationKey.key.in_(keys_to_delete))
 		)
-		users_with_deleted_keys = result.scalars().all()
+		users_with_deleted_keys: list[User] = result.scalars().all()  # type: ignore[assignment]
 		for user in users_with_deleted_keys:
 			user.invitation_key_id = None
 
