@@ -5,23 +5,21 @@ from typing import List
 
 
 class GasStationService(ABC):
-	def __init__(self, api_key: str = "00000000-0000-0000-0000-000000000002") -> None:
-		...
+	def __init__(self, api_key: str = "00000000-0000-0000-0000-000000000002") -> None: ...
 
 	@abstractmethod
-	def get_gas_station_by_id(self, id: str) -> GasStation:
-		...
+	def get_gas_station_by_id(self, id: str) -> GasStation: ...
 
 	@abstractmethod
-	def get_gas_stations(self, latitude: float, longitude: float, radius: float) -> List[GasStation]:
-		...
-
+	def get_gas_stations(self, latitude: float, longitude: float, radius: float) -> List[GasStation]: ...
 
 
 """ The actual Tankerkoenig Gas Station Service which communicates with the tankerkoenig api.
 It offers function for using an area search and getting data for a specific 
 station. The service will throw any errors which occur during the processing.
 """
+
+
 class TankerkoenigGasStationService(GasStationService):
 	# Static base url
 	BASE_URL = "https://creativecommons.tankerkoenig.de/json/"

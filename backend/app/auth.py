@@ -69,19 +69,19 @@ fastapi_users = FastAPIUsers[User, int](
 )
 
 
-async def get_current_user(
+def get_current_user(
 	user: Annotated[User, Depends(fastapi_users.current_user(active=True))],
 ) -> UserRead:
 	return UserRead.model_validate(user)
 
 
-async def get_current_active_user(
-    user: Annotated[User, Depends(fastapi_users.current_user(active=True))],
+def get_current_active_user(
+	user: Annotated[User, Depends(fastapi_users.current_user(active=True))],
 ) -> UserRead:
-    return UserRead.model_validate(user)
+	return UserRead.model_validate(user)
 
 
-async def get_current_superuser(
+def get_current_superuser(
 	user: Annotated[User, Depends(fastapi_users.current_user(active=True, superuser=True))],
 ) -> UserRead:
 	return UserRead.model_validate(user)

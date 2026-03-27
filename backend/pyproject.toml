@@ -2,7 +2,7 @@
 name = "tanker24-backend"
 version = "0.1.0"
 description = "Tanker24 Backend API"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies = [
     "fastapi>=0.135.0",
     "uvicorn[standard]>=0.42.0",
@@ -61,8 +61,8 @@ exclude = [
 line-length = 120 # Increased from 80, requested by Lukas
 indent-width = 4
 
-# Assume Python 3.12
-target-version = "py312"
+# Assume Python 3.14
+target-version = "py314"
 
 [tool.ruff.lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`) codes by default.
@@ -104,7 +104,7 @@ docstring-code-format = false
 docstring-code-line-length = "dynamic"
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.14"
 strict = true
 ignore_missing_imports = true
 disable_error_code = [
