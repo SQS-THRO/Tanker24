@@ -181,32 +181,6 @@
 			</div>
 
 			<div class="cards-grid">
-				<div class="card">
-					<div class="card-icon">
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-							<polyline points="22,6 12,13 2,6" />
-						</svg>
-					</div>
-					<div class="card-content">
-						<span class="card-label">{$t.account.emailLabel}</span>
-						<span class="card-value">{user.email}</span>
-					</div>
-				</div>
-
-				<div class="card">
-					<div class="card-icon">
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-							<circle cx="12" cy="7" r="4" />
-						</svg>
-					</div>
-					<div class="card-content">
-						<span class="card-label">{$t.account.nameLabel}</span>
-						<span class="card-value">{user.forename} {user.surname || ''}</span>
-					</div>
-				</div>
-
 				<div class="card stats-card">
 					<div class="stat-item">
 						<span class="stat-value">{$t.account.statusActive}</span>
@@ -254,6 +228,17 @@
 </main>
 
 <style>
+	@keyframes slideUp {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
 	main {
 		min-height: 100vh;
 		display: flex;
