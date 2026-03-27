@@ -12,6 +12,7 @@
 	let pin = $state('');
 	let password = $state('');
 	let confirmPassword = $state('');
+	let invitationKey = $state('');
 	let error = $state('');
 	let loading = $state(false);
 	let showPassword = $state(false);
@@ -19,7 +20,7 @@
 
 	async function handleRegister() {
 		error = '';
-		if (!first_name || !last_name || !email || !pin || !password || !confirmPassword) {
+		if (!first_name || !last_name || !email || !pin || !password || !confirmPassword || !invitationKey) {
 			error = $t.register.fillAllFields;
 			return;
 		}
@@ -39,7 +40,8 @@
 				forename: first_name,
 				surname: last_name,
 				pin,
-				password
+				password,
+				invitation_key: invitationKey
 			});
 			const response = await authService.login({ email, password });
 			localStorage.setItem('token', response.access_token);
@@ -123,6 +125,16 @@
 						<input type="text" id="pin" bind:value={pin} placeholder={$t.register.pinPlaceholder} class="input with-icon" maxlength="4" inputmode="numeric" disabled={loading} />
 					</div>
 					<span class="hint">{$t.register.pinHint}</span>
+				</div>
+
+				<div class="form-group">
+					<label for="invitationKey">{$t.register.invitationKey}</label>
+					<div class="input-wrapper">
+						<svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+						</svg>
+						<input type="text" id="invitationKey" bind:value={invitationKey} placeholder={$t.register.invitationKeyPlaceholder} class="input with-icon" disabled={loading} />
+					</div>
 				</div>
 
 				<div class="form-group">
