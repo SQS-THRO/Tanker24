@@ -14,16 +14,12 @@ async def sync_invitation_keys(session: AsyncSession) -> None:
 
 	keys_to_delete = db_keys_set - env_keys
 	if keys_to_delete:
-		result = await session.execute(
-			select(User).join(InvitationKey).where(InvitationKey.key.in_(keys_to_delete))
-		)
+		result = await session.execute(select(User).join(InvitationKey).where(InvitationKey.key.in_(keys_to_delete)))
 		users_with_deleted_keys: list[User] = result.scalars().all()  # type: ignore[assignment]
 		for user in users_with_deleted_keys:
 			user.invitation_key_id = None
 
-		await session.execute(
-			delete(InvitationKey).where(InvitationKey.key.in_(keys_to_delete))
-		)
+		await session.execute(delete(InvitationKey).where(InvitationKey.key.in_(keys_to_delete)))
 
 	keys_to_add = env_keys - db_keys_set
 	for key in keys_to_add:
