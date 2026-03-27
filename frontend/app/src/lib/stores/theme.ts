@@ -28,7 +28,7 @@ const DEFAULT_SETTINGS = {
 };
 
 function loadSettings() {
-	if (typeof globalThis.window === 'undefined') return DEFAULT_SETTINGS;
+	if (globalThis.window === undefined) return DEFAULT_SETTINGS;
 
 	const stored = localStorage.getItem(STORAGE_KEY);
 	if (!stored) return DEFAULT_SETTINGS;
@@ -41,7 +41,7 @@ function loadSettings() {
 }
 
 function saveSettings(settings: typeof DEFAULT_SETTINGS) {
-	if (typeof globalThis.window === 'undefined') return;
+	if (globalThis.window === undefined) return;
 	localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
 }
 
