@@ -1,31 +1,43 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	const { label, href } = $props<{
+
+	const {
+		label,
+		href,
+		variant = 'primary',
+		size = 'md'
+	} = $props<{
 		label: string;
 		href: string;
+		variant?: 'primary' | 'secondary' | 'ghost';
+		size?: 'sm' | 'md' | 'lg';
 	}>();
+
+	const variantClasses: Record<string, string> = {
+		primary: 'btn-primary',
+		secondary: 'btn-secondary',
+		ghost: 'btn-ghost'
+	};
+
+	const sizeClasses: Record<string, string> = {
+		sm: 'btn-sm',
+		md: '',
+		lg: 'btn-lg'
+	};
 </script>
 
-<button
-	onclick={async () => {
-		await goto(resolve(href));
-	}}
->
+<a href={resolve(href)} class="btn {variantClasses[variant]} {sizeClasses[size]}">
 	{label}
-</button>
+</a>
 
 <style>
-	button {
-		padding: 0.75rem 1.5rem;
-		background: black;
-		color: white;
-		border: none;
-		border-radius: 6px;
-		cursor: pointer;
+	.btn-sm {
+		padding: 0.5rem 1rem;
+		font-size: 0.8125rem;
 	}
 
-	button:hover {
-		opacity: 0.9;
+	.btn-lg {
+		padding: 1rem 2rem;
+		font-size: 1rem;
 	}
 </style>
