@@ -9,9 +9,12 @@ from sqlalchemy.ext.asyncio import (
 from app.config import settings
 from app.models import Base
 
+is_sqlite = settings.database_url.startswith("sqlite")
+
 engine = create_async_engine(
 	settings.database_url,
 	echo=settings.debug,
+    connect_args={"check_same_thread": False} if is_sqlite else {},
 )
 
 async_session_maker = async_sessionmaker(
