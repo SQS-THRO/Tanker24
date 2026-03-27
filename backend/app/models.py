@@ -17,6 +17,13 @@ class Base(DeclarativeBase):
 	pass
 
 
+class InvitationKey(Base):
+	__tablename__ = "invitation_keys"
+
+	id: Mapped[int] = mapped_column(Integer, primary_key=True)
+	key: Mapped[str] = mapped_column(String(length=32), unique=True, index=True)
+
+
 class User(SQLAlchemyBaseUserTable[int], Base):
 	__tablename__ = "users"
 
@@ -29,7 +36,9 @@ class User(SQLAlchemyBaseUserTable[int], Base):
 	forename: Mapped[str] = mapped_column(String(100))
 	surname: Mapped[str] = mapped_column(String(100))
 	pin: Mapped[str] = mapped_column(String(4))
+	invitation_key_id: Mapped[int | None] = mapped_column(ForeignKey("invitation_keys.id"), nullable=True)
 
+	invitation_key: Mapped[InvitationKey | None] = relationship("InvitationKey", lazy="selectin")
 	cars: Mapped[list["Car"]] = relationship(back_populates="owner", lazy="selectin")
 
 

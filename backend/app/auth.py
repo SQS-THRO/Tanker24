@@ -7,19 +7,55 @@ from fastapi_users.authentication import (
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users.manager import BaseUserManager
+from fastapi_users.exceptions import InvalidPasswordException, UserAlreadyExists
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from typing import Annotated
 
 from app.config import settings
 from app.database import get_db
-from app.models import User
+from app.models import InvitationKey, User
 from app.schemas.user import UserCreate, UserRead
 
 
 class CustomUserManager(BaseUserManager[User, int]):
 	user_read_model = UserRead
 	user_create_model = UserCreate
+
+	async def create(
+		self,
+		user_create: UserCreate,
+		safe: bool = False,
+		request: Request | None = None,
+	) -> User:
+		await self.validate_password(user_create.password, user_create)
+
+		existing_user = await self.user_db.get_by_email(user_create.email)
+		if existing_user:
+			raise UserAlreadyExists()
+
+		user_dict = user_create.create_update_dict()
+		password = user_dict.pop("password")
+		invitation_key_str = user_dict.pop("invitation_key", "")
+
+		if settings.invitation_keys:
+			result = await self.user_db.session.execute(
+				select(InvitationKey).where(InvitationKey.key == invitation_key_str)
+			)
+			invitation_key = result.scalar_one_or_none()
+			if not invitation_key:
+				raise InvalidPasswordException(reason="Invalid invitation key")
+			user_dict["invitation_key_id"] = invitation_key.id
+
+		hashed_password = self.password_helper.hash(password)
+		db_obj = User(**user_dict, hashed_password=hashed_password)
+		self.user_db.session.add(db_obj)
+		await self.user_db.session.commit()
+
+		await self.on_after_register(db_obj, request)
+
+		return db_obj
 
 	async def on_after_register(self, user: User, request: Request | None = None) -> None:
 		"""

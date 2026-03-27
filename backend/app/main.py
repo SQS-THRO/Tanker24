@@ -5,13 +5,16 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.database import init_db
+from app.database import async_session_maker, init_db
+from app.invitation_keys import sync_invitation_keys
 from app.routers import auth, health, stations
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 	await init_db()
+	async with async_session_maker() as session:
+		await sync_invitation_keys(session)
 	yield
 
 
