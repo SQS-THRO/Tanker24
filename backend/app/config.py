@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -16,11 +16,13 @@ class Settings(BaseSettings):
 	postgres_port: int | None = 5432
 	postgres_db: str | None = None
 
+	# Public backend url setting
+	public_backend_url: str | None = None
+
     # SQLite database settings
 	# Only the database path needs to be configured
 	sqlite_path: str = "./test.db"
 
-	#database_url: str = "sqlite+aiosqlite:///./data.db"
 	secret: str = ""
 
 	jwt_lifetime_minutes: int = 60
@@ -32,9 +34,11 @@ class Settings(BaseSettings):
 		"http://127.0.0.1:3000",
 	]
 
-	class Config:
-		env_file = ".env"
-		env_file_encoding = "utf-8"
+	model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
