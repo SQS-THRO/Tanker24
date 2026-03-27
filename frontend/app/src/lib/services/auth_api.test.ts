@@ -29,6 +29,15 @@ const loginDataFixture = {
 	password: 'securePassword123'
 };
 
+const registerDataWithKeyFixture = {
+	email: 'test@example.com',
+	forename: 'Test',
+	surname: 'User',
+	pin: '1234',
+	password: 'securePassword123',
+	invitation_key: 'a'.repeat(32)
+};
+
 const mockFetch = vi.fn();
 
 vi.stubGlobal('fetch', mockFetch);
@@ -176,4 +185,26 @@ test('getCurrentUser throws error on failure', async () => {
 	});
 
 	await expect(authService.getCurrentUser('invalid-token')).rejects.toThrow('Unauthorized');
+});
+
+test('register sends invitation_key to API', async () => {
+	const { authService } = await import('./auth_api');
+
+	mockFetch.mockResolvedValueOnce({
+		ok: true,
+		json: () => Promise.resolve(userFixture)
+	});
+
+	await authService.register(registerDataWithKeyFixture);
+
+	expect(mockFetch).toHaveBeenCalledWith(
+		expect.stringContaining('/auth/register'),
+		expect.objectContaining({
+			method: 'POST',
+			headers: expect.objectContaining({
+				'Content-Type': 'application/json'
+			}),
+			body: JSON.stringify(registerDataWithKeyFixture)
+		})
+	);
 });
