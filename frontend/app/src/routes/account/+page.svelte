@@ -303,7 +303,7 @@
 
 	.navbar {
 		position: relative;
-		z-index: 10;
+		z-index: 100;
 		padding: 1.5rem 2rem;
 		display: flex;
 		align-items: center;
@@ -328,6 +328,8 @@
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
+		position: relative;
+		z-index: 100;
 	}
 
 	.nav-btn {

@@ -87,7 +87,7 @@
 		padding: 0.5rem;
 		min-width: 140px;
 		box-shadow: var(--shadow-xl);
-		z-index: 50;
+		z-index: 200;
 		animation: fadeIn 0.15s ease;
 	}
 

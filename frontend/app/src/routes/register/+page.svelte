@@ -262,7 +262,7 @@
 
 	.navbar {
 		position: relative;
-		z-index: 10;
+		z-index: 100;
 		padding: 1.5rem 2rem;
 		display: flex;
 		align-items: center;
