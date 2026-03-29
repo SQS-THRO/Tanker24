@@ -1,0 +1,20 @@
+name: Deploy to tanker24.eu
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Connect via SSH and start deployment-Script
+        run: |
+          echo "{{ secrets.DEPLOYMENT_SSH_PRIVATE_KEY }}" > id_deploy
+          chmod 600 id_deploy
+          ssh -o "StrictHostKeyChecking=no" -i id_deploy ${{ secrets.DEPLOYMENT_SSH_USER }}@${{ secrets.DEPLOYMENT_SSH_HOST }} "/usr/bin/redeploy"

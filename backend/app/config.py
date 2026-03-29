@@ -24,6 +24,8 @@ class Settings(BaseSettings):
 		"http://localhost:3000",
 		"http://127.0.0.1:5173",
 		"http://127.0.0.1:3000",
+        "https://tanker24.eu",
+        "https://www.tanker24.eu",
 	]
 
 	_invitation_keys: list[str] = []
