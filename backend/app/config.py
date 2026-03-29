@@ -9,6 +9,12 @@ class Settings(BaseSettings):
 	app_version: str = "1.0.0"
 	debug: bool = False
 
+	model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+
 	# Set default value for the database type
 	db_type: str = "sqlite"
 
@@ -39,11 +45,6 @@ class Settings(BaseSettings):
         "https://www.tanker24.eu",
 	]
 
-	model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        extra="ignore",
-    )
 	_invitation_keys: list[str] = []
 
 	def __init__(self, **kwargs):

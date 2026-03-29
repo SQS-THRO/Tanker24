@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import (
 from app.config import settings
 from app.models import Base
 
-is_sqlite = settings.database_url.startswith("sqlite")
+is_sqlite = settings.db_type == "sqlite"
 
 engine = create_async_engine(
 	settings.database_url,
