@@ -9,6 +9,7 @@
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import { t } from '$lib/stores/locale';
 	import type { Map } from 'leaflet';
+	import StationFeed from '$lib/components/StationFeed.svelte';
 
 	const DEFAULT_LAT = 47.79;
 	const DEFAULT_LNG = 12.1;
@@ -240,6 +241,10 @@
 				<path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
 			</svg>
 		</button>
+	{/if}
+
+	{#if userLat !== null && userLng !== null}
+		<StationFeed lat={userLat} lon={userLng} />
 	{/if}
 </main>
 

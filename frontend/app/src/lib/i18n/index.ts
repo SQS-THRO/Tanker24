@@ -123,6 +123,17 @@ export const translations = {
 			yourLocation: 'Your Location',
 			loginRequired: 'Please log in to view stations',
 			login: 'Login'
+		},
+		ws: {
+			cachingStations: 'Caching stations around',
+			newStation: 'Found new station',
+			updatedStation: 'Updated station',
+			error: 'Error',
+			liveUpdates: 'Live Updates',
+			connecting: 'Connecting...',
+			connected: 'Connected',
+			disconnected: 'Disconnected',
+			at: 'at'
 		}
 	},
 	de: {
@@ -249,6 +260,17 @@ export const translations = {
 			yourLocation: 'Dein Standort',
 			loginRequired: 'Bitte melde dich an um Tankstellen anzuzeigen',
 			login: 'Anmelden'
+		},
+		ws: {
+			cachingStations: 'Tankstellen werden geladen um',
+			newStation: 'Neue Tankstelle gefunden',
+			updatedStation: 'Tankstelle aktualisiert',
+			error: 'Fehler',
+			liveUpdates: 'Live-Updates',
+			connecting: 'Verbinde...',
+			connected: 'Verbunden',
+			disconnected: 'Getrennt',
+			at: 'bei'
 		}
 	}
 };
@@ -269,5 +291,16 @@ declare module '$lib/stores/locale' {
 		previewSuccess: string;
 		previewError: string;
 		previewWarning: string;
+		ws: {
+			cachingStations: string;
+			newStation: string;
+			updatedStation: string;
+			error: string;
+			liveUpdates: string;
+			connecting: string;
+			connected: string;
+			disconnected: string;
+			at: string;
+		};
 	}
 }
