@@ -54,7 +54,12 @@ def test_missing_env_var_db_type_raises_value_error() -> None:
     with pytest.raises(ValueError, match="Database type DB_TYPE must be set to start the application!"):
         Settings(
             secret = "Test-Secret",
-            sqlite_path="./test.db",
+            db_type="",
+            postgres_user="TestUser",
+            postgres_password="TestPassword",
+            postgres_host="postgres",
+            postgres_port=12345,
+            postgres_db="tanker24",
         )
 
 
