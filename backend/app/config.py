@@ -1,3 +1,6 @@
+import os
+import re
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -32,6 +35,8 @@ class Settings(BaseSettings):
 		"http://localhost:3000",
 		"http://127.0.0.1:5173",
 		"http://127.0.0.1:3000",
+        "https://tanker24.eu",
+        "https://www.tanker24.eu",
 	]
 
 	model_config = SettingsConfigDict(
@@ -39,6 +44,7 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+	_invitation_keys: list[str] = []
 
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
@@ -46,6 +52,21 @@ class Settings(BaseSettings):
 			raise ValueError("SECRET environment variable must be set!")
 		if not self.db_type:
 			raise ValueError("Database type DB_TYPE must be set to start the application!")
+        self._parse_invitation_keys()
+
+    @property
+    def invitation_keys(self) -> list[str]:
+        return self._invitation_keys
+
+    def _parse_invitation_keys(self) -> None:
+        keys_str = os.environ.get("INVITATION_KEYS", "")
+        if keys_str:
+            self._invitation_keys = [k.strip() for k in keys_str.split(",") if k.strip()]
+            for key in self._invitation_keys:
+                if not re.match(r"^[a-fA-F0-9]{32}$", key):
+                    raise ValueError(
+                        f"Invalid invitation key format: {key}. Must be a 128-bit hex string (32 characters)."
+                    )
 
 	# Helper function for building the dynamic database connection string
 	# Postgreql and sqlite db are supported
@@ -67,14 +88,14 @@ class Settings(BaseSettings):
                     "For DB_TYPE=postgresql, POSTGRES_USER, POSTGRES_PASSWORD, "
                     "POSTGRES_HOST, POSTGRES_PORT, and POSTGRES_DB must be set."
                 )
-			
+
 			# Configure the postgresql url from the env var settings
 			return (
                 f"postgresql+asyncpg://{self.postgres_user}:"
                 f"{self.postgres_password}@{self.postgres_host}:"
                 f"{self.postgres_port}/{self.postgres_db}"
             )
-	
+
 		# Check if the db_type is sqllite
 		if self.db_type == "sqlite":
 			# Support inline memory for sqllite as well for rapid testing
@@ -82,6 +103,6 @@ class Settings(BaseSettings):
 				return "sqlite+aiosqlite:///:memory:"
 			return f"sqlite+aiosqlite:///{self.sqlite_path}"
 		raise ValueError(f"Unsupported DB_TYPE: {self.db_type}")
-		
+
 
 settings = Settings()

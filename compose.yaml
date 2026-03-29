@@ -13,6 +13,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    env_file:
+      - .env
+
 
   postgres:
     image: postgres:16
