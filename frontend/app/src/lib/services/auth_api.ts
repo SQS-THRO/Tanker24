@@ -25,6 +25,7 @@ interface RegisterData {
 	surname: string;
 	pin: string;
 	password: string;
+	invitation_key: string;
 }
 
 interface LoginData {

@@ -15,12 +15,14 @@ class UserRead(UserBase):
 	is_active: bool
 	is_superuser: bool
 	is_verified: bool
+	invitation_key_id: int | None = None
 
 	model_config = ConfigDict(from_attributes=True)
 
 
 class UserCreate(UserBase):
 	password: str
+	invitation_key: str | None = None
 
 	def create_update_dict(self) -> dict[str, Any]:
 		return self.model_dump()

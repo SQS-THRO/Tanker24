@@ -84,7 +84,9 @@ export const translations = {
 			fillAllFields: 'Please fill in all fields',
 			passwordsNotMatch: 'Passwords do not match',
 			passwordTooShort: 'Password must be at least 8 characters',
-			registerFailed: 'Registration failed'
+			registerFailed: 'Registration failed',
+			invitationKey: 'Invitation Key',
+			invitationKeyPlaceholder: 'Enter your invitation key'
 		},
 		account: {
 			title: 'Account',
@@ -210,7 +212,9 @@ export const translations = {
 			fillAllFields: 'Bitte fülle alle Felder aus',
 			passwordsNotMatch: 'Passwörter stimmen nicht überein',
 			passwordTooShort: 'Passwort muss mindestens 8 Zeichen haben',
-			registerFailed: 'Registrierung fehlgeschlagen'
+			registerFailed: 'Registrierung fehlgeschlagen',
+			invitationKey: 'Einladungsschlüssel',
+			invitationKeyPlaceholder: 'Gib deinen Einladungsschlüssel ein'
 		},
 		account: {
 			title: 'Konto',
