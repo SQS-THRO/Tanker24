@@ -52,21 +52,24 @@ class Settings(BaseSettings):
 			raise ValueError("SECRET environment variable must be set!")
 		if not self.db_type:
 			raise ValueError("Database type DB_TYPE must be set to start the application!")
-        self._parse_invitation_keys()
 
-    @property
-    def invitation_keys(self) -> list[str]:
-        return self._invitation_keys
+		self._parse_invitation_keys()
 
-    def _parse_invitation_keys(self) -> None:
-        keys_str = os.environ.get("INVITATION_KEYS", "")
-        if keys_str:
-            self._invitation_keys = [k.strip() for k in keys_str.split(",") if k.strip()]
-            for key in self._invitation_keys:
-                if not re.match(r"^[a-fA-F0-9]{32}$", key):
-                    raise ValueError(
-                        f"Invalid invitation key format: {key}. Must be a 128-bit hex string (32 characters)."
-                    )
+
+	@property
+	def invitation_keys(self) -> list[str]:
+		return self._invitation_keys
+
+
+	def _parse_invitation_keys(self) -> None:
+		keys_str = os.environ.get("INVITATION_KEYS", "")
+		if keys_str:
+			self._invitation_keys = [k.strip() for k in keys_str.split(",") if k.strip()]
+			for key in self._invitation_keys:
+				if not re.match(r"^[a-fA-F0-9]{32}$", key):
+					raise ValueError(
+						f"Invalid invitation key format: {key}. Must be a 128-bit hex string (32 characters)."
+					)
 
 	# Helper function for building the dynamic database connection string
 	# Postgreql and sqlite db are supported
