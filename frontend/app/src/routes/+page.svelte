@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Logo from '$lib/components/Logo.svelte';

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
-	import { goto } from '$app/navigation';
 	import { authService } from '$lib/services/auth_api';
 	import Logo from '$lib/components/Logo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
