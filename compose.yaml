@@ -7,6 +7,10 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   frontend:
     build:
       context: ./frontend/app
@@ -15,7 +19,6 @@ services:
       - "3000:3000"
     env_file:
       - .env
-
 
   postgres:
     image: postgres:18

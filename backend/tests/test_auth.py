@@ -27,7 +27,6 @@ class TestAuthEndpoints:
 			email="test@example.com",
 			forename="Max",
 			surname="Mustermann",
-			pin="1234",
 			is_active=True,
 			is_superuser=False,
 			is_verified=False,

@@ -62,7 +62,6 @@ class TestSyncInvitationKeys:
 			hashed_password="$2b$12$test",
 			forename="Test",
 			surname="User",
-			pin="1234",
 			invitation_key_id=key.id,
 		)
 		session.add(user)

@@ -65,6 +65,6 @@ As per organizational constraint OC-3 all relevant technology decisions need to 
 |Reliability|The Tankerkoenig data API is unavailable.|Implement soft retry with increasing waits.|link to issue|
 |Reliability|The Tankerkoenig data API is unavailable.|Implement caching to deliver at least information on gas stations in the area.|link to issue|
 |Reliability|The Tankerkoenig data API is unavailable.|Implement soft retry with increasing waits.|link to issue|
-|Security|A user requests user specific data.|Implement a secure user based authentication system with e.g. pin codes in the API and login.|link to issue|
+|Security|A user requests user specific data.|Implement a secure user based authentication system with JWT tokens.|link to issue|
 |Transferability|The user wants to export it's data as JSON.|Extend a generic data aggregation class to output the data in JSON format.|Link to issue|
 |Transferability|The user wants to export it's data as a semicolon separated csv.|Extend a generic data aggregation class to output the data in the semicolon separated csv format.|Link to issue|

@@ -3,10 +3,22 @@ name: Deploy to tanker24.eu
 on:
   release:
     types: [published]
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: [Build and Push Backend, Build and Push Frontend]
+    types: [completed]
+    branches: [main]
+
+# only deploy once, even if both backend and frontend build workflows are triggered at the same time
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: github.event_name == 'release' || github.event_name == 'push' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     permissions:
       contents: read
       packages: write
@@ -15,6 +27,6 @@ jobs:
 
       - name: Connect via SSH and start deployment-Script
         run: |
-          echo "{{ secrets.DEPLOYMENT_SSH_PRIVATE_KEY }}" > id_deploy
+          echo "${{ secrets.DEPLOYMENT_SSH_PRIVATE_KEY }}" > id_deploy
           chmod 600 id_deploy
           ssh -o "StrictHostKeyChecking=no" -i id_deploy ${{ secrets.DEPLOYMENT_SSH_USER }}@${{ secrets.DEPLOYMENT_SSH_HOST }} "/usr/bin/redeploy"

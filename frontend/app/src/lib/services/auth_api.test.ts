@@ -5,7 +5,6 @@ const userFixture = {
 	email: 'test@example.com',
 	forename: 'Test',
 	surname: 'User',
-	pin: '1234',
 	is_active: true,
 	is_superuser: false,
 	is_verified: true
@@ -20,7 +19,6 @@ const registerDataFixture = {
 	email: 'test@example.com',
 	forename: 'Test',
 	surname: 'User',
-	pin: '1234',
 	password: 'securePassword123'
 };
 
@@ -33,7 +31,6 @@ const registerDataWithKeyFixture = {
 	email: 'test@example.com',
 	forename: 'Test',
 	surname: 'User',
-	pin: '1234',
 	password: 'securePassword123',
 	invitation_key: 'a'.repeat(32)
 };

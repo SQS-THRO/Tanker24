@@ -71,13 +71,13 @@
 	</div>
 
 	<nav class="navbar">
-		<a href={resolve('/')} class="logo">
+		<a href={resolve('/')} class="navbar-logo">
 			<Logo size={32} />
 			<span>Tanker24</span>
 		</a>
 		<div class="nav-right">
 			<LanguageSwitcher />
-			<a href={resolve('/map')} class="btn btn-secondary nav-btn">
+			<a href={resolve('/map')} class="btn btn-secondary btn-sm">
 				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 					<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
 					<line x1="9" y1="3" x2="9" y2="18" />
@@ -95,7 +95,7 @@
 				<p>{$t.account.loading}</p>
 			</div>
 		{:else if error}
-			<div class="card error-card">
+			<div class="auth-card error-card">
 				<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
 					<circle cx="12" cy="12" r="10" />
 					<line x1="12" y1="8" x2="12" y2="12" />
@@ -114,7 +114,7 @@
 				<p class="member-since">{$t.account.member}</p>
 			</div>
 
-			<div class="theme-settings">
+			<div class="theme-settings page-card">
 				<h2>{$t.account.themeSettings}</h2>
 
 				<div class="setting-group">
@@ -181,7 +181,7 @@
 			</div>
 
 			<div class="cards-grid">
-				<div class="card stats-card">
+				<div class="page-card stats-card">
 					<div class="stat-item">
 						<span class="stat-value">{$t.account.statusActive}</span>
 						<span class="stat-label">{$t.account.statusLabel}</span>
@@ -228,99 +228,11 @@
 </main>
 
 <style>
-	@keyframes slideUp {
-		from {
-			opacity: 0;
-			transform: translateY(20px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
 	main {
 		min-height: 100vh;
 		display: flex;
 		flex-direction: column;
 		position: relative;
-	}
-
-	.background {
-		position: fixed;
-		inset: 0;
-		pointer-events: none;
-		z-index: 0;
-	}
-
-	.gradient-orb {
-		position: absolute;
-		border-radius: 50%;
-		filter: blur(100px);
-	}
-
-	.orb-1 {
-		width: 500px;
-		height: 500px;
-		background: var(--accent-primary);
-		top: -150px;
-		right: -100px;
-		opacity: 0.12;
-	}
-
-	.orb-2 {
-		width: 400px;
-		height: 400px;
-		background: #8b5cf6;
-		bottom: -100px;
-		left: -100px;
-		opacity: 0.08;
-	}
-
-	.grid-pattern {
-		position: absolute;
-		inset: 0;
-		background-image: linear-gradient(var(--border-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
-		background-size: 60px 60px;
-		mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-		-webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-	}
-
-	.navbar {
-		position: relative;
-		z-index: 100;
-		padding: 1.5rem 2rem;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		max-width: 1200px;
-		margin: 0 auto;
-		width: 100%;
-		box-sizing: border-box;
-	}
-
-	.logo {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		text-decoration: none;
-		color: var(--text-primary);
-		font-weight: 700;
-		font-size: 1.25rem;
-	}
-
-	.nav-right {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		position: relative;
-		z-index: 100;
-	}
-
-	.nav-btn {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
 	}
 
 	.container {
@@ -331,6 +243,14 @@
 		max-width: 700px;
 		margin: 0 auto;
 		width: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.nav-right {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
 	}
 
 	.loading {
@@ -344,21 +264,6 @@
 
 	.loading p {
 		color: var(--text-secondary);
-	}
-
-	.spinner-large {
-		width: 40px;
-		height: 40px;
-		border: 3px solid var(--border-light);
-		border-top-color: var(--accent-primary);
-		border-radius: 50%;
-		animation: spin 0.8s linear infinite;
-	}
-
-	@keyframes spin {
-		to {
-			transform: rotate(360deg);
-		}
 	}
 
 	.error-card {
@@ -385,21 +290,6 @@
 		animation: slideUp 0.5s ease forwards;
 	}
 
-	.avatar-large {
-		width: 100px;
-		height: 100px;
-		border-radius: 50%;
-		background: var(--accent-gradient);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 2.5rem;
-		font-weight: 700;
-		text-transform: uppercase;
-		margin: 0 auto 1.5rem;
-		box-shadow: 0 0 40px rgba(99, 102, 241, 0.3);
-	}
-
 	.profile-header h1 {
 		font-size: 2rem;
 		font-weight: 700;
@@ -418,21 +308,6 @@
 		animation: slideUp 0.5s ease forwards;
 		animation-delay: 100ms;
 		opacity: 0;
-	}
-
-	.card {
-		background: var(--bg-card);
-		border: 1px solid var(--border-subtle);
-		border-radius: var(--radius-lg);
-		padding: 1.25rem 1.5rem;
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		transition: all var(--transition-base);
-	}
-
-	.card:hover {
-		border-color: var(--border-light);
 	}
 
 	.stats-card {
@@ -550,10 +425,6 @@
 	}
 
 	.theme-settings {
-		background: var(--bg-card);
-		border: 1px solid var(--border-subtle);
-		border-radius: var(--radius-lg);
-		padding: 1.5rem;
 		margin-bottom: 2rem;
 	}
 

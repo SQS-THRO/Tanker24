@@ -57,51 +57,49 @@
 
 <main>
 	<nav class="navbar" class:scrolled>
-		<div class="nav-content">
-			<a href={resolve('/')} class="logo">
-				<Logo size={32} />
-				<span>Tanker24</span>
-			</a>
+		<a href={resolve('/')} class="navbar-logo">
+			<Logo size={32} />
+			<span>Tanker24</span>
+		</a>
 
-			<div class="nav-actions">
-				<LanguageSwitcher />
-				<a href={resolve('/map')} class="btn btn-ghost nav-link">{$t.nav.map}</a>
-				{#if user}
-					<div class="profile-wrapper">
-						<button class="profile-btn" onclick={toggleDropdown}>
-							<span class="avatar">
-								{user.forename[0]}{user.surname?.[0] || ''}
-							</span>
-							<span class="username">{user.forename}</span>
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-								<path d="M6 9l6 6 6-6" />
-							</svg>
-						</button>
-						{#if showDropdown}
-							<div class="dropdown">
-								<a href={resolve('/account')} class="dropdown-item">
-									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-										<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-										<circle cx="12" cy="7" r="4" />
-									</svg>
-									{$t.nav.account}
-								</a>
-								<button class="dropdown-item logout" onclick={logout}>
-									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-										<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-										<polyline points="16,17 21,12 16,7" />
-										<line x1="21" y1="12" x2="9" y2="12" />
-									</svg>
-									{$t.nav.logout}
-								</button>
-							</div>
-						{/if}
-					</div>
-				{:else}
-					<a href={resolve('/login')} class="btn btn-secondary">{$t.nav.signIn}</a>
-					<a href={resolve('/register')} class="btn btn-primary">{$t.nav.getStarted}</a>
-				{/if}
-			</div>
+		<div class="nav-actions">
+			<LanguageSwitcher />
+			<a href={resolve('/map')} class="btn btn-ghost nav-link">{$t.nav.map}</a>
+			{#if user}
+				<div class="profile-wrapper">
+					<button class="profile-btn" onclick={toggleDropdown}>
+						<span class="avatar">
+							{user.forename[0]}{user.surname?.[0] || ''}
+						</span>
+						<span class="username">{user.forename}</span>
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M6 9l6 6 6-6" />
+						</svg>
+					</button>
+					{#if showDropdown}
+						<div class="dropdown">
+							<a href={resolve('/account')} class="dropdown-item">
+								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+									<circle cx="12" cy="7" r="4" />
+								</svg>
+								{$t.nav.account}
+							</a>
+							<button class="dropdown-item logout" onclick={logout}>
+								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+									<polyline points="16,17 21,12 16,7" />
+									<line x1="21" y1="12" x2="9" y2="12" />
+								</svg>
+								{$t.nav.logout}
+							</button>
+						</div>
+					{/if}
+				</div>
+			{:else}
+				<a href={resolve('/login')} class="btn btn-secondary">{$t.nav.signIn}</a>
+				<a href={resolve('/register')} class="btn btn-primary">{$t.nav.getStarted}</a>
+			{/if}
 		</div>
 	</nav>
 
@@ -156,7 +154,7 @@
 		</div>
 		<div class="features-grid">
 			{#each featureKeys as { key, desc }, i (key)}
-				<div class="feature-card" style="animation-delay: {i * 100}ms">
+				<div class="feature-card page-card" style="animation-delay: {i * 100}ms">
 					<div class="feature-icon">
 						{#if key === 'realtimeData'}
 							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -181,7 +179,7 @@
 	</section>
 
 	<section class="cta">
-		<div class="cta-content">
+		<div class="cta-content page-card">
 			<h2>{$t.cta.title}</h2>
 			<p>{$t.cta.subtitle}</p>
 			<a href={resolve('/register')} class="btn btn-primary btn-lg">{$t.cta.getStartedFree}</a>
@@ -191,7 +189,7 @@
 	<footer class="footer">
 		<div class="footer-content">
 			<div class="footer-brand">
-				<div class="logo">
+				<div class="navbar-logo">
 					<Logo size={28} />
 					<span>Tanker24</span>
 				</div>
@@ -230,6 +228,13 @@
 		right: 0;
 		z-index: 100;
 		padding: 1rem 2rem;
+		max-width: 1200px;
+		margin: 0 auto;
+		width: 100%;
+		box-sizing: border-box;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 		transition: all var(--transition-base);
 	}
 
@@ -237,25 +242,6 @@
 		background: rgba(10, 10, 11, 0.9);
 		backdrop-filter: blur(20px);
 		-webkit-backdrop-filter: blur(20px);
-		border-bottom: 1px solid var(--border-subtle);
-	}
-
-	.nav-content {
-		max-width: 1200px;
-		margin: 0 auto;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
-
-	.logo {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		text-decoration: none;
-		color: var(--text-primary);
-		font-weight: 700;
-		font-size: 1.25rem;
 	}
 
 	.nav-actions {
@@ -269,44 +255,6 @@
 		font-weight: 500;
 	}
 
-	.profile-wrapper {
-		position: relative;
-	}
-
-	.profile-btn {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.5rem 0.75rem;
-		background: var(--bg-card);
-		border: 1px solid var(--border-light);
-		border-radius: var(--radius-full);
-		color: var(--text-primary);
-		cursor: pointer;
-		transition: all var(--transition-base);
-		font-family: inherit;
-		font-size: 0.875rem;
-		font-weight: 500;
-	}
-
-	.profile-btn:hover {
-		background: var(--bg-card-hover);
-		border-color: var(--accent-primary);
-	}
-
-	.avatar {
-		width: 28px;
-		height: 28px;
-		border-radius: 50%;
-		background: var(--accent-gradient);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 0.75rem;
-		font-weight: 600;
-		text-transform: uppercase;
-	}
-
 	.username {
 		display: none;
 	}
@@ -315,47 +263,6 @@
 		.username {
 			display: inline;
 		}
-	}
-
-	.dropdown {
-		position: absolute;
-		top: calc(100% + 0.5rem);
-		right: 0;
-		background: var(--bg-card);
-		border: 1px solid var(--border-light);
-		border-radius: var(--radius-md);
-		padding: 0.5rem;
-		min-width: 180px;
-		box-shadow: var(--shadow-xl);
-		animation: fadeIn 0.15s ease;
-	}
-
-	.dropdown-item {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		width: 100%;
-		padding: 0.75rem 1rem;
-		border: none;
-		background: none;
-		color: var(--text-secondary);
-		font-size: 0.875rem;
-		font-weight: 500;
-		border-radius: var(--radius-sm);
-		cursor: pointer;
-		transition: all var(--transition-fast);
-		text-decoration: none;
-		font-family: inherit;
-	}
-
-	.dropdown-item:hover {
-		background: var(--bg-card-hover);
-		color: var(--text-primary);
-	}
-
-	.dropdown-item.logout:hover {
-		background: rgba(239, 68, 68, 0.1);
-		color: var(--error);
 	}
 
 	.hero {
@@ -372,40 +279,6 @@
 		position: absolute;
 		inset: 0;
 		pointer-events: none;
-	}
-
-	.gradient-orb {
-		position: absolute;
-		border-radius: 50%;
-		filter: blur(80px);
-		opacity: 0.5;
-	}
-
-	.orb-1 {
-		width: 600px;
-		height: 600px;
-		background: var(--accent-primary);
-		top: -200px;
-		right: -100px;
-		opacity: 0.15;
-	}
-
-	.orb-2 {
-		width: 400px;
-		height: 400px;
-		background: #8b5cf6;
-		bottom: -100px;
-		left: -100px;
-		opacity: 0.1;
-	}
-
-	.grid-pattern {
-		position: absolute;
-		inset: 0;
-		background-image: linear-gradient(var(--border-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
-		background-size: 60px 60px;
-		mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-		-webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
 	}
 
 	.hero-content {
@@ -451,11 +324,6 @@
 		justify-content: center;
 		flex-wrap: wrap;
 		margin-bottom: 4rem;
-	}
-
-	.btn-lg {
-		padding: 1rem 2rem;
-		font-size: 1rem;
 	}
 
 	.stats {
@@ -540,11 +408,6 @@
 	}
 
 	.feature-card {
-		background: var(--bg-card);
-		border: 1px solid var(--border-subtle);
-		border-radius: var(--radius-lg);
-		padding: 2rem;
-		transition: all var(--transition-base);
 		animation: slideUp 0.6s ease forwards;
 		opacity: 0;
 	}
@@ -596,9 +459,6 @@
 		max-width: 600px;
 		margin: 0 auto;
 		text-align: center;
-		background: var(--bg-card);
-		border: 1px solid var(--border-subtle);
-		border-radius: var(--radius-xl);
 		padding: 4rem 2rem;
 	}
 
@@ -637,7 +497,7 @@
 		max-width: 300px;
 	}
 
-	.footer-brand .logo {
+	.footer-brand .navbar-logo {
 		margin-bottom: 1rem;
 	}
 
