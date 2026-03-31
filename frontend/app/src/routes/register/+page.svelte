@@ -2,8 +2,7 @@
 	import { resolve } from '$app/paths';
 	import { authService } from '$lib/services/auth_api';
 	import { goto } from '$app/navigation';
-	import Logo from '$lib/components/Logo.svelte';
-	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
 	import { t } from '$lib/stores/locale';
 
 	let last_name = $state('');
@@ -59,13 +58,7 @@
 		<div class="grid-pattern"></div>
 	</div>
 
-	<nav class="navbar">
-		<a href={resolve('/')} class="navbar-logo">
-			<Logo size={32} />
-			<span>Tanker24</span>
-		</a>
-		<LanguageSwitcher />
-	</nav>
+	<Navbar showMapLink={false} showAuthButtons={false} />
 
 	<div class="container">
 		<div class="auth-card">

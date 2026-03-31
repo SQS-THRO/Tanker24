@@ -51,24 +51,23 @@
 	}
 
 	.lang-btn {
-		display: flex;
+		display: inline-flex;
 		align-items: center;
 		gap: 0.375rem;
-		padding: 0.5rem 0.75rem;
-		background: var(--bg-card);
-		border: 1px solid var(--border-light);
+		padding: 0.75rem 1.5rem;
 		border-radius: var(--radius-full);
+		font-size: 0.875rem;
+		font-weight: 500;
+		border: 1px solid var(--border-light);
+		background: var(--bg-card);
 		color: var(--text-secondary);
 		cursor: pointer;
 		transition: all var(--transition-base);
 		font-family: inherit;
-		font-size: 0.8125rem;
-		font-weight: 500;
 	}
 
 	.lang-btn:hover {
 		background: var(--bg-card-hover);
-		border-color: var(--accent-primary);
 		color: var(--text-primary);
 	}
 
