@@ -148,7 +148,7 @@
 <main>
 	<AuthRequiredModal show={showAuthModal} />
 	<div class="map-header glass">
-		<a href={resolve('/')} class="logo">
+		<a href={resolve('/')} class="navbar-logo">
 			<Logo size={28} />
 			<span>Tanker24</span>
 		</a>
@@ -166,7 +166,7 @@
 		<div class="header-actions">
 			<LanguageSwitcher />
 			{#if user}
-				<div class="user-menu-wrapper">
+				<div class="profile-wrapper">
 					<button class="user-btn" onclick={() => (showUserMenu = !showUserMenu)}>
 						<span class="user-avatar">
 							{user.forename[0]}{user.surname?.[0] || ''}
@@ -176,7 +176,7 @@
 						</svg>
 					</button>
 					{#if showUserMenu}
-						<div class="user-dropdown">
+						<div class="dropdown">
 							<div class="dropdown-header">
 								<span class="dropdown-name">{user.forename} {user.surname || ''}</span>
 							</div>
@@ -255,7 +255,7 @@
 <svelte:window
 	onclick={(e) => {
 		const target = e.target as HTMLElement;
-		if (!target.closest('.user-menu-wrapper')) {
+		if (!target.closest('.profile-wrapper')) {
 			showUserMenu = false;
 		}
 	}}
@@ -283,23 +283,12 @@
 		border-radius: var(--radius-lg);
 	}
 
-	.logo {
-		display: flex;
-		align-items: center;
-		gap: 0.625rem;
-		text-decoration: none;
-		color: var(--text-primary);
-		font-weight: 700;
-		font-size: 1rem;
-		flex-shrink: 0;
-	}
-
-	.logo span {
+	.navbar-logo span {
 		display: none;
 	}
 
 	@media (min-width: 640px) {
-		.logo span {
+		.navbar-logo span {
 			display: inline;
 		}
 	}
@@ -350,94 +339,6 @@
 		flex-shrink: 0;
 	}
 
-	.user-menu-wrapper {
-		position: relative;
-	}
-
-	.user-btn {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.375rem 0.625rem 0.375rem 0.375rem;
-		background: var(--bg-card);
-		border: 1px solid var(--border-light);
-		border-radius: var(--radius-full);
-		color: var(--text-primary);
-		cursor: pointer;
-		transition: all var(--transition-base);
-		font-family: inherit;
-	}
-
-	.user-btn:hover {
-		background: var(--bg-card-hover);
-		border-color: var(--accent-primary);
-	}
-
-	.user-avatar {
-		width: 28px;
-		height: 28px;
-		border-radius: 50%;
-		background: var(--accent-gradient);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 0.75rem;
-		font-weight: 600;
-		text-transform: uppercase;
-	}
-
-	.user-dropdown {
-		position: absolute;
-		top: calc(100% + 0.5rem);
-		right: 0;
-		background: var(--bg-card);
-		border: 1px solid var(--border-light);
-		border-radius: var(--radius-md);
-		padding: 0.5rem;
-		min-width: 180px;
-		box-shadow: var(--shadow-xl);
-		animation: fadeIn 0.15s ease;
-	}
-
-	.dropdown-header {
-		padding: 0.5rem 0.75rem;
-		border-bottom: 1px solid var(--border-subtle);
-		margin-bottom: 0.25rem;
-	}
-
-	.dropdown-name {
-		font-size: 0.875rem;
-		font-weight: 600;
-	}
-
-	.dropdown-item {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		width: 100%;
-		padding: 0.625rem 0.75rem;
-		border: none;
-		background: none;
-		color: var(--text-secondary);
-		font-size: 0.875rem;
-		font-weight: 500;
-		border-radius: var(--radius-sm);
-		cursor: pointer;
-		transition: all var(--transition-fast);
-		text-decoration: none;
-		font-family: inherit;
-	}
-
-	.dropdown-item:hover {
-		background: var(--bg-card-hover);
-		color: var(--text-primary);
-	}
-
-	.dropdown-item.logout:hover {
-		background: rgba(239, 68, 68, 0.1);
-		color: var(--error);
-	}
-
 	.error-banner {
 		position: absolute;
 		top: 5rem;
@@ -480,11 +381,6 @@
 		color: var(--text-secondary);
 		font-size: 0.875rem;
 		font-weight: 500;
-	}
-
-	.btn-sm {
-		padding: 0.5rem 1rem;
-		font-size: 0.8125rem;
 	}
 
 	.location-btn {
