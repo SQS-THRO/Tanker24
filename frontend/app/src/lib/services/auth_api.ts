@@ -8,7 +8,6 @@ interface User {
 	email: string;
 	forename: string;
 	surname: string;
-	pin: string;
 	is_active: boolean;
 	is_superuser: boolean;
 	is_verified: boolean;
@@ -23,7 +22,6 @@ interface RegisterData {
 	email: string;
 	forename: string;
 	surname: string;
-	pin: string;
 	password: string;
 	invitation_key: string;
 }

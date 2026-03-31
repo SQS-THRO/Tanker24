@@ -69,7 +69,6 @@ class TestInvitationKeyRegistration:
 				"password": "securepassword123",
 				"forename": "New",
 				"surname": "User",
-				"pin": "5678",
 				"invitation_key": "a" * 32,
 			},
 		)
@@ -87,7 +86,6 @@ class TestInvitationKeyRegistration:
 				"password": "securepassword123",
 				"forename": "New",
 				"surname": "User",
-				"pin": "5678",
 				"invitation_key": "b" * 32,
 			},
 		)
@@ -102,7 +100,6 @@ class TestInvitationKeyRegistration:
 				"password": "securepassword123",
 				"forename": "New",
 				"surname": "User",
-				"pin": "5678",
 			},
 		)
 		assert response.status_code == 400
@@ -116,7 +113,6 @@ class TestInvitationKeyRegistration:
 				"password": "securepassword123",
 				"forename": "New",
 				"surname": "User",
-				"pin": "5678",
 			},
 		)
 		assert response.status_code == 201
@@ -132,7 +128,6 @@ class TestInvitationKeyRegistration:
 				"password": "securepassword123",
 				"forename": "New",
 				"surname": "User",
-				"pin": "5678",
 				"invitation_key": "a" * 32,
 			},
 		)

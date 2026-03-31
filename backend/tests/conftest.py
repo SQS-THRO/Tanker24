@@ -63,7 +63,6 @@ async def test_user(test_db_session):
 		hashed_password="$2b$12$test_hash_for_password_123456789012",
 		forename="Test",
 		surname="User",
-		pin="1234",
 		is_active=True,
 		is_verified=True,
 	)
@@ -88,7 +87,6 @@ async def second_user(test_db_session):
 		hashed_password="$2b$12$test_hash_for_password_987654321098",
 		forename="Second",
 		surname="User",
-		pin="5678",
 		is_active=True,
 		is_verified=True,
 	)

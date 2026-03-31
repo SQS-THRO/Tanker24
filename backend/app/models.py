@@ -35,7 +35,6 @@ class User(SQLAlchemyBaseUserTable[int], Base):
 	is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
 	forename: Mapped[str] = mapped_column(String(100))
 	surname: Mapped[str] = mapped_column(String(100))
-	pin: Mapped[str] = mapped_column(String(4))
 	invitation_key_id: Mapped[int | None] = mapped_column(ForeignKey("invitation_keys.id"), nullable=True)
 
 	invitation_key: Mapped[InvitationKey | None] = relationship("InvitationKey", lazy="selectin")
