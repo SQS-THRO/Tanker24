@@ -3,8 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { authService } from '$lib/services/auth_api';
 	import { goto } from '$app/navigation';
-	import Logo from '$lib/components/Logo.svelte';
-	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
 	import { t } from '$lib/stores/locale';
 	import { themeStore, GLOBAL_THEMES, COLOR_BLIND_OPTIONS, CVD_PALETTES, type ThemePalette, type GlobalTheme } from '$lib/stores/theme';
 
@@ -70,23 +69,7 @@
 		<div class="grid-pattern"></div>
 	</div>
 
-	<nav class="navbar">
-		<a href={resolve('/')} class="navbar-logo">
-			<Logo size={32} />
-			<span>Tanker24</span>
-		</a>
-		<div class="nav-right">
-			<LanguageSwitcher />
-			<a href={resolve('/map')} class="btn btn-secondary btn-sm">
-				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-					<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
-					<line x1="9" y1="3" x2="9" y2="18" />
-					<line x1="15" y1="6" x2="15" y2="21" />
-				</svg>
-				{$t.account.viewMap}
-			</a>
-		</div>
-	</nav>
+	<Navbar showAuthButtons={false} />
 
 	<div class="container">
 		{#if loading}
@@ -245,12 +228,6 @@
 		width: 100%;
 		display: flex;
 		flex-direction: column;
-	}
-
-	.nav-right {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
 	}
 
 	.loading {
