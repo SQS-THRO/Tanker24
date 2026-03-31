@@ -54,7 +54,7 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 0.375rem;
-		padding: .75rem 1.5rem;
+		padding: 0.75rem 1.5rem;
 		border-radius: var(--radius-full);
 		font-size: 0.875rem;
 		font-weight: 500;
