@@ -12,6 +12,21 @@
 	let loading = $state(false);
 	let showPassword = $state(false);
 
+	const emailValid = $derived(() => {
+		if (!email) return null;
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return emailRegex.test(email);
+	});
+
+	let isEmailTouched = $state(false);
+
+	function handleEmailInput() {
+		isEmailTouched = true;
+		if (!emailValid()) {
+			error = '';
+		}
+	}
+
 	async function handleLogin() {
 		error = '';
 		if (!email || !password) {
@@ -78,8 +93,31 @@
 							<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
 							<polyline points="22,6 12,13 2,6" />
 						</svg>
-						<input type="email" id="email" bind:value={email} placeholder={$t.login.emailPlaceholder} class="input with-icon" disabled={loading} />
+						<input
+							type="email"
+							id="email"
+							bind:value={email}
+							oninput={handleEmailInput}
+							placeholder={$t.login.emailPlaceholder}
+							class="input with-icon"
+							class:input-error={email && !emailValid()}
+							class:input-success={emailValid()}
+							disabled={loading}
+						/>
+						{#if emailValid()}
+							<svg class="validation-icon valid" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<polyline points="20 6 9 17 4 12" />
+							</svg>
+						{:else if email && !emailValid()}
+							<svg class="validation-icon invalid" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<line x1="18" y1="6" x2="6" y2="18" />
+								<line x1="6" y1="6" x2="18" y2="18" />
+							</svg>
+						{/if}
 					</div>
+					{#if email && !emailValid()}
+						<p class="validation-text error">{$t.login.emailInvalid}</p>
+					{/if}
 				</div>
 
 				<div class="form-group">

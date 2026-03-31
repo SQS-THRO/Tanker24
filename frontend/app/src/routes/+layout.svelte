@@ -632,6 +632,69 @@
 		box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 	}
 
+	:global(.input.input-error) {
+		border-color: var(--error);
+	}
+
+	:global(.input.input-error:focus) {
+		box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+	}
+
+	:global(.input.input-success) {
+		border-color: var(--success);
+	}
+
+	:global(.input.input-success:focus) {
+		box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+	}
+
+	:global(.validation-icon) {
+		position: absolute;
+		right: 2.5rem;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	:global(.validation-icon.valid) {
+		color: var(--success);
+	}
+
+	:global(.validation-icon.invalid) {
+		color: var(--error);
+	}
+
+	:global(.validation-text) {
+		font-size: 0.75rem;
+		margin-top: 0.375rem;
+	}
+
+	:global(.validation-text.error) {
+		color: var(--error);
+	}
+
+	:global(.password-checklist) {
+		margin-top: 0.75rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.375rem;
+	}
+
+	:global(.checklist-item) {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.75rem;
+		color: var(--text-muted);
+	}
+
+	:global(.checklist-item.valid) {
+		color: var(--success);
+	}
+
+	:global(.checklist-item svg) {
+		flex-shrink: 0;
+	}
+
 	:global(.fade-in) {
 		animation: fadeIn 0.5s ease forwards;
 	}
