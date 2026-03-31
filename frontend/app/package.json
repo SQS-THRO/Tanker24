@@ -45,5 +45,8 @@
 	},
 	"dependencies": {
 		"leaflet": "^1.9.4"
-	}
+	},
+    "overrides": {
+        "cookie": "^0.7.0"
+    }
 }
