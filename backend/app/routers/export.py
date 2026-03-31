@@ -110,7 +110,7 @@ async def get_user_data_as_csv(
 
         # Fill an StringIO pseudo file with the data
         output = StringIO()
-        writer = csv.DictWriter(output, fieldnames=["id","car_id", "car_type", "license_plate_number", "created_at", "mileage", "price_per_litre", "litres", "total_price", "fuel_type"])
+        writer = csv.DictWriter(output, delimiter=";", fieldnames=["id","car_id", "car_type", "license_plate_number", "created_at", "mileage", "price_per_litre", "litres", "total_price", "fuel_type"])
         writer.writeheader()
         writer.writerows(result)
 
