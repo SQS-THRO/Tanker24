@@ -119,7 +119,7 @@ async def get_user_data_as_csv(
         return StreamingResponse(
             iter([output.getvalue()]),
             media_type="text/csv",
-            headers={"Content-Disposition": "attachment; filename=cars.csv"},
+            headers={"Content-Disposition": "attachment; filename=car_history_data.csv"},
         )
 
     except SQLAlchemyError as e:
