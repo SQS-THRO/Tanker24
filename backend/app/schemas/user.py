@@ -7,7 +7,6 @@ class UserBase(BaseModel):
 	email: str
 	forename: str
 	surname: str
-	pin: str
 
 
 class UserRead(UserBase):
@@ -32,5 +31,4 @@ class UserUpdate(BaseModel):
 	email: str | None = None
 	forename: str | None = None
 	surname: str | None = None
-	pin: str | None = None
 	password: str | None = None
