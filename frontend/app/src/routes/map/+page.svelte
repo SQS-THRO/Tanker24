@@ -90,9 +90,14 @@
 
 		map = L.map(mapContainer).setView([lat, lng], DEFAULT_ZOOM);
 
-		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		const isDarkTheme = $themeStore.globalTheme === 'dark-modern';
+		const tileUrl = isDarkTheme ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+		const fallbackUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+		L.tileLayer(tileUrl, {
 			maxZoom: 19,
-			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+			errorTileUrl: fallbackUrl
 		}).addTo(map);
 
 		if (userLat !== null && userLng !== null) {
