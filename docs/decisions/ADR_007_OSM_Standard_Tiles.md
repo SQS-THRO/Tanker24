@@ -95,9 +95,73 @@ OpenStreetMap Standard provides the familiar, neutral appearance that best serve
 
 ---
 
-## 5. References
+## 5. Extending to Dark Theme
+
+### 5.1 Context
+
+Our application requires both light and dark theme map options to match user interface preferences. The dark theme is particularly important for:
+- Night-time usage
+- Reducing eye strain in low-light environments
+- Aesthetic consistency with dark-mode UI designs
+
+### 5.2 Decision
+
+We decided to use **CartoDB Dark Matter** (`https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png`) as our dark theme tile provider.
+
+### 5.3 Rationale
+
+- **High-Quality Dark Design**:
+  - Clean, minimal dark basemap with excellent contrast
+  - Subtle colors optimized for dark backgrounds
+  - Well-balanced label readability on dark tiles
+- **No Authentication Required**:
+  - Free to use with attribution
+  - No API key or registration needed
+  - Same free tier as standard Carto tiles
+- **Consistent API Structure**:
+  - Same {z}/{x}/{y} coordinate format as standard tiles
+  - Easy to swap between light and dark themes in code
+  - Both use HTTPS endpoints
+- **Technical Reliability**:
+  - CDN-backed with global distribution
+  - Stable, well-maintained service
+  - Regular updates matching OSM data
+
+### Alternatives Considered
+
+| Option | Pros | Cons |
+|--------|------|------|
+| Stadia Maps Alidade Smooth Dark | Modern styling, free tier available | Commercial service, requires attribution |
+| MapTiler Dark | Professional quality, multiple styles | Commercial pricing, requires API key |
+| OSM Bright (self-hosted) | Full control, customizable | Requires self-hosting infrastructure |
+| Humanitarian Dark | High contrast | Not a standard dark theme option |
+
+**Stadia Maps** was considered but requires commercial terms and attribution that differs from our preference for more permissive usage.
+
+**MapTiler** offers excellent dark styles but requires API key registration and has usage-based pricing at scale.
+
+The **CartoDB Dark Matter** layer provides the best balance of quality, accessibility, and ease of integration for our dark theme needs.
+
+### 5.4 Consequences
+
+### Positive Outcomes
+- Dark theme available for night-time and low-light usage
+- Maintains consistent tile API format across themes
+- No additional costs or registration requirements
+- Easy to implement theme switching in the UI
+
+### Tradeoffs and Considerations
+- CartoDB is a commercial service (recently acquired by MapTiler); terms may change
+- Attribution required: "© OpenStreetMap contributors © CARTO"
+- Dark theme has slightly different coverage than standard OSM (same data source)
+- Consider implementing theme detection based on system preferences
+
+---
+
+## 6. References
 
 - [OSM Tile Usage Policy](https://operations.osmfoundation.org/policies/tiles/)
 - [OpenStreetMap Standard Tile Layer](https://wiki.openstreetmap.org/wiki/Standard_tile_layer)
 - [OpenStreetMap Carto](https://github.com/gravitystorm/openstreetmap-carto/) (rendering style source code)
 - [Leaflet Documentation](https://leafletjs.com/) (our map library)
+- [CartoDB Dark Matter](https://carto.com/basemaps/) (dark theme tiles)

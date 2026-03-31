@@ -9,6 +9,7 @@
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import AuthRequiredModal from '$lib/components/AuthRequiredModal.svelte';
 	import { t } from '$lib/stores/locale';
+	import { themeStore } from '$lib/stores/theme';
 	import type { Map } from 'leaflet';
 
 	const DEFAULT_LAT = 47.79;
@@ -91,9 +92,14 @@
 
 		map = L.map(mapContainer).setView([lat, lng], DEFAULT_ZOOM);
 
-		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		const isDarkTheme = $themeStore.globalTheme === 'dark-modern';
+		const tileUrl = isDarkTheme ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+		const fallbackUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+		L.tileLayer(tileUrl, {
 			maxZoom: 19,
-			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+			errorTileUrl: fallbackUrl
 		}).addTo(map);
 
 		if (userLat !== null && userLng !== null) {
@@ -531,7 +537,7 @@
 		height: 14px;
 		border-radius: 50%;
 		background: #3b82f6;
-		border: 3px solid white;
+		border: 3px solid var(--bg-primary);
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 	}
 
@@ -601,7 +607,7 @@
 	}
 
 	:global(.leaflet-control-attribution) {
-		background: rgba(10, 10, 11, 0.8) !important;
+		background: var(--bg-secondary) !important;
 		color: var(--text-muted) !important;
 		font-size: 0.625rem !important;
 		backdrop-filter: blur(10px);
