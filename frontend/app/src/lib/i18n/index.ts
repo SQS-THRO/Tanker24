@@ -125,6 +125,12 @@ export const translations = {
 			yourLocation: 'Your Location',
 			loginRequired: 'Please log in to view stations',
 			login: 'Login'
+		},
+		authRequired: {
+			title: 'Login Required',
+			description: 'You need to be logged in to access this page.',
+			back: 'Go Back',
+			login: 'Sign In'
 		}
 	},
 	de: {
@@ -252,6 +258,12 @@ export const translations = {
 			back: 'Zurück',
 			yourLocation: 'Dein Standort',
 			loginRequired: 'Bitte melde dich an um Tankstellen anzuzeigen',
+			login: 'Anmelden'
+		},
+		authRequired: {
+			title: 'Anmeldung erforderlich',
+			description: 'Du musst angemeldet sein um auf diese Seite zuzugreifen.',
+			back: 'Zurück',
 			login: 'Anmelden'
 		}
 	}

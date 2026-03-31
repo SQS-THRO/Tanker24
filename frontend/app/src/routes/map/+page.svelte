@@ -7,6 +7,7 @@
 	import { goto } from '$app/navigation';
 	import Logo from '$lib/components/Logo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+	import AuthRequiredModal from '$lib/components/AuthRequiredModal.svelte';
 	import { t } from '$lib/stores/locale';
 	import type { Map } from 'leaflet';
 
@@ -21,6 +22,7 @@
 	let userLng = $state<number | null>(null);
 	let user = $state<{ forename: string; surname?: string } | null>(null);
 	let showUserMenu = $state(false);
+	let showAuthModal = $state(false);
 	let map: Map | null = null;
 
 	function getUserLocation(): Promise<{ lat: number; lng: number }> {
@@ -69,7 +71,7 @@
 
 		const token = localStorage.getItem('token');
 		if (!token) {
-			await goto(resolve('/login'));
+			showAuthModal = true;
 			return;
 		}
 
@@ -138,6 +140,7 @@
 </script>
 
 <main>
+	<AuthRequiredModal show={showAuthModal} />
 	<div class="map-header glass">
 		<a href={resolve('/')} class="logo">
 			<Logo size={28} />
