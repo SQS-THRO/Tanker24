@@ -1,7 +1,7 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
 	import faviconDark from '$lib/assets/favicon-dark.svg';
-	import { themeStore, CVD_PALETTES } from '$lib/stores/theme';
+	import { themeStore, CVD_PALETTES, THEME_PALETTES } from '$lib/stores/theme';
 	import { onMount } from 'svelte';
 
 	let { children } = $props();
@@ -9,39 +9,47 @@
 	function applyThemeVariables(override: keyof typeof CVD_PALETTES) {
 		if (typeof document === 'undefined') return;
 
-		const palette = CVD_PALETTES[override];
+		const globalTheme = $themeStore.globalTheme;
+		const basePalette = THEME_PALETTES[globalTheme];
+		const cvdPalette = CVD_PALETTES[override];
 		const root = document.documentElement;
 
-		if (palette) {
-			root.style.setProperty('--bg-primary', palette.bgPrimary);
-			root.style.setProperty('--bg-secondary', palette.bgSecondary);
-			root.style.setProperty('--bg-card', palette.bgCard);
-			root.style.setProperty('--bg-card-hover', palette.bgCardHover);
-			root.style.setProperty('--bg-elevated', palette.bgElevated);
-			root.style.setProperty('--text-primary', palette.textPrimary);
-			root.style.setProperty('--text-secondary', palette.textSecondary);
-			root.style.setProperty('--text-muted', palette.textMuted);
-			root.style.setProperty('--accent-primary', palette.accentPrimary);
-			root.style.setProperty('--accent-secondary', palette.accentSecondary);
-			root.style.setProperty('--accent-gradient', palette.accentGradient);
-			root.style.setProperty('--success', palette.success);
-			root.style.setProperty('--error', palette.error);
-			root.style.setProperty('--warning', palette.warning);
+		if (cvdPalette) {
+			root.style.setProperty('--bg-primary', cvdPalette.bgPrimary);
+			root.style.setProperty('--bg-secondary', cvdPalette.bgSecondary);
+			root.style.setProperty('--bg-card', cvdPalette.bgCard);
+			root.style.setProperty('--bg-card-hover', cvdPalette.bgCardHover);
+			root.style.setProperty('--bg-elevated', cvdPalette.bgElevated);
+			root.style.setProperty('--text-primary', cvdPalette.textPrimary);
+			root.style.setProperty('--text-secondary', cvdPalette.textSecondary);
+			root.style.setProperty('--text-muted', cvdPalette.textMuted);
+			root.style.setProperty('--accent-primary', cvdPalette.accentPrimary);
+			root.style.setProperty('--accent-secondary', cvdPalette.accentSecondary);
+			root.style.setProperty('--accent-gradient', cvdPalette.accentGradient);
+			root.style.setProperty('--success', cvdPalette.success);
+			root.style.setProperty('--error', cvdPalette.error);
+			root.style.setProperty('--warning', cvdPalette.warning);
 		} else {
-			root.style.setProperty('--bg-primary', '#0a0a0b');
-			root.style.setProperty('--bg-secondary', '#141416');
-			root.style.setProperty('--bg-card', '#1a1a1d');
-			root.style.setProperty('--bg-card-hover', '#222225');
-			root.style.setProperty('--bg-elevated', '#2a2a2e');
-			root.style.setProperty('--text-primary', '#ffffff');
-			root.style.setProperty('--text-secondary', '#a1a1aa');
-			root.style.setProperty('--text-muted', '#71717a');
-			root.style.setProperty('--accent-primary', '#6366f1');
-			root.style.setProperty('--accent-secondary', '#818cf8');
-			root.style.setProperty('--accent-gradient', 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%)');
-			root.style.setProperty('--success', '#22c55e');
-			root.style.setProperty('--error', '#ef4444');
-			root.style.setProperty('--warning', '#f59e0b');
+			root.style.setProperty('--bg-primary', basePalette.bgPrimary);
+			root.style.setProperty('--bg-secondary', basePalette.bgSecondary);
+			root.style.setProperty('--bg-card', basePalette.bgCard);
+			root.style.setProperty('--bg-card-hover', basePalette.bgCardHover);
+			root.style.setProperty('--bg-elevated', basePalette.bgElevated);
+			root.style.setProperty('--text-primary', basePalette.textPrimary);
+			root.style.setProperty('--text-secondary', basePalette.textSecondary);
+			root.style.setProperty('--text-muted', basePalette.textMuted);
+			root.style.setProperty('--accent-primary', basePalette.accentPrimary);
+			root.style.setProperty('--accent-secondary', basePalette.accentSecondary);
+			root.style.setProperty('--accent-gradient', basePalette.accentGradient);
+			root.style.setProperty('--success', basePalette.success);
+			root.style.setProperty('--error', basePalette.error);
+			root.style.setProperty('--warning', basePalette.warning);
+		}
+
+		if (globalTheme === 'light-modern') {
+			document.body.classList.add('light-theme');
+		} else {
+			document.body.classList.remove('light-theme');
 		}
 	}
 
@@ -158,6 +166,10 @@
 
 	:global(::-webkit-scrollbar-thumb:hover) {
 		background: var(--accent-primary);
+	}
+
+	:global(body.light-theme .glass) {
+		background: rgba(250, 250, 250, 0.8);
 	}
 
 	:global(.glass) {

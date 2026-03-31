@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 
 export type ColorBlindOverride = 'none' | 'protanopia' | 'deuteranopia' | 'tritanopia';
-export type GlobalTheme = 'dark-modern';
+export type GlobalTheme = 'dark-modern' | 'light-modern';
 
 export interface ThemePalette {
 	bgPrimary: string;
@@ -126,7 +126,45 @@ export const CVD_PALETTES: Record<ColorBlindOverride, ThemePalette | null> = {
 	}
 };
 
-export const GLOBAL_THEMES: { id: GlobalTheme; name: string }[] = [{ id: 'dark-modern', name: 'Dark Modern' }];
+export const THEME_PALETTES: Record<GlobalTheme, ThemePalette> = {
+	'dark-modern': {
+		bgPrimary: '#0a0a0b',
+		bgSecondary: '#141416',
+		bgCard: '#1a1a1d',
+		bgCardHover: '#222225',
+		bgElevated: '#2a2a2e',
+		textPrimary: '#ffffff',
+		textSecondary: '#a1a1aa',
+		textMuted: '#71717a',
+		accentPrimary: '#6366f1',
+		accentSecondary: '#818cf8',
+		accentGradient: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%)',
+		success: '#22c55e',
+		error: '#ef4444',
+		warning: '#f59e0b'
+	},
+	'light-modern': {
+		bgPrimary: '#fafafa',
+		bgSecondary: '#f4f4f5',
+		bgCard: '#ffffff',
+		bgCardHover: '#f4f4f5',
+		bgElevated: '#e4e4e7',
+		textPrimary: '#18181b',
+		textSecondary: '#52525b',
+		textMuted: '#a1a1aa',
+		accentPrimary: '#6366f1',
+		accentSecondary: '#818cf8',
+		accentGradient: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%)',
+		success: '#22c55e',
+		error: '#ef4444',
+		warning: '#f59e0b'
+	}
+};
+
+export const GLOBAL_THEMES: { id: GlobalTheme; name: string }[] = [
+	{ id: 'dark-modern', name: 'Dark Modern' },
+	{ id: 'light-modern', name: 'Light Modern' }
+];
 
 export const COLOR_BLIND_OPTIONS: { id: ColorBlindOverride; name: string; description: string }[] = [
 	{ id: 'none', name: 'None', description: 'Default colors' },

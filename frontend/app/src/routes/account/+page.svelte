@@ -6,7 +6,7 @@
 	import Logo from '$lib/components/Logo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import { t } from '$lib/stores/locale';
-	import { themeStore, GLOBAL_THEMES, COLOR_BLIND_OPTIONS, CVD_PALETTES, type ThemePalette } from '$lib/stores/theme';
+	import { themeStore, GLOBAL_THEMES, COLOR_BLIND_OPTIONS, CVD_PALETTES, type ThemePalette, type GlobalTheme } from '$lib/stores/theme';
 
 	let user = $state<{
 		forename: string;
@@ -119,7 +119,7 @@
 
 				<div class="setting-group">
 					<label class="setting-label">{$t.account.globalTheme}</label>
-					<select class="input theme-select">
+					<select class="input theme-select" value={$themeStore.globalTheme} onchange={(e) => themeStore.setGlobalTheme(e.currentTarget.value as GlobalTheme)}>
 						{#each GLOBAL_THEMES as theme (theme.id)}
 							<option value={theme.id}>{theme.name}</option>
 						{/each}

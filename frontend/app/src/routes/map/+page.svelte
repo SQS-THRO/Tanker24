@@ -8,6 +8,7 @@
 	import Logo from '$lib/components/Logo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import { t } from '$lib/stores/locale';
+	import { themeStore } from '$lib/stores/theme';
 	import type { Map } from 'leaflet';
 
 	const DEFAULT_LAT = 47.79;
