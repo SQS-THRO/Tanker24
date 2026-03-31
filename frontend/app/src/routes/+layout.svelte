@@ -14,37 +14,22 @@
 		const cvdPalette = CVD_PALETTES[override];
 		const root = document.documentElement;
 
-		if (cvdPalette) {
-			root.style.setProperty('--bg-primary', cvdPalette.bgPrimary);
-			root.style.setProperty('--bg-secondary', cvdPalette.bgSecondary);
-			root.style.setProperty('--bg-card', cvdPalette.bgCard);
-			root.style.setProperty('--bg-card-hover', cvdPalette.bgCardHover);
-			root.style.setProperty('--bg-elevated', cvdPalette.bgElevated);
-			root.style.setProperty('--text-primary', cvdPalette.textPrimary);
-			root.style.setProperty('--text-secondary', cvdPalette.textSecondary);
-			root.style.setProperty('--text-muted', cvdPalette.textMuted);
-			root.style.setProperty('--accent-primary', cvdPalette.accentPrimary);
-			root.style.setProperty('--accent-secondary', cvdPalette.accentSecondary);
-			root.style.setProperty('--accent-gradient', cvdPalette.accentGradient);
-			root.style.setProperty('--success', cvdPalette.success);
-			root.style.setProperty('--error', cvdPalette.error);
-			root.style.setProperty('--warning', cvdPalette.warning);
-		} else {
-			root.style.setProperty('--bg-primary', basePalette.bgPrimary);
-			root.style.setProperty('--bg-secondary', basePalette.bgSecondary);
-			root.style.setProperty('--bg-card', basePalette.bgCard);
-			root.style.setProperty('--bg-card-hover', basePalette.bgCardHover);
-			root.style.setProperty('--bg-elevated', basePalette.bgElevated);
-			root.style.setProperty('--text-primary', basePalette.textPrimary);
-			root.style.setProperty('--text-secondary', basePalette.textSecondary);
-			root.style.setProperty('--text-muted', basePalette.textMuted);
-			root.style.setProperty('--accent-primary', basePalette.accentPrimary);
-			root.style.setProperty('--accent-secondary', basePalette.accentSecondary);
-			root.style.setProperty('--accent-gradient', basePalette.accentGradient);
-			root.style.setProperty('--success', basePalette.success);
-			root.style.setProperty('--error', basePalette.error);
-			root.style.setProperty('--warning', basePalette.warning);
-		}
+		root.style.setProperty('--bg-primary', basePalette.bgPrimary);
+		root.style.setProperty('--bg-secondary', basePalette.bgSecondary);
+		root.style.setProperty('--bg-card', basePalette.bgCard);
+		root.style.setProperty('--bg-card-hover', basePalette.bgCardHover);
+		root.style.setProperty('--bg-elevated', basePalette.bgElevated);
+		root.style.setProperty('--text-primary', basePalette.textPrimary);
+		root.style.setProperty('--text-secondary', basePalette.textSecondary);
+		root.style.setProperty('--text-muted', basePalette.textMuted);
+
+		const accentSource = cvdPalette || basePalette;
+		root.style.setProperty('--accent-primary', accentSource.accentPrimary);
+		root.style.setProperty('--accent-secondary', accentSource.accentSecondary);
+		root.style.setProperty('--accent-gradient', accentSource.accentGradient);
+		root.style.setProperty('--success', accentSource.success);
+		root.style.setProperty('--error', accentSource.error);
+		root.style.setProperty('--warning', accentSource.warning);
 
 		if (globalTheme === 'light-modern') {
 			document.body.classList.add('light-theme');
