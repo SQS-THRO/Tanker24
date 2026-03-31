@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import async_session_maker, init_db
 from app.invitation_keys import sync_invitation_keys
-from app.routers import auth, health, stations
+from app.routers import auth, health, stations, export
 
 
 @asynccontextmanager
@@ -29,6 +29,7 @@ app.include_router(auth.auth_router, prefix="/auth/jwt", tags=["auth"])
 app.include_router(auth.register_router, prefix="/auth", tags=["auth"])
 app.include_router(auth.users_router, prefix="/users", tags=["users"])
 app.include_router(stations.router)
+app.include_router(export.router)
 
 app.add_middleware(
 	CORSMiddleware,
