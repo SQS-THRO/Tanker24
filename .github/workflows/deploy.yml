@@ -27,6 +27,6 @@ jobs:
 
       - name: Connect via SSH and start deployment-Script
         run: |
-          echo "{{ secrets.DEPLOYMENT_SSH_PRIVATE_KEY }}" > id_deploy
+          echo "${{ secrets.DEPLOYMENT_SSH_PRIVATE_KEY }}" > id_deploy
           chmod 600 id_deploy
           ssh -o "StrictHostKeyChecking=no" -i id_deploy ${{ secrets.DEPLOYMENT_SSH_USER }}@${{ secrets.DEPLOYMENT_SSH_HOST }} "/usr/bin/redeploy"
