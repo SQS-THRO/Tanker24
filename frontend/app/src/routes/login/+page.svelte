@@ -5,6 +5,13 @@
 	import Logo from '$lib/components/Logo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import { t } from '$lib/stores/locale';
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		if (localStorage.getItem('token')) {
+			goto(resolve('/account'));
+		}
+	});
 
 	let email = $state('');
 	let password = $state('');
