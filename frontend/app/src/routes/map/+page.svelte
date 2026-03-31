@@ -529,7 +529,7 @@
 		height: 14px;
 		border-radius: 50%;
 		background: #3b82f6;
-		border: 3px solid white;
+		border: 3px solid var(--bg-primary);
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 	}
 
@@ -599,7 +599,7 @@
 	}
 
 	:global(.leaflet-control-attribution) {
-		background: rgba(10, 10, 11, 0.8) !important;
+		background: var(--bg-secondary) !important;
 		color: var(--text-muted) !important;
 		font-size: 0.625rem !important;
 		backdrop-filter: blur(10px);
