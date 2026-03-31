@@ -18,7 +18,9 @@ router = APIRouter(prefix="/export", tags=["export"])
             status_code=status.HTTP_200_OK,
             summary="Get the user data as json",
             description="Returns the user data of the authenticated user as a json string.",
-            responses={503:{"Database temporarily unavailable."}}
+            responses={
+                503: {"description": "Database temporarily unavailable."}
+            }
             )
 async def get_user_data_as_json(
 	db: Annotated[AsyncSession, Depends(get_db)],
