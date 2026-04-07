@@ -5,6 +5,7 @@ import csv
 
 
 from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -31,7 +32,7 @@ router = APIRouter(prefix="/export", tags=["export"])
 async def get_user_data_as_json(
 	db: Annotated[AsyncSession, Depends(get_db)],
 	user: Annotated[UserRead, Depends(get_current_active_user)],
-) -> str:
+) -> JSONResponse:
     result = []
 
     try:
@@ -61,7 +62,12 @@ async def get_user_data_as_json(
                 "history": history
             })
 
-        return json.dumps(result)
+        return JSONResponse(
+            content=result,
+            headers={
+                "Content-Disposition": "attachment; filename=user_data.json"
+            }
+        )
 
     except SQLAlchemyError as e:
         await db.rollback()

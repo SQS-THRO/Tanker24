@@ -3,6 +3,7 @@ from unittest.mock import AsyncMock
 
 import pytest
 from fastapi import HTTPException
+from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.models import Car, HistoryRecord, FuelType, User
@@ -84,7 +85,7 @@ class TestExportEndpoint:
 
         # Call the function under test
         response = await get_user_data_as_json(db=db, user=user)
-        data = json.loads(response)
+        data = json.loads(response.body.decode())
 
         # Check if the fields are parsed correctly from the database fields
         assert len(data) == 2
@@ -131,7 +132,8 @@ class TestExportEndpoint:
         # Call the function for getting the user data. It should not throw an exception
         # as empty histories are handled gracefully.
         response = await get_user_data_as_json(db=db, user=user)
-        data = json.loads(response)
+
+        data = json.loads(response.body.decode())
 
         # Check if the history is really empty
         assert data == [
@@ -156,7 +158,7 @@ class TestExportEndpoint:
         )
 
         response = await get_user_data_as_json(db=db, user=user)
-        data = json.loads(response)
+        data = json.loads(response.body.decode())
 
         # Check the array is empty for real
         assert data == []
@@ -178,7 +180,11 @@ class TestExportEndpoint:
         )
 
         response = await get_user_data_as_json(db=db, user=user)
-        data = json.loads(response)
+
+        # Check if the response is indeed a JSONResponse and not an exception
+        assert isinstance(response, JSONResponse)
+
+        data = json.loads(response.body.decode())
 
         assert len(data) == 2
         assert db.execute.await_count == 3
