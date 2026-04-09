@@ -43,6 +43,7 @@ export const translations = {
 			about: 'About',
 			contact: 'Contact',
 			privacy: 'Privacy',
+			impressum: 'Legal Notice',
 			copyright: '2026 Tanker24. All rights reserved.'
 		},
 		login: {
@@ -55,7 +56,7 @@ export const translations = {
 			signIn: 'Sign in',
 			signingIn: 'Signing in...',
 			or: 'or',
-			noAccount: "Don't have an account?",
+			noAccount: 'Don\'t have an account?',
 			createOne: 'Create one',
 			fillAllFields: 'Please fill in all fields',
 			loginFailed: 'Login failed',
@@ -135,7 +136,20 @@ export const translations = {
 			description: 'You need to be logged in to access this page.',
 			back: 'Go Back',
 			login: 'Sign In'
-		}
+		},
+		impressum: {
+			pageTitle: 'Legal Notice according to §5 TMG',
+			contactHeading: 'Contact',
+            contactPhone: 'Phone: +49 (0) 8031 805 - 0\nFax: +49 (0) 8031 805 - 2105',
+            contactEmail: 'E-Mail: info@th-rosenheim.de',
+            contactAdress: 'Technische Hochschule Rosenheim\nHochschulstraße 1\n83024 Rosenheim\nGermany',
+            contactRepresentativeHeading: 'Represented by',
+            contactRepresentative: 'Rosenheim Technical University of Applied Sciences is a public corporation. It is legally represented by the President of the Rosenheim University of Applied Sciences, Professor Heinrich Köster.',
+            copyrightHeading: 'Copyright',
+            copyright: '© 2026 Tanker24. All rights reserved.',
+            dataPrivacyHeading: 'Data Privacy',
+            dataPrivacy: 'Further information on data processing and data protection can be found in our privacy policy:'
+			}
 	},
 	de: {
 		nav: {
@@ -181,6 +195,7 @@ export const translations = {
 			about: 'Über uns',
 			contact: 'Kontakt',
 			privacy: 'Datenschutz',
+			impressum: 'Impressum',
 			copyright: '2026 Tanker24. Alle Rechte vorbehalten.'
 		},
 		login: {
@@ -273,6 +288,19 @@ export const translations = {
 			description: 'Du musst angemeldet sein um auf diese Seite zuzugreifen.',
 			back: 'Zurück',
 			login: 'Anmelden'
+		},
+		impressum: {
+			pageTitle: 'Angaben gemäß § 5 TMG',
+			contactHeading: 'Kontakt',
+            contactPhone: 'Telefon: +49 (0) 8031 805 - 0\nTelefax: +49 (0) 8031 805 - 2105',
+            contactEmail: 'E-Mail: info@th-rosenheim.de',
+            contactAdress: 'Technische Hochschule Rosenheim\nHochschulstraße 1\n83024 Rosenheim\nGermany',
+            contactRepresentativeHeading: 'Vertreten durch',
+            contactRepresentative: 'Die Technische Hochschule Rosenheim ist eine Körperschaft des öffentlichen Rechts. Sie wird gesetzlich vertreten durch den Präsidenten der Technischen Hochschule Rosenheim Professor Heinrich Köster.',
+            copyrightHeading: 'Urheberrecht',
+            copyright: '© 2026 Tanker24. Alle Rechte vorbehalten.',
+            dataPrivacyHeading: 'Datenschutz',
+            dataPrivacy: 'Weiterführende Informationen zur Datenverarbeitung und zum Datenschutz finden Sie in unserer Datenschutzerklärung:'
 		}
 	}
 };
