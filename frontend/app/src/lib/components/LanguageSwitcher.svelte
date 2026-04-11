@@ -25,11 +25,11 @@
 	{#if showDropdown}
 		<div class="lang-dropdown">
 			<button class="lang-option" class:active={$locale === 'en'} onclick={() => setLocale('en')}>
-				<img class="lang-flag" src="https://twemoji.maxcdn.com/v/latest/72x72/1f1ec-1f1e7.png" alt="English" />
+				<img class="lang-flag" src="https://twemoji.maxcdn.com/v/latest/svg/1f1ec-1f1e7.svg" alt="English" />
 				English
 			</button>
 			<button class="lang-option" class:active={$locale === 'de'} onclick={() => setLocale('de')}>
-				<img class="lang-flag" src="https://twemoji.maxcdn.com/v/latest/72x72/1f1e9-1f1ea.png" alt="Deutsch" />
+				<img class="lang-flag" src="https://twemoji.maxcdn.com/v/latest/svg/1f1e9-1f1ea.svg" alt="Deutsch" />
 				Deutsch
 			</button>
 		</div>
@@ -121,5 +121,6 @@
 	.lang-flag {
 		width: 1rem;
 		height: 1rem;
+		vertical-align: middle;
 	}
 </style>
