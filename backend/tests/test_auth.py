@@ -62,7 +62,7 @@ class TestPasswordValidation:
 
 	@pytest.mark.asyncio
 	async def test_password_with_various_special_chars(self, user_manager):
-		for special in "!@#$%^&*(),.?\":{}|<>":
+		for special in '!@#$%^&*(),.?":{}|<>':
 			password = f"Test1234{special}"
 			await user_manager.validate_password(password)
 		assert True
