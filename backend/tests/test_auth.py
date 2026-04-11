@@ -24,7 +24,6 @@ class TestPasswordValidation:
 	@pytest.mark.asyncio
 	async def test_valid_password_all_criteria(self, user_manager):
 		await user_manager.validate_password(self.VALID_PASSWORD)
-		assert True
 
 	@pytest.mark.asyncio
 	async def test_password_too_short(self, user_manager):
@@ -65,7 +64,6 @@ class TestPasswordValidation:
 		for special in '!@#$%^&*(),.?":{}|<>':
 			password = f"Test1234{special}"
 			await user_manager.validate_password(password)
-		assert True
 
 
 class TestAuthEndpoints:
