@@ -14,7 +14,7 @@ is_sqlite = settings.db_type == "sqlite"
 engine = create_async_engine(
 	settings.database_url,
 	echo=settings.debug,
-    connect_args={"check_same_thread": False} if is_sqlite else {},
+	connect_args={"check_same_thread": False} if is_sqlite else {},
 )
 
 async_session_maker = async_sessionmaker(

@@ -66,7 +66,7 @@ class TestInvitationKeyRegistration:
 			"/auth/register",
 			json={
 				"email": "newuser@example.com",
-				"password": "securepassword123",
+				"password": "SecurePass123!",
 				"forename": "New",
 				"surname": "User",
 				"invitation_key": "a" * 32,
@@ -83,7 +83,7 @@ class TestInvitationKeyRegistration:
 			"/auth/register",
 			json={
 				"email": "newuser@example.com",
-				"password": "securepassword123",
+				"password": "SecurePass123!",
 				"forename": "New",
 				"surname": "User",
 				"invitation_key": "b" * 32,
@@ -97,7 +97,7 @@ class TestInvitationKeyRegistration:
 			"/auth/register",
 			json={
 				"email": "newuser@example.com",
-				"password": "securepassword123",
+				"password": "SecurePass123!",
 				"forename": "New",
 				"surname": "User",
 			},
@@ -110,7 +110,7 @@ class TestInvitationKeyRegistration:
 			"/auth/register",
 			json={
 				"email": "newuser@example.com",
-				"password": "securepassword123",
+				"password": "SecurePass123!",
 				"forename": "New",
 				"surname": "User",
 			},
@@ -125,7 +125,7 @@ class TestInvitationKeyRegistration:
 			"/auth/register",
 			json={
 				"email": "newuser@example.com",
-				"password": "securepassword123",
+				"password": "SecurePass123!",
 				"forename": "New",
 				"surname": "User",
 				"invitation_key": "a" * 32,

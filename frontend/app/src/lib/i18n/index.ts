@@ -58,7 +58,8 @@ export const translations = {
 			noAccount: "Don't have an account?",
 			createOne: 'Create one',
 			fillAllFields: 'Please fill in all fields',
-			loginFailed: 'Login failed'
+			loginFailed: 'Login failed',
+			emailInvalid: 'Please enter a valid email address'
 		},
 		register: {
 			title: 'Create your account',
@@ -83,7 +84,13 @@ export const translations = {
 			passwordTooShort: 'Password must be at least 8 characters',
 			registerFailed: 'Registration failed',
 			invitationKey: 'Invitation Key',
-			invitationKeyPlaceholder: 'Enter your invitation key'
+			invitationKeyPlaceholder: 'Enter your invitation key',
+			passwordMinLength: 'At least 8 characters',
+			passwordUppercase: 'Contains uppercase letter',
+			passwordLowercase: 'Contains lowercase letter',
+			passwordNumber: 'Contains number',
+			passwordSpecial: 'Contains special character',
+			emailInvalid: 'Please enter a valid email address'
 		},
 		account: {
 			title: 'Account',
@@ -189,7 +196,8 @@ export const translations = {
 			noAccount: 'Noch kein Konto?',
 			createOne: 'Erstellen',
 			fillAllFields: 'Bitte fülle alle Felder aus',
-			loginFailed: 'Anmeldung fehlgeschlagen'
+			loginFailed: 'Anmeldung fehlgeschlagen',
+			emailInvalid: 'Bitte gib eine gültige E-Mail-Adresse ein'
 		},
 		register: {
 			title: 'Konto erstellen',
@@ -214,7 +222,13 @@ export const translations = {
 			passwordTooShort: 'Passwort muss mindestens 8 Zeichen haben',
 			registerFailed: 'Registrierung fehlgeschlagen',
 			invitationKey: 'Einladungsschlüssel',
-			invitationKeyPlaceholder: 'Gib deinen Einladungsschlüssel ein'
+			invitationKeyPlaceholder: 'Gib deinen Einladungsschlüssel ein',
+			passwordMinLength: 'Mindestens 8 Zeichen',
+			passwordUppercase: 'Enthält Großbuchstaben',
+			passwordLowercase: 'Enthält Kleinbuchstaben',
+			passwordNumber: 'Enthält Zahl',
+			passwordSpecial: 'Enthält Sonderzeichen',
+			emailInvalid: 'Bitte gib eine gültige E-Mail-Adresse ein'
 		},
 		account: {
 			title: 'Konto',
