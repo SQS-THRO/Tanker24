@@ -1,3 +1,6 @@
+import re
+from typing import Any, Annotated
+
 from fastapi import Depends, Request
 from fastapi_users import FastAPIUsers
 from fastapi_users.authentication import (
@@ -11,8 +14,6 @@ from fastapi_users.exceptions import InvalidPasswordException, UserAlreadyExists
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from typing import Annotated
-
 from fastapi_users import schemas
 from app.config import settings
 from app.database import get_db
@@ -23,6 +24,22 @@ from app.schemas.user import UserCreate, UserRead
 class CustomUserManager(BaseUserManager[User, int]):
 	user_read_model = UserRead
 	user_create_model = UserCreate
+
+	async def validate_password(
+		self,
+		password: str,
+		user: Any = None,
+	) -> None:
+		if len(password) < 8:
+			raise InvalidPasswordException(reason="Password must be at least 8 characters")
+		if not re.search(r"[A-Z]", password):
+			raise InvalidPasswordException(reason="Password must contain an uppercase letter")
+		if not re.search(r"[a-z]", password):
+			raise InvalidPasswordException(reason="Password must contain a lowercase letter")
+		if not re.search(r"[0-9]", password):
+			raise InvalidPasswordException(reason="Password must contain a number")
+		if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+			raise InvalidPasswordException(reason="Password must contain a special character")
 
 	async def create(
 		self,
