@@ -36,7 +36,7 @@ class CustomUserManager(BaseUserManager[User, int]):
 			raise InvalidPasswordException(reason="Password must contain an uppercase letter")
 		if not re.search(r"[a-z]", password):
 			raise InvalidPasswordException(reason="Password must contain a lowercase letter")
-		if not re.search(r"[0-9]", password):
+		if not re.search(r"\d", password):
 			raise InvalidPasswordException(reason="Password must contain a number")
 		if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
 			raise InvalidPasswordException(reason="Password must contain a special character")
