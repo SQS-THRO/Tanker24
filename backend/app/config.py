@@ -10,10 +10,10 @@ class Settings(BaseSettings):
 	debug: bool = False
 
 	model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        extra="ignore",
-    )
+		env_file=".env",
+		env_file_encoding="utf-8",
+		extra="ignore",
+	)
 
 	# Set default value for the database type
 	db_type: str = "sqlite"
@@ -28,7 +28,7 @@ class Settings(BaseSettings):
 	# Public backend url setting
 	public_backend_url: str | None = None
 
-    # SQLite database settings
+	# SQLite database settings
 	# Only the database path needs to be configured
 	sqlite_path: str = "./test.db"
 
@@ -41,8 +41,8 @@ class Settings(BaseSettings):
 		"http://localhost:3000",
 		"http://127.0.0.1:5173",
 		"http://127.0.0.1:3000",
-        "https://tanker24.eu",
-        "https://www.tanker24.eu",
+		"https://tanker24.eu",
+		"https://www.tanker24.eu",
 	]
 
 	_invitation_keys: list[str] = []
@@ -56,11 +56,9 @@ class Settings(BaseSettings):
 
 		self._parse_invitation_keys()
 
-
 	@property
 	def invitation_keys(self) -> list[str]:
 		return self._invitation_keys
-
 
 	def _parse_invitation_keys(self) -> None:
 		keys_str = os.environ.get("INVITATION_KEYS", "")
@@ -80,25 +78,25 @@ class Settings(BaseSettings):
 		# Check if the db_type is postgresql
 		if self.db_type == "postgresql":
 			if not all(
-                [
-                    self.postgres_user,
-                    self.postgres_password,
-                    self.postgres_host,
+				[
+					self.postgres_user,
+					self.postgres_password,
+					self.postgres_host,
 					self.postgres_port,
-                    self.postgres_db,
-                ]
-            ):
+					self.postgres_db,
+				]
+			):
 				raise ValueError(
-                    "For DB_TYPE=postgresql, POSTGRES_USER, POSTGRES_PASSWORD, "
-                    "POSTGRES_HOST, POSTGRES_PORT, and POSTGRES_DB must be set."
-                )
+					"For DB_TYPE=postgresql, POSTGRES_USER, POSTGRES_PASSWORD, "
+					"POSTGRES_HOST, POSTGRES_PORT, and POSTGRES_DB must be set."
+				)
 
 			# Configure the postgresql url from the env var settings
 			return (
-                f"postgresql+asyncpg://{self.postgres_user}:"
-                f"{self.postgres_password}@{self.postgres_host}:"
-                f"{self.postgres_port}/{self.postgres_db}"
-            )
+				f"postgresql+asyncpg://{self.postgres_user}:"
+				f"{self.postgres_password}@{self.postgres_host}:"
+				f"{self.postgres_port}/{self.postgres_db}"
+			)
 
 		# Check if the db_type is sqllite
 		if self.db_type == "sqlite":

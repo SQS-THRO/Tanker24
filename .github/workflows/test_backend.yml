@@ -53,9 +53,13 @@ jobs:
           uv pip install --system .[dev]
           uv pip install --system ruff
 
-      - name: Check formatting
+      - name: Check linting
         working-directory: backend
         run: ruff check --diff .
+
+      - name: Check formatting
+        working-directory: backend
+        run: ruff format --check --diff .
 
   typecheck:
     runs-on: ubuntu-latest
