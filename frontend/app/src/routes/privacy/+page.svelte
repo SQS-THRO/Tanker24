@@ -23,11 +23,6 @@
 			</section>
 
 			<section>
-				<h2>{$t.privacy.dpoHeading}</h2>
-				<p>{$t.privacy.dpo}</p>
-			</section>
-
-			<section>
 				<h2>{$t.privacy.collectionHeading}</h2>
 				<p>{$t.privacy.collection}</p>
 			</section>

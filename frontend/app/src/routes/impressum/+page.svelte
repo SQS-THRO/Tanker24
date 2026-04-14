@@ -44,7 +44,11 @@
 		<div class="content-card">
 			<h1>{$t.impressum.pageTitle}</h1>
 			<div class="divider-nogap"></div>
+			<br/>
+			<p>{$t.impressum.reasoningText}</p>
+			<br/>
 			<p>{$t.impressum.contactAdress}</p>
+			<br/>
 			<p class="bolder">{$t.impressum.contactRepresentativeHeading}</p>
 			<p>{$t.impressum.contactRepresentative}</p>
 
