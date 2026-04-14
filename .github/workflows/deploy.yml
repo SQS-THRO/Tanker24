@@ -11,9 +11,9 @@ on:
     branches: [main]
 
 # only deploy once, even if both backend and frontend build workflows are triggered at the same time
-concurrency:
-  group: deploy-${{ github.ref }}
-  cancel-in-progress: true
+#concurrency:
+#  group: deploy-${{ github.ref }}
+#  cancel-in-progress: true
 
 jobs:
   deploy:
