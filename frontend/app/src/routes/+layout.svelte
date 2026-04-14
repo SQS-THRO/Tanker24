@@ -74,6 +74,10 @@
 		box-sizing: border-box;
 	}
 
+	:global(p) {
+		white-space: pre-line;
+	}
+
 	:global(:root) {
 		--bg-primary: #0a0a0b;
 		--bg-secondary: #141416;
@@ -367,6 +371,22 @@
 		animation: spin 0.8s linear infinite;
 	}
 
+	:global(.divider-nogap) {
+		display: flex;
+		align-items: center;
+		margin: 1.5rem 0;
+		color: var(--text-muted);
+		font-size: 0.875rem;
+	}
+
+	:global(.divider-nogap::before),
+	:global(.divider-nogap::after) {
+		content: '';
+		flex: 1;
+		height: 1px;
+		background: var(--border-light);
+	}
+
 	:global(.divider) {
 		display: flex;
 		align-items: center;
@@ -398,6 +418,17 @@
 	}
 
 	:global(.footer-text a:hover) {
+		color: var(--accent-primary);
+	}
+
+	:global(.impressum-text) {
+		color: var(--accent-secondary);
+		font-weight: 500;
+		text-decoration: none;
+		transition: color var(--transition-fast);
+	}
+
+	:global(.impressum-text a:hover) {
 		color: var(--accent-primary);
 	}
 
@@ -678,6 +709,28 @@
 
 	:global(.checklist-item svg) {
 		flex-shrink: 0;
+	}
+
+	:global(.bolder) {
+		font-weight: bolder;
+	}
+
+	:global(.container) {
+		flex: 1;
+		display: flex;
+		justify-content: center;
+		padding: 2rem;
+		padding-top: 6rem;
+	}
+
+	:global(.content-card) {
+		width: 100%;
+		max-width: 1200px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-subtle);
+		border-radius: var(--radius-xl);
+		padding: 2.5rem;
+		animation: slideUp 0.5s ease forwards;
 	}
 
 	:global(.fade-in) {
