@@ -117,7 +117,8 @@
 					<h4>{$t.footer.company}</h4>
 					<a href={resolve('/')}>{$t.footer.about}</a>
 					<a href={resolve('/')}>{$t.footer.contact}</a>
-					<a href={resolve('/')}>{$t.footer.privacy}</a>
+					<a href={resolve('/impressum')}>{$t.footer.impressum}</a>
+					<a href={resolve('/privacy')}>{$t.footer.privacy}</a>
 				</div>
 			</div>
 		</div>
