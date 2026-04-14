@@ -3,6 +3,7 @@
 	import faviconDark from '$lib/assets/favicon-dark.svg';
 	import { themeStore, CVD_PALETTES, THEME_PALETTES } from '$lib/stores/theme';
 	import { onMount } from 'svelte';
+	import { dev } from '$app/environment';
 
 	let { children } = $props();
 
@@ -58,6 +59,15 @@
 </script>
 
 <svelte:head>
+	{#if dev}
+		<script
+			defer
+			src="https://analytics.tanker24.eu/script.js"
+			data-website-id="66a25fa7-5924-4ea9-99c6-0f00dfc01f1d"
+			integrity="p2xthgMxVFd6Ks4b7KkPf3VhCB7+yQn9QOpw1PpxKBItrVvsF8DwU/fUgUp4NnjR"
+			crossorigin=""
+		></script>
+	{/if}
 	<link rel="icon" href={$themeStore.globalTheme === 'dark-modern' ? faviconDark : favicon} />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
