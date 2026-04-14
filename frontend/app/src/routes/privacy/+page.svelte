@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import { t } from '$lib/stores/locale';
 </script>
@@ -82,4 +81,3 @@
 		</div>
 	</div>
 </main>
-

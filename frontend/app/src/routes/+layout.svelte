@@ -74,7 +74,7 @@
 		box-sizing: border-box;
 	}
 
-	:global(p){
+	:global(p) {
 		white-space: pre-line;
 	}
 
@@ -370,7 +370,7 @@
 		border-radius: 50%;
 		animation: spin 0.8s linear infinite;
 	}
-	
+
 	:global(.divider-nogap) {
 		display: flex;
 		align-items: center;
@@ -386,7 +386,7 @@
 		height: 1px;
 		background: var(--border-light);
 	}
-	
+
 	:global(.divider) {
 		display: flex;
 		align-items: center;
@@ -710,7 +710,7 @@
 	:global(.checklist-item svg) {
 		flex-shrink: 0;
 	}
-	
+
 	:global(.bolder) {
 		font-weight: bolder;
 	}
