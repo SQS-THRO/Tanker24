@@ -16,35 +16,49 @@
 		<div class="content-card">
 			<h1>{$t.privacy.pageTitle}</h1>
 
+			<div class="divider-nogap"></div>
+
 			<section>
 				<h2>{$t.privacy.controllerHeading}</h2>
 				<p>{$t.privacy.controller}</p>
 			</section>
+
+			<div class="divider-nogap"></div>
 
 			<section>
 				<h2>{$t.privacy.collectionHeading}</h2>
 				<p>{$t.privacy.collection}</p>
 			</section>
 
+			<div class="divider-nogap"></div>
+
 			<section>
 				<h2>{$t.privacy.purposeHeading}</h2>
 				<p>{$t.privacy.purpose}</p>
 			</section>
+
+			<div class="divider-nogap"></div>
 
 			<section>
 				<h2>{$t.privacy.legalBasisHeading}</h2>
 				<p>{$t.privacy.legalBasis}</p>
 			</section>
 
+			<div class="divider-nogap"></div>
+
 			<section>
 				<h2>{$t.privacy.recipientsHeading}</h2>
 				<p>{$t.privacy.recipients}</p>
 			</section>
 
+			<div class="divider-nogap"></div>
+
 			<section>
 				<h2>{$t.privacy.retentionHeading}</h2>
 				<p>{$t.privacy.retention}</p>
 			</section>
+
+			<div class="divider-nogap"></div>
 
 			<section>
 				<h2>{$t.privacy.rightsHeading}</h2>
@@ -59,20 +73,28 @@
 				</ul>
 			</section>
 
+			<div class="divider-nogap"></div>
+
 			<section>
 				<h2>{$t.privacy.withdrawHeading}</h2>
 				<p>{$t.privacy.withdraw}</p>
 			</section>
+
+			<div class="divider-nogap"></div>
 
 			<section>
 				<h2>{$t.privacy.complaintHeading}</h2>
 				<p>{$t.privacy.complaint}</p>
 			</section>
 
+			<div class="divider-nogap"></div>
+
 			<section>
 				<h2>{$t.privacy.externalLinksHeading}</h2>
 				<p>{$t.privacy.externalLinks}</p>
 			</section>
+
+			<div class="divider-nogap"></div>
 
 			<section>
 				<h2>{$t.privacy.amendmentHeading}</h2>

@@ -46,12 +46,3 @@
 		</div>
 	</div>
 </main>
-
-<style>
-	main {
-		min-height: 100vh;
-		display: flex;
-		flex-direction: column;
-		position: relative;
-	}
-</style>
