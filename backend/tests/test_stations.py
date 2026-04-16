@@ -7,13 +7,13 @@ from app.models import Station
 @pytest.mark.asyncio
 class TestStationList:
 	async def test_list_stations_authenticated_empty(self, authenticated_client):
-		response = await authenticated_client.get("/stations/")
+		response = await authenticated_client.get("/api/v0/stations/")
 
 		assert response.status_code == 200
 		assert response.json() == []
 
 	async def test_list_stations_authenticated_with_stations(self, authenticated_client, owned_station):
-		response = await authenticated_client.get("/stations/")
+		response = await authenticated_client.get("/api/v0/stations/")
 
 		assert response.status_code == 200
 		data = response.json()
@@ -23,12 +23,12 @@ class TestStationList:
 		assert data[0]["owner_id"] == owned_station.owner_id
 
 	async def test_list_stations_unauthenticated(self, async_client):
-		response = await async_client.get("/stations/")
+		response = await async_client.get("/api/v0/stations/")
 
 		assert response.status_code == 401
 
 	async def test_list_stations_only_shows_own_stations(self, authenticated_client, owned_station, other_user_station):
-		response = await authenticated_client.get("/stations/")
+		response = await authenticated_client.get("/api/v0/stations/")
 
 		assert response.status_code == 200
 		data = response.json()
@@ -40,7 +40,7 @@ class TestStationList:
 @pytest.mark.asyncio
 class TestStationCreate:
 	async def test_create_station_success(self, authenticated_client, station_data):
-		response = await authenticated_client.post("/stations/", json=station_data)
+		response = await authenticated_client.post("/api/v0/stations/", json=station_data)
 
 		assert response.status_code == 201
 		data = response.json()
@@ -50,7 +50,7 @@ class TestStationCreate:
 		assert "owner_id" in data
 
 	async def test_create_station_without_description(self, authenticated_client):
-		response = await authenticated_client.post("/stations/", json={"name": "Station Without Desc"})
+		response = await authenticated_client.post("/api/v0/stations/", json={"name": "Station Without Desc"})
 
 		assert response.status_code == 201
 		data = response.json()
@@ -58,12 +58,12 @@ class TestStationCreate:
 		assert data["description"] is None
 
 	async def test_create_station_unauthenticated(self, async_client, station_data):
-		response = await async_client.post("/stations/", json=station_data)
+		response = await async_client.post("/api/v0/stations/", json=station_data)
 
 		assert response.status_code == 401
 
 	async def test_create_station_missing_name(self, authenticated_client):
-		response = await authenticated_client.post("/stations/", json={"description": "No name"})
+		response = await authenticated_client.post("/api/v0/stations/", json={"description": "No name"})
 
 		assert response.status_code == 422
 
@@ -71,7 +71,7 @@ class TestStationCreate:
 @pytest.mark.asyncio
 class TestStationGet:
 	async def test_get_station_success(self, authenticated_client, owned_station):
-		response = await authenticated_client.get(f"/stations/{owned_station.id}")
+		response = await authenticated_client.get(f"/api/v0/stations/{owned_station.id}")
 
 		assert response.status_code == 200
 		data = response.json()
@@ -80,26 +80,26 @@ class TestStationGet:
 		assert data["description"] == owned_station.description
 
 	async def test_get_station_not_found(self, authenticated_client):
-		response = await authenticated_client.get("/stations/99999")
+		response = await authenticated_client.get("/api/v0/stations/99999")
 
 		assert response.status_code == 404
 		assert response.json()["detail"] == "Station not found"
 
 	async def test_get_other_user_station(self, authenticated_client, other_user_station):
-		response = await authenticated_client.get(f"/stations/{other_user_station.id}")
+		response = await authenticated_client.get(f"/api/v0/stations/{other_user_station.id}")
 
 		assert response.status_code == 404
 
 	async def test_get_station_unauthenticated(self, async_client, owned_station):
-		response = await async_client.get(f"/stations/{owned_station.id}")
+		response = await async_client.get(f"/api/v0/stations/{owned_station.id}")
 
 		assert response.status_code == 401
 
 	async def test_get_station_not_found_after_delete(self, authenticated_client, owned_station):
-		delete_response = await authenticated_client.delete(f"/stations/{owned_station.id}")
+		delete_response = await authenticated_client.delete(f"/api/v0/stations/{owned_station.id}")
 		assert delete_response.status_code == 204
 
-		get_response = await authenticated_client.get(f"/stations/{owned_station.id}")
+		get_response = await authenticated_client.get(f"/api/v0/stations/{owned_station.id}")
 		assert get_response.status_code == 404
 		assert get_response.json()["detail"] == "Station not found"
 
@@ -108,7 +108,7 @@ class TestStationGet:
 class TestStationUpdate:
 	async def test_update_station_success_full(self, authenticated_client, owned_station):
 		update_data = {"name": "Updated Station Name", "description": "Updated description"}
-		response = await authenticated_client.patch(f"/stations/{owned_station.id}", json=update_data)
+		response = await authenticated_client.patch(f"/api/v0/stations/{owned_station.id}", json=update_data)
 
 		assert response.status_code == 200
 		data = response.json()
@@ -117,7 +117,7 @@ class TestStationUpdate:
 		assert data["id"] == owned_station.id
 
 	async def test_update_station_success_partial_name_only(self, authenticated_client, owned_station):
-		response = await authenticated_client.patch(f"/stations/{owned_station.id}", json={"name": "New Name Only"})
+		response = await authenticated_client.patch(f"/api/v0/stations/{owned_station.id}", json={"name": "New Name Only"})
 
 		assert response.status_code == 200
 		data = response.json()
@@ -126,7 +126,7 @@ class TestStationUpdate:
 
 	async def test_update_station_success_partial_description_only(self, authenticated_client, owned_station):
 		response = await authenticated_client.patch(
-			f"/stations/{owned_station.id}", json={"description": "New Description Only"}
+			f"/api/v0/stations/{owned_station.id}", json={"description": "New Description Only"}
 		)
 
 		assert response.status_code == 200
@@ -135,23 +135,23 @@ class TestStationUpdate:
 		assert data["description"] == "New Description Only"
 
 	async def test_update_station_not_found(self, authenticated_client):
-		response = await authenticated_client.patch("/stations/99999", json={"name": "Updated Name"})
+		response = await authenticated_client.patch("/api/v0/stations/99999", json={"name": "Updated Name"})
 
 		assert response.status_code == 404
 		assert response.json()["detail"] == "Station not found"
 
 	async def test_update_other_user_station(self, authenticated_client, other_user_station):
-		response = await authenticated_client.patch(f"/stations/{other_user_station.id}", json={"name": "Hacked Name"})
+		response = await authenticated_client.patch(f"/api/v0/stations/{other_user_station.id}", json={"name": "Hacked Name"})
 
 		assert response.status_code == 404
 
 	async def test_update_station_unauthenticated(self, async_client, owned_station):
-		response = await async_client.patch(f"/stations/{owned_station.id}", json={"name": "Updated"})
+		response = await async_client.patch(f"/api/v0/stations/{owned_station.id}", json={"name": "Updated"})
 
 		assert response.status_code == 401
 
 	async def test_update_station_empty_body(self, authenticated_client, owned_station):
-		response = await authenticated_client.patch(f"/stations/{owned_station.id}", json={})
+		response = await authenticated_client.patch(f"/api/v0/stations/{owned_station.id}", json={})
 
 		assert response.status_code == 200
 		data = response.json()
@@ -159,15 +159,15 @@ class TestStationUpdate:
 		assert data["description"] == owned_station.description
 
 	async def test_update_station_not_found_after_delete(self, authenticated_client, owned_station):
-		delete_response = await authenticated_client.delete(f"/stations/{owned_station.id}")
+		delete_response = await authenticated_client.delete(f"/api/v0/stations/{owned_station.id}")
 		assert delete_response.status_code == 204
 
-		update_response = await authenticated_client.patch(f"/stations/{owned_station.id}", json={"name": "New Name"})
+		update_response = await authenticated_client.patch(f"/api/v0/stations/{owned_station.id}", json={"name": "New Name"})
 		assert update_response.status_code == 404
 		assert update_response.json()["detail"] == "Station not found"
 
 	async def test_update_station_with_null_description(self, authenticated_client, owned_station):
-		response = await authenticated_client.patch(f"/stations/{owned_station.id}", json={"description": None})
+		response = await authenticated_client.patch(f"/api/v0/stations/{owned_station.id}", json={"description": None})
 
 		assert response.status_code == 200
 		data = response.json()
@@ -176,25 +176,25 @@ class TestStationUpdate:
 
 	async def test_update_station_persists_changes(self, authenticated_client, owned_station):
 		update_response = await authenticated_client.patch(
-			f"/stations/{owned_station.id}",
+			f"/api/v0/stations/{owned_station.id}",
 			json={"name": "Persisted Name", "description": "Persisted Description"},
 		)
 		assert update_response.status_code == 200
 
-		get_response = await authenticated_client.get(f"/stations/{owned_station.id}")
+		get_response = await authenticated_client.get(f"/api/v0/stations/{owned_station.id}")
 		assert get_response.status_code == 200
 		data = get_response.json()
 		assert data["name"] == "Persisted Name"
 		assert data["description"] == "Persisted Description"
 
 	async def test_update_station_with_zero_id(self, authenticated_client):
-		response = await authenticated_client.patch("/stations/0", json={"name": "Test"})
+		response = await authenticated_client.patch("/api/v0/stations/0", json={"name": "Test"})
 
 		assert response.status_code == 404
 		assert response.json()["detail"] == "Station not found"
 
 	async def test_update_station_with_negative_id(self, authenticated_client):
-		response = await authenticated_client.patch("/stations/-1", json={"name": "Test"})
+		response = await authenticated_client.patch("/api/v0/stations/-1", json={"name": "Test"})
 
 		assert response.status_code == 404
 
@@ -211,7 +211,7 @@ class TestValidateStation:
 		await test_db_session.commit()
 		await test_db_session.refresh(station)
 
-		response = await authenticated_client.get(f"/stations/{station.id}")
+		response = await authenticated_client.get(f"/api/v0/stations/{station.id}")
 
 		assert response.status_code in [200, 422]
 
@@ -229,7 +229,7 @@ class TestValidateStation:
 		)
 		await test_db_session.commit()
 
-		response = await authenticated_client.get(f"/stations/{station_id}")
+		response = await authenticated_client.get(f"/api/v0/stations/{station_id}")
 		assert response.status_code == 200
 		assert response.json()["name"] == "Updated Via Raw SQL"
 
@@ -237,39 +237,39 @@ class TestValidateStation:
 @pytest.mark.asyncio
 class TestStationDelete:
 	async def test_delete_station_success(self, authenticated_client, owned_station):
-		response = await authenticated_client.delete(f"/stations/{owned_station.id}")
+		response = await authenticated_client.delete(f"/api/v0/stations/{owned_station.id}")
 
 		assert response.status_code == 204
 
-		get_response = await authenticated_client.get(f"/stations/{owned_station.id}")
+		get_response = await authenticated_client.get(f"/api/v0/stations/{owned_station.id}")
 		assert get_response.status_code == 404
 
 	async def test_delete_station_not_found(self, authenticated_client):
-		response = await authenticated_client.delete("/stations/99999")
+		response = await authenticated_client.delete("/api/v0/stations/99999")
 
 		assert response.status_code == 404
 		assert response.json()["detail"] == "Station not found"
 
 	async def test_delete_other_user_station(self, authenticated_client, other_user_station):
-		response = await authenticated_client.delete(f"/stations/{other_user_station.id}")
+		response = await authenticated_client.delete(f"/api/v0/stations/{other_user_station.id}")
 
 		assert response.status_code == 404
 
 	async def test_delete_station_unauthenticated(self, async_client, owned_station):
-		response = await async_client.delete(f"/stations/{owned_station.id}")
+		response = await async_client.delete(f"/api/v0/stations/{owned_station.id}")
 
 		assert response.status_code == 401
 
 	async def test_delete_station_not_found_after_delete(self, authenticated_client, owned_station):
-		delete_response = await authenticated_client.delete(f"/stations/{owned_station.id}")
+		delete_response = await authenticated_client.delete(f"/api/v0/stations/{owned_station.id}")
 		assert delete_response.status_code == 204
 
-		second_delete_response = await authenticated_client.delete(f"/stations/{owned_station.id}")
+		second_delete_response = await authenticated_client.delete(f"/api/v0/stations/{owned_station.id}")
 		assert second_delete_response.status_code == 404
 		assert second_delete_response.json()["detail"] == "Station not found"
 
 	async def test_delete_station_with_nonexistent_id(self, authenticated_client):
-		response = await authenticated_client.delete("/stations/0")
+		response = await authenticated_client.delete("/api/v0/stations/0")
 
 		assert response.status_code == 404
 		assert response.json()["detail"] == "Station not found"

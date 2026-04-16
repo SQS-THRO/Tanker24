@@ -1,7 +1,7 @@
 import { request } from '$lib/utils/request';
 import { env } from '$env/dynamic/public';
 
-const API_BASE = env.PUBLIC_BACKEND_URL ?? 'http://127.0.0.1:8000';
+const API_BASE = (env.PUBLIC_BACKEND_URL ?? 'http://127.0.0.1:8000') + '/api/v0';
 
 interface User {
 	id: number;

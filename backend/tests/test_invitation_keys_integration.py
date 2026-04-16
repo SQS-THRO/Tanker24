@@ -63,7 +63,7 @@ class TestInvitationKeyRegistration:
 	@pytest.mark.asyncio
 	async def test_registration_with_valid_invitation_key(self, client_with_invitation_keys):
 		response = await client_with_invitation_keys.post(
-			"/auth/register",
+			"/api/v0/auth/register",
 			json={
 				"email": "newuser@example.com",
 				"password": "SecurePass123!",
@@ -80,7 +80,7 @@ class TestInvitationKeyRegistration:
 	@pytest.mark.asyncio
 	async def test_registration_with_invalid_invitation_key(self, client_with_invitation_keys):
 		response = await client_with_invitation_keys.post(
-			"/auth/register",
+			"/api/v0/auth/register",
 			json={
 				"email": "newuser@example.com",
 				"password": "SecurePass123!",
@@ -94,7 +94,7 @@ class TestInvitationKeyRegistration:
 	@pytest.mark.asyncio
 	async def test_registration_without_key_when_required(self, client_with_invitation_keys):
 		response = await client_with_invitation_keys.post(
-			"/auth/register",
+			"/api/v0/auth/register",
 			json={
 				"email": "newuser@example.com",
 				"password": "SecurePass123!",
@@ -107,7 +107,7 @@ class TestInvitationKeyRegistration:
 	@pytest.mark.asyncio
 	async def test_registration_without_key_when_disabled(self, client_without_invitation_keys):
 		response = await client_without_invitation_keys.post(
-			"/auth/register",
+			"/api/v0/auth/register",
 			json={
 				"email": "newuser@example.com",
 				"password": "SecurePass123!",
@@ -122,7 +122,7 @@ class TestInvitationKeyRegistration:
 	@pytest.mark.asyncio
 	async def test_user_linked_to_invitation_key(self, test_db_session, client_with_invitation_keys):
 		await client_with_invitation_keys.post(
-			"/auth/register",
+			"/api/v0/auth/register",
 			json={
 				"email": "newuser@example.com",
 				"password": "SecurePass123!",
