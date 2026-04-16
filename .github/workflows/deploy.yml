@@ -3,17 +3,17 @@ name: Deploy to tanker24.eu
 on:
   release:
     types: [published]
-  push:
-    branches: [main]
+  #push:
+  #  branches: [main]
   workflow_run:
     workflows: [Build and Push Backend, Build and Push Frontend]
     types: [completed]
     branches: [main]
 
 # only deploy once, even if both backend and frontend build workflows are triggered at the same time
-#concurrency:
-#  group: deploy-${{ github.ref }}
-#  cancel-in-progress: true
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
