@@ -117,7 +117,9 @@ class TestStationUpdate:
 		assert data["id"] == owned_station.id
 
 	async def test_update_station_success_partial_name_only(self, authenticated_client, owned_station):
-		response = await authenticated_client.patch(f"/api/v0/stations/{owned_station.id}", json={"name": "New Name Only"})
+		response = await authenticated_client.patch(
+			f"/api/v0/stations/{owned_station.id}", json={"name": "New Name Only"}
+		)
 
 		assert response.status_code == 200
 		data = response.json()
@@ -141,7 +143,9 @@ class TestStationUpdate:
 		assert response.json()["detail"] == "Station not found"
 
 	async def test_update_other_user_station(self, authenticated_client, other_user_station):
-		response = await authenticated_client.patch(f"/api/v0/stations/{other_user_station.id}", json={"name": "Hacked Name"})
+		response = await authenticated_client.patch(
+			f"/api/v0/stations/{other_user_station.id}", json={"name": "Hacked Name"}
+		)
 
 		assert response.status_code == 404
 
@@ -162,7 +166,9 @@ class TestStationUpdate:
 		delete_response = await authenticated_client.delete(f"/api/v0/stations/{owned_station.id}")
 		assert delete_response.status_code == 204
 
-		update_response = await authenticated_client.patch(f"/api/v0/stations/{owned_station.id}", json={"name": "New Name"})
+		update_response = await authenticated_client.patch(
+			f"/api/v0/stations/{owned_station.id}", json={"name": "New Name"}
+		)
 		assert update_response.status_code == 404
 		assert update_response.json()["detail"] == "Station not found"
 
