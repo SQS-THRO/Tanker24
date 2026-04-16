@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.routing import APIRouter
 
 from app.config import settings
 from app.database import async_session_maker, init_db
@@ -24,12 +25,16 @@ app = FastAPI(
 	lifespan=lifespan,
 )
 
+api_router = APIRouter(prefix="/api/v0")
+
+api_router.include_router(auth.auth_router, prefix="/auth/jwt", tags=["auth"])
+api_router.include_router(auth.register_router, prefix="/auth", tags=["auth"])
+api_router.include_router(auth.users_router, prefix="/users", tags=["users"])
+api_router.include_router(stations.router)
+api_router.include_router(export.router)
+
 app.include_router(health.router)
-app.include_router(auth.auth_router, prefix="/auth/jwt", tags=["auth"])
-app.include_router(auth.register_router, prefix="/auth", tags=["auth"])
-app.include_router(auth.users_router, prefix="/users", tags=["users"])
-app.include_router(stations.router)
-app.include_router(export.router)
+app.include_router(api_router)
 
 app.add_middleware(
 	CORSMiddleware,

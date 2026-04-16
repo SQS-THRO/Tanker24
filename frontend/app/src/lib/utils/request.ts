@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/public';
 
-const API_BASE = env.PUBLIC_BACKEND_URL ?? 'http://127.0.0.1:8000';
+const API_BASE = (env.PUBLIC_BACKEND_URL ?? 'http://127.0.0.1:8000') + '/api/v0';
 
 export async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
 	const response = await fetch(`${API_BASE}${endpoint}`, {
