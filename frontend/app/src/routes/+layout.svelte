@@ -2,10 +2,33 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import faviconDark from '$lib/assets/favicon-dark.svg';
 	import { themeStore, CVD_PALETTES, THEME_PALETTES } from '$lib/stores/theme';
+	import { privacyStore } from '$lib/stores/privacy';
 	import { onMount } from 'svelte';
 	import { dev } from '$app/environment';
+	import ConsentModal from '$lib/components/ConsentModal.svelte';
 
 	let { children } = $props();
+
+	let doDataAnalysis = $derived(!dev && $privacyStore.analyticsAccepted);
+
+	let showConsentModal = $state(false);
+	let initialized = $state(false);
+	onMount(() => {
+		const stored = localStorage.getItem('privacy-settings');
+		if (stored) {
+			const settings = JSON.parse(stored);
+			showConsentModal = !dev && !settings.hidden && settings.analyticsAccepted !== true;
+		} else {
+			showConsentModal = !dev;
+		}
+		initialized = true;
+	});
+
+	$effect(() => {
+		if (initialized) {
+			showConsentModal = !dev && !$privacyStore.hidden && $privacyStore.analyticsAccepted !== true;
+		}
+	});
 
 	function applyThemeVariables(override: keyof typeof CVD_PALETTES) {
 		if (typeof document === 'undefined') return;
@@ -59,7 +82,7 @@
 </script>
 
 <svelte:head>
-	{#if dev}
+	{#if doDataAnalysis}
 		<script
 			defer
 			src="https://analytics.tanker24.eu/script.js"
@@ -76,6 +99,10 @@
 </svelte:head>
 
 {@render children()}
+
+{#if showConsentModal}
+	<ConsentModal />
+{/if}
 
 <style>
 	:global(*) {
@@ -601,6 +628,49 @@
 		box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
 	}
 
+	:global(.modal-overlay) {
+		position: fixed;
+		inset: 0;
+		z-index: 9999;
+		background: rgba(0, 0, 0, 0.6);
+		backdrop-filter: blur(4px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 1rem;
+		animation: fadeIn 0.15s ease;
+	}
+
+	:global(.modal-content) {
+		background: var(--bg-card);
+		border: 1px solid var(--border-light);
+		border-radius: var(--radius-lg);
+		padding: 2rem;
+		max-width: 400px;
+		width: 100%;
+		text-align: center;
+		box-shadow: var(--shadow-xl);
+		animation: scaleIn 0.2s ease;
+	}
+
+	:global(.modal-icon) {
+		width: 64px;
+		height: 64px;
+		margin: 0 auto 1.5rem;
+		border-radius: 50%;
+		background: rgba(99, 102, 241, 0.15);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--accent-primary);
+	}
+
+	:global(.modal-description) {
+		font-size: 0.9375rem;
+		color: var(--text-secondary);
+		margin: 0 0 1.5rem;
+		line-height: 1.5;
+	}
 	:global(.btn-secondary) {
 		background: var(--bg-card);
 		color: var(--text-primary);
