@@ -64,5 +64,3 @@ def test_schemas_must_not_import_services(arch):
         .are_sub_modules_of("backend.app.services")
     )
     rule.assert_applies(arch)
-
-
