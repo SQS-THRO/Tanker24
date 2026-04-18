@@ -196,6 +196,12 @@ export const translations = {
 			amendment:
 				'We reserve the right to amend this privacy policy from time to time so that it always complies with the current legal requirements. The current version is always available on this page.',
 			backToImpressum: 'Back to Legal Notice'
+		},
+		consent: {
+			title: 'Data Usage',
+			description: 'We use analytics to improve our service. Do you agree to the usage of your data?',
+			accept: 'Accept',
+			decline: 'Decline'
 		}
 	},
 	de: {
@@ -396,6 +402,12 @@ export const translations = {
 			amendment:
 				'Wir behalten uns das Recht vor, diese Datenschutzerklärung von Zeit zu Zeit zu ändern, damit sie stets den aktuellen gesetzlichen Anforderungen entspricht. Die aktuelle Version ist immer auf dieser Seite verfügbar.',
 			backToImpressum: 'Zurück zum Impressum'
+		},
+		consent: {
+			title: 'Datennutzung',
+			description: 'Wir nutzen Analysen um unseren Service zu verbessern. Stimmen Sie der Nutzung Ihrer Daten zu?',
+			accept: 'Akzeptieren',
+			decline: 'Ablehnen'
 		}
 	}
 };
@@ -416,5 +428,12 @@ declare module '$lib/stores/locale' {
 		previewSuccess: string;
 		previewError: string;
 		previewWarning: string;
+	}
+
+	interface ConsentTranslations {
+		title: string;
+		description: string;
+		accept: string;
+		decline: string;
 	}
 }
