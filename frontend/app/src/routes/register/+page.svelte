@@ -175,7 +175,7 @@
 							id="password"
 							bind:value={password}
 							placeholder={$t.register.passwordPlaceholder}
-							class="input with-icon"
+							class="input with-icon toggle-btn"
 							disabled={loading}
 						/>
 						<button type="button" class="toggle-password" onclick={() => (showPassword = !showPassword)}>
@@ -277,7 +277,7 @@
 							id="confirmPassword"
 							bind:value={confirmPassword}
 							placeholder={$t.register.confirmPasswordPlaceholder}
-							class="input with-icon"
+							class="input with-icon toggle-btn"
 							class:input-error={confirmPassword && !confirmPasswordValid}
 							class:input-success={confirmPasswordValid}
 							disabled={loading}

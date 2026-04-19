@@ -125,7 +125,7 @@
 							id="password"
 							bind:value={password}
 							placeholder={$t.login.passwordPlaceholder}
-							class="input with-icon"
+							class="input with-icon toggle-btn"
 							disabled={loading}
 						/>
 						<button type="button" class="toggle-password" onclick={() => (showPassword = !showPassword)}>
