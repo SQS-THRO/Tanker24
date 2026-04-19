@@ -515,6 +515,8 @@
 		flex: 1;
 		display: flex;
 		width: 100%;
+		max-width: 1200px;
+		margin: 0 auto;
 		align-items: center;
 		justify-content: center;
 		padding: 2rem;
