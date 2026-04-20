@@ -4,6 +4,7 @@
 	import { authService } from '$lib/services/auth_api';
 	import { goto } from '$app/navigation';
 	import Navbar from '$lib/components/Navbar.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 	import { t } from '$lib/stores/locale';
 	import { themeStore, GLOBAL_THEMES, COLOR_BLIND_OPTIONS, CVD_PALETTES, type ThemePalette, type GlobalTheme } from '$lib/stores/theme';
 
@@ -209,3 +210,4 @@
 		{/if}
 	</div>
 </main>
+<Footer />

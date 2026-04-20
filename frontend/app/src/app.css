@@ -123,6 +123,12 @@
 }
 
 @layer components {
+	.content-centered {
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+		min-height: 100vh;
+	}
 	.glass {
 		background: rgba(20, 20, 22, 0.8);
 		backdrop-filter: blur(20px);
@@ -640,6 +646,23 @@
 		border-radius: var(--radius-xl);
 		padding: 2.5rem;
 		animation: slideUp 0.5s ease forwards;
+	}
+
+	.content-card h1 {
+		text-align: center;
+		font-size: 1.75rem;
+		font-weight: 700;
+		margin-bottom: 0.5rem;
+	}
+
+	.content-card h2 {
+		font-size: 1.2rem;
+		font-weight: 700;
+		margin-bottom: 0.5rem;
+	}
+
+	.content-card p {
+		color: var(--text-secondary);
 	}
 
 	.profile-wrapper {
