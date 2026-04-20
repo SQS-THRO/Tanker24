@@ -72,7 +72,7 @@
 
 	<Navbar showAuthButtons={false} />
 
-	<div class="container">
+	<div class="container mt-17" style="flex-direction:column">
 		{#if loading}
 			<div class="loading">
 				<div class="spinner-large"></div>
