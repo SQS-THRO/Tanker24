@@ -6,6 +6,7 @@ icon: simple/postgresql
 
 **Date:** 2026-03-19  
 **Context:** Data Persistance and Caching
+**Status:** Currently accepted
 
 ---
 
