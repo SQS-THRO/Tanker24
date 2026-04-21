@@ -14,7 +14,7 @@
 
 	<Navbar showMapLink={false} showAuthButtons={false} />
 
-	<div class="container mt-12 mb-0  pb-2">
+	<div class="container mt-12 mb-0 pb-2">
 		<div class="content-card">
 			<h1>{$t.impressum.pageTitle}</h1>
 			<div class="divider-nogap"></div>
