@@ -374,7 +374,7 @@
 		background: rgba(239, 68, 68, 0.1);
 		border: 1px solid rgba(239, 68, 68, 0.3);
 		border-radius: var(--radius-md);
-		color: #fca5a5;
+		color: var(--error);
 		font-size: 0.875rem;
 		margin-bottom: 1.5rem;
 	}
@@ -622,11 +622,6 @@
 		font-size: 1.25rem;
 	}
 
-	.hero {
-		margin-top: 0;
-		padding-top: 6rem;
-	}
-
 	.container {
 		flex: 1;
 		display: flex;
@@ -780,6 +775,8 @@
 	}
 
 	.hero {
+		margin-top: 0;
+		padding-top: 6rem;
 		position: relative;
 		min-height: 100vh;
 		display: flex;
@@ -853,17 +850,6 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-	}
-
-	.stat-value {
-		font-size: 1.5rem;
-		font-weight: 700;
-		color: var(--text-primary);
-	}
-
-	.stat-label {
-		font-size: 0.875rem;
-		color: var(--text-muted);
 	}
 
 	.stat-divider {
@@ -1147,7 +1133,7 @@
 		background: rgba(239, 68, 68, 0.15);
 		border: 1px solid rgba(239, 68, 68, 0.3);
 		border-radius: var(--radius-md);
-		color: #fca5a5;
+		color: var(--error);
 		font-size: 0.875rem;
 		backdrop-filter: blur(10px);
 	}
@@ -1370,7 +1356,7 @@
 
 	.btn-danger {
 		background: rgba(239, 68, 68, 0.1);
-		color: #fca5a5;
+		color: color: var(--error);;
 		border: 1px solid rgba(239, 68, 68, 0.2);
 		display: flex;
 		align-items: center;
