@@ -102,8 +102,13 @@
 				<h2>{$t.account.themeSettings}</h2>
 
 				<div class="setting-group">
-					<label class="setting-label">{$t.account.globalTheme}</label>
-					<select class="input theme-select" value={$themeStore.globalTheme} onchange={(e) => themeStore.setGlobalTheme(e.currentTarget.value as GlobalTheme)}>
+					<label class="setting-label" for="global-theme-select">{$t.account.globalTheme}</label>
+					<select
+						id="global-theme-select"
+						class="input theme-select"
+						value={$themeStore.globalTheme}
+						onchange={(e) => themeStore.setGlobalTheme(e.currentTarget.value as GlobalTheme)}
+					>
 						{#each GLOBAL_THEMES as theme (theme.id)}
 							<option value={theme.id}>{theme.name}</option>
 						{/each}
@@ -111,7 +116,7 @@
 				</div>
 
 				<div class="setting-group">
-					<label class="setting-label">{$t.account.colorBlindOverride}</label>
+					<p class="setting-label">{$t.account.colorBlindOverride}</p>
 					<p class="setting-description">{$t.account.colorBlindDescription}</p>
 					<div class="color-blind-options">
 						{#each COLOR_BLIND_OPTIONS as option (option.id)}
@@ -131,7 +136,7 @@
 				</div>
 
 				<div class="setting-group">
-					<label class="setting-label">{$t.account.preview}</label>
+					<p class="setting-label">{$t.account.preview}</p>
 					<div class="color-preview">
 						<div class="preview-row">
 							<span class="preview-label">{$t.account.previewBackground}</span>
