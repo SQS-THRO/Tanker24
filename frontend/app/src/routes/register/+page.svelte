@@ -298,16 +298,6 @@
 								</svg>
 							{/if}
 						</button>
-						{#if confirmPasswordValid}
-							<svg class="validation-icon valid" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-								<polyline points="20 6 9 17 4 12" />
-							</svg>
-						{:else if confirmPassword && !confirmPasswordValid}
-							<svg class="validation-icon invalid" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-								<line x1="18" y1="6" x2="6" y2="18" />
-								<line x1="6" y1="6" x2="18" y2="18" />
-							</svg>
-						{/if}
 					</div>
 					{#if confirmPassword && !confirmPasswordValid}
 						<p class="validation-text error">{$t.register.passwordsNotMatch}</p>
