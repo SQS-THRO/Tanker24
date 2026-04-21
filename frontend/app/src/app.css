@@ -510,6 +510,8 @@
 		border-radius: var(--radius-lg);
 		padding: 1.5rem;
 		transition: all var(--transition-base);
+		min-width: 50%;
+		margin-bottom: 2rem;
 	}
 
 	.page-card:hover {
@@ -1296,6 +1298,7 @@
 		font-weight: 600;
 		color: var(--text-secondary);
 		margin-bottom: 1rem;
+		text-align: center;
 	}
 
 	.actions-grid {
@@ -1307,6 +1310,7 @@
 	.action-card {
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		gap: 1rem;
 		padding: 1rem 1.25rem;
 		background: var(--bg-card);
@@ -1338,7 +1342,6 @@
 	}
 
 	.action-card span {
-		flex: 1;
 		font-weight: 500;
 	}
 
@@ -1353,6 +1356,9 @@
 		animation: slideUp 0.5s ease forwards;
 		animation-delay: 300ms;
 		opacity: 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
 	}
 
 	.danger-zone h3 {
@@ -1378,13 +1384,15 @@
 
 	.theme-settings {
 		margin-bottom: 2rem;
+		text-align: center;
 	}
 
 	.theme-settings h2 {
-		font-size: 1.125rem;
+		font-size: 1rem;
 		font-weight: 600;
-		margin-bottom: 1.5rem;
-		color: var(--text-primary);
+		color: var(--text-secondary);
+		margin-bottom: 1rem;
+		text-align: center;
 	}
 
 	.setting-group {
@@ -1419,6 +1427,7 @@
 		border-radius: var(--radius-md);
 		color: var(--text-primary);
 		cursor: pointer;
+		text-align: center;
 	}
 
 	.theme-select:focus {

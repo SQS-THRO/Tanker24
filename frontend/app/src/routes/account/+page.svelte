@@ -164,20 +164,18 @@
 				</div>
 			</div>
 
-			<div class="cards-grid">
-				<div class="page-card stats-card">
-					<div class="stat-item">
-						<span class="stat-value">{$t.account.statusActive}</span>
-						<span class="stat-label">{$t.account.statusLabel}</span>
-					</div>
-					<div class="stat-item">
-						<span class="stat-value">{$t.account.planFree}</span>
-						<span class="stat-label">{$t.account.planLabel}</span>
-					</div>
+			<div class="page-card stats-card">
+				<div class="stat-item">
+					<span class="stat-value">{$t.account.statusActive}</span>
+					<span class="stat-label">{$t.account.statusLabel}</span>
+				</div>
+				<div class="stat-item">
+					<span class="stat-value">{$t.account.planFree}</span>
+					<span class="stat-label">{$t.account.planLabel}</span>
 				</div>
 			</div>
 
-			<div class="actions-section">
+			<div class="actions-section page-card">
 				<h2>{$t.account.quickActions}</h2>
 				<div class="actions-grid">
 					<a href={resolve('/map')} class="action-card">
@@ -196,8 +194,8 @@
 				</div>
 			</div>
 
-			<div class="danger-zone">
-				<h3>{$t.account.accountSection}</h3>
+			<div class="danger-zone page-card actions-section">
+				<h2>{$t.account.accountSection}</h2>
 				<button class="btn btn-danger" onclick={handleLogout}>
 					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 						<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
