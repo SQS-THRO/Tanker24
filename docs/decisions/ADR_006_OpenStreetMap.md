@@ -6,6 +6,7 @@ icon: simple/openstreetmap
 
 **Date:** 2026-03-25  
 **Context:** Mapping and Geospatial Services  
+**Status:** Currently accepted
 
 ---
 

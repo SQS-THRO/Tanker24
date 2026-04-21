@@ -6,6 +6,7 @@ icon: simple/sonar
 
 **Date:** 2026-03-24  
 **Context:** Code Quality, Security, Developer Productivity  
+**Status:** Currently accepted
 
 ---
 

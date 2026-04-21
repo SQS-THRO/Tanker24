@@ -6,6 +6,7 @@ icon: simple/svelte
 
 **Date:** 2026-03-18  
 **Context:** Developer Productivity, Performance, Ecosystem  
+**Status:** Currently accepted
 
 ---
 
