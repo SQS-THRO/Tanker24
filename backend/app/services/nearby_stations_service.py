@@ -94,7 +94,7 @@ class NearbyStationsService:
 				)
 			)
 		)
-		existing_ids = set(row[0] for row in result.fetchall())
+		existing_ids = {row[0] for row in result.fetchall()}
 
 		new_ids = {s.id for s in api_stations}
 
