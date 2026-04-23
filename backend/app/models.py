@@ -75,6 +75,9 @@ class TankerkoenigStation(Base):
 	e10: Mapped[float | None] = mapped_column(Float, default=None)
 	is_open: Mapped[bool] = mapped_column(Boolean, default=True)
 	cached_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+	cache_lat: Mapped[float | None] = mapped_column(Float, default=None)
+	cache_lon: Mapped[float | None] = mapped_column(Float, default=None)
+	cache_radius: Mapped[float | None] = mapped_column(Float, default=None)
 
 
 class Car(Base):

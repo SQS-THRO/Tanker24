@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,8 +9,9 @@ from app.auth import get_current_active_user
 from app.database import get_db
 from app.models import Station
 from app.schemas.station import Station as StationSchema
-from app.schemas.station import StationCreate, StationUpdate
+from app.schemas.station import StationCreate, StationUpdate, TankerkoenigStation
 from app.schemas.user import UserRead
+from app.services.nearby_stations_service import NearbyStationsService
 
 router = APIRouter(prefix="/stations", tags=["stations"])
 
@@ -57,6 +58,24 @@ async def create_station(
 	await db.commit()
 	await db.refresh(db_station)
 	return _validate_station(db_station)
+
+
+@router.get(
+	"/nearby",
+	summary="Get nearby gas stations",
+	description="Fetch gas stations around a given latitude and longitude. Uses cached data when available and not expired.",
+	responses={
+		400: {"description": "Invalid latitude or longitude parameters"},
+	},
+)
+async def get_nearby_stations(
+	db: Annotated[AsyncSession, Depends(get_db)],
+	user: Annotated[UserRead, Depends(get_current_active_user)],
+	latitude: float = Query(..., description="Latitude coordinate (-90 to 90)"),
+	longitude: float = Query(..., description="Longitude coordinate (-180 to 180)"),
+) -> list[TankerkoenigStation]:
+	service = NearbyStationsService(db)
+	return await service.get_nearby_stations(latitude, longitude)
 
 
 @router.get(
