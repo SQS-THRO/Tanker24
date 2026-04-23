@@ -65,14 +65,21 @@ async def create_station(
 	summary="Get nearby gas stations",
 	description="Fetch gas stations around a given latitude and longitude. Uses cached data when available and not expired.",
 	responses={
-		400: {"description": "Invalid latitude or longitude parameters"},
+		status.HTTP_400_BAD_REQUEST: {
+			"description": "Invalid latitude or longitude parameters",
+			"content": {
+				"application/json": {
+					"example": {"detail": "Latitude must be between -90 and 90"}
+				}
+			}
+		},
 	},
 )
 async def get_nearby_stations(
 	db: Annotated[AsyncSession, Depends(get_db)],
 	user: Annotated[UserRead, Depends(get_current_active_user)],
-	latitude: float = Query(..., description="Latitude coordinate (-90 to 90)"),
-	longitude: float = Query(..., description="Longitude coordinate (-180 to 180)"),
+	latitude: float = Query(..., description="Latitude coordinate (-90 to 90)", ge=-90, le=90),
+	longitude: float = Query(..., description="Longitude coordinate (-180 to 180)", ge=-180, le=180),
 ) -> list[TankerkoenigStation]:
 	try:
 		service = NearbyStationsService(db)
