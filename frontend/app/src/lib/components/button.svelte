@@ -29,15 +29,3 @@
 <a href={resolve(href)} class="btn {variantClasses[variant]} {sizeClasses[size]}">
 	{label}
 </a>
-
-<style>
-	.btn-sm {
-		padding: 0.5rem 1rem;
-		font-size: 0.8125rem;
-	}
-
-	.btn-lg {
-		padding: 1rem 2rem;
-		font-size: 1rem;
-	}
-</style>

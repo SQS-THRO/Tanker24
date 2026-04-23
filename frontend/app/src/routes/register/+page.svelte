@@ -3,6 +3,7 @@
 	import { authService } from '$lib/services/auth_api';
 	import { goto } from '$app/navigation';
 	import Navbar from '$lib/components/Navbar.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 	import { t } from '$lib/stores/locale';
 
 	let last_name = $state('');
@@ -75,7 +76,7 @@
 	}
 </script>
 
-<main>
+<main class="content-centered">
 	<div class="background">
 		<div class="gradient-orb orb-1"></div>
 		<div class="gradient-orb orb-2"></div>
@@ -175,7 +176,7 @@
 							id="password"
 							bind:value={password}
 							placeholder={$t.register.passwordPlaceholder}
-							class="input with-icon"
+							class="input with-icon toggle-btn"
 							disabled={loading}
 						/>
 						<button type="button" class="toggle-password" onclick={() => (showPassword = !showPassword)}>
@@ -277,7 +278,7 @@
 							id="confirmPassword"
 							bind:value={confirmPassword}
 							placeholder={$t.register.confirmPasswordPlaceholder}
-							class="input with-icon"
+							class="input with-icon toggle-btn"
 							class:input-error={confirmPassword && !confirmPasswordValid}
 							class:input-success={confirmPasswordValid}
 							disabled={loading}
@@ -297,16 +298,6 @@
 								</svg>
 							{/if}
 						</button>
-						{#if confirmPasswordValid}
-							<svg class="validation-icon valid" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-								<polyline points="20 6 9 17 4 12" />
-							</svg>
-						{:else if confirmPassword && !confirmPasswordValid}
-							<svg class="validation-icon invalid" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-								<line x1="18" y1="6" x2="6" y2="18" />
-								<line x1="6" y1="6" x2="18" y2="18" />
-							</svg>
-						{/if}
 					</div>
 					{#if confirmPassword && !confirmPasswordValid}
 						<p class="validation-text error">{$t.register.passwordsNotMatch}</p>
@@ -333,12 +324,4 @@
 		</div>
 	</div>
 </main>
-
-<style>
-	main {
-		min-height: 100vh;
-		display: flex;
-		flex-direction: column;
-		position: relative;
-	}
-</style>
+<Footer />

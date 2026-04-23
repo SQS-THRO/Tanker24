@@ -3,6 +3,7 @@
 	import { authService } from '$lib/services/auth_api';
 	import { goto } from '$app/navigation';
 	import Navbar from '$lib/components/Navbar.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 	import { t } from '$lib/stores/locale';
 
 	let email = $state('');
@@ -46,7 +47,7 @@
 	}
 </script>
 
-<main>
+<main class="content-centered">
 	<div class="background">
 		<div class="gradient-orb orb-1"></div>
 		<div class="gradient-orb orb-2"></div>
@@ -125,7 +126,7 @@
 							id="password"
 							bind:value={password}
 							placeholder={$t.login.passwordPlaceholder}
-							class="input with-icon"
+							class="input with-icon toggle-btn"
 							disabled={loading}
 						/>
 						<button type="button" class="toggle-password" onclick={() => (showPassword = !showPassword)}>
@@ -166,12 +167,4 @@
 		</div>
 	</div>
 </main>
-
-<style>
-	main {
-		min-height: 100vh;
-		display: flex;
-		flex-direction: column;
-		position: relative;
-	}
-</style>
+<Footer />

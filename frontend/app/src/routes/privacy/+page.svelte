@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Navbar from '$lib/components/Navbar.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 	import { t } from '$lib/stores/locale';
 </script>
 
@@ -12,7 +13,7 @@
 
 	<Navbar showMapLink={false} showAuthButtons={false} />
 
-	<div class="container">
+	<div class="container mt-17">
 		<div class="content-card">
 			<h1>{$t.privacy.pageTitle}</h1>
 
@@ -103,3 +104,4 @@
 		</div>
 	</div>
 </main>
+<Footer />

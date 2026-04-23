@@ -144,7 +144,7 @@ export const THEME_PALETTES: Record<GlobalTheme, ThemePalette> = {
 		warning: '#f59e0b'
 	},
 	'light-modern': {
-		bgPrimary: '#fafafa',
+		bgPrimary: '#eeeeeeff',
 		bgSecondary: '#f4f4f5',
 		bgCard: '#ffffff',
 		bgCardHover: '#f4f4f5',
