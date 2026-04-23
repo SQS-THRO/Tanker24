@@ -74,8 +74,11 @@ async def get_nearby_stations(
 	latitude: float = Query(..., description="Latitude coordinate (-90 to 90)"),
 	longitude: float = Query(..., description="Longitude coordinate (-180 to 180)"),
 ) -> list[TankerkoenigStation]:
-	service = NearbyStationsService(db)
-	return await service.get_nearby_stations(latitude, longitude)
+	try:
+		service = NearbyStationsService(db)
+		return await service.get_nearby_stations(latitude, longitude)
+	except ValueError as e:
+		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
 @router.get(
