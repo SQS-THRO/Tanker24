@@ -1,9 +1,9 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from typing import Annotated
 
 from app.auth import get_current_active_user
 from app.database import get_db
@@ -67,11 +67,7 @@ async def create_station(
 	responses={
 		status.HTTP_400_BAD_REQUEST: {
 			"description": "Invalid latitude or longitude parameters",
-			"content": {
-				"application/json": {
-					"example": {"detail": "Latitude must be between -90 and 90"}
-				}
-			}
+			"content": {"application/json": {"example": {"detail": "Latitude must be between -90 and 90"}}},
 		},
 	},
 )
