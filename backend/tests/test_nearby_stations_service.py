@@ -1,7 +1,6 @@
 import pytest
-import pytest_asyncio
 from datetime import datetime, timedelta, UTC
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from sqlalchemy import select
 
 from app.models import TankerkoenigStation
