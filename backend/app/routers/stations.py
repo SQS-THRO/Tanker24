@@ -74,8 +74,8 @@ async def create_station(
 async def get_nearby_stations(
 	db: Annotated[AsyncSession, Depends(get_db)],
 	user: Annotated[UserRead, Depends(get_current_active_user)],
-	latitude: float = Query(..., description="Latitude coordinate (-90 to 90)", ge=-90, le=90),
-	longitude: float = Query(..., description="Longitude coordinate (-180 to 180)", ge=-180, le=180),
+	latitude: Annotated[float, Query(ge=-90, le=90, description="Latitude coordinate (-90 to 90)")],
+	longitude: Annotated[float, Query(ge=-180, le=180, description="Longitude coordinate (-180 to 180)")],
 ) -> list[TankerkoenigStation]:
 	try:
 		service = NearbyStationsService(db)
