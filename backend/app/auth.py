@@ -100,7 +100,7 @@ async def get_user_manager(
 	yield CustomUserManager(user_db)
 
 
-bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
+bearer_transport = BearerTransport(tokenUrl="/api/v0/auth/jwt/login")
 
 
 def get_jwt_strategy() -> JWTStrategy[User, int]:
