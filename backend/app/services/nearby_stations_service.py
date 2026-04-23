@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 import asyncio
 
 from sqlalchemy import select, and_, delete
@@ -25,7 +25,7 @@ class NearbyStationsService:
 
 		radius = settings.tankerkoenig_search_radius_km
 		cache_expiry = timedelta(minutes=settings.station_cache_expiry_minutes)
-		now = datetime.utcnow()
+		now = datetime.now(UTC)
 
 		cached_stations = await self._get_cached_stations(latitude, longitude, radius, now - cache_expiry)
 
@@ -83,7 +83,7 @@ class NearbyStationsService:
 		cache_lon: float,
 		cache_radius: float,
 	) -> None:
-		now = datetime.utcnow()
+		now = datetime.now(UTC)
 
 		result = await self.db.execute(
 			select(TankerkoenigStation.tankerkoenig_id).where(
