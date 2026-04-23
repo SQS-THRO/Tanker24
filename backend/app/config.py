@@ -36,8 +36,8 @@ class Settings(BaseSettings):
 
 	jwt_lifetime_minutes: int = 60
 
-    # Parameters for fetching stations
-    tankerkoenig_api_key: str = "00000000-0000-0000-0000-000000000002"
+	# Parameters for fetching stations
+	tankerkoenig_api_key: str = "00000000-0000-0000-0000-000000000002"
 	tankerkoenig_rate_limit_per_minute: int = 100
 	station_cache_expiry_minutes: int = 30
 	tankerkoenig_search_radius_km: float = 5.0

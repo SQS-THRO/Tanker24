@@ -9,7 +9,7 @@ from sqlalchemy import (
 	Integer,
 	String,
 	Text,
-    UniqueConstraint,
+	UniqueConstraint,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -54,6 +54,7 @@ class Station(Base):
 
 	owner: Mapped[User] = relationship(back_populates="stations", lazy="selectin")
 
+
 class TankerkoenigStation(Base):
 	__tablename__ = "tankerkoenig_stations"
 	__table_args__ = (UniqueConstraint("tankerkoenig_id", name="uix_tankerkoenig_id"),)
@@ -74,6 +75,7 @@ class TankerkoenigStation(Base):
 	e10: Mapped[float | None] = mapped_column(Float, default=None)
 	is_open: Mapped[bool] = mapped_column(Boolean, default=True)
 	cached_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
 
 class Car(Base):
 	__tablename__ = "cars"
