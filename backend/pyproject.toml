@@ -15,7 +15,8 @@ dependencies = [
     "bcrypt>=5.0.0",
     "python-jose[cryptography]>=3.3.0",
     "passlib[bcrypt]>=1.7.4",
-    "asyncpg>=0.31.0"
+    "asyncpg>=0.31.0",
+    "httpx>=0.28.0",
 ]
 
 [project.optional-dependencies]
