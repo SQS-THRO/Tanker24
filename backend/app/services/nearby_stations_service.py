@@ -56,7 +56,7 @@ class NearbyStationsService:
 		radius: float,
 		min_cached_at: datetime,
 	) -> list[TankerkoenigStationSchema] | None:
-		tolerance = 0.01
+		tolerance = settings.station_cache_tolerance_km
 		result = await self.db.execute(
 			select(TankerkoenigStation)
 			.where(
