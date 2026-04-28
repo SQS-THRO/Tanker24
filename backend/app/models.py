@@ -9,6 +9,7 @@ from sqlalchemy import (
 	Integer,
 	String,
 	Text,
+	UniqueConstraint,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -52,6 +53,31 @@ class Station(Base):
 	owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
 	owner: Mapped[User] = relationship(back_populates="stations", lazy="selectin")
+
+
+class TankerkoenigStation(Base):
+	__tablename__ = "tankerkoenig_stations"
+	__table_args__ = (UniqueConstraint("tankerkoenig_id", name="uix_tankerkoenig_id"),)
+
+	id: Mapped[int] = mapped_column(Integer, primary_key=True)
+	tankerkoenig_id: Mapped[str] = mapped_column(String(36), unique=True, index=True)
+	name: Mapped[str] = mapped_column(String(100))
+	brand: Mapped[str] = mapped_column(String(100))
+	street: Mapped[str | None] = mapped_column(String(200), default=None)
+	house_number: Mapped[str | None] = mapped_column(String(20), default=None)
+	post_code: Mapped[int | None] = mapped_column(Integer, default=None)
+	place: Mapped[str | None] = mapped_column(String(100), default=None)
+	latitude: Mapped[float] = mapped_column(Float)
+	longitude: Mapped[float] = mapped_column(Float)
+	distance: Mapped[float | None] = mapped_column(Float, default=None)
+	diesel: Mapped[float | None] = mapped_column(Float, default=None)
+	e5: Mapped[float | None] = mapped_column(Float, default=None)
+	e10: Mapped[float | None] = mapped_column(Float, default=None)
+	is_open: Mapped[bool] = mapped_column(Boolean, default=True)
+	cached_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+	cache_lat: Mapped[float | None] = mapped_column(Float, default=None)
+	cache_lon: Mapped[float | None] = mapped_column(Float, default=None)
+	cache_radius: Mapped[float | None] = mapped_column(Float, default=None)
 
 
 class Car(Base):
