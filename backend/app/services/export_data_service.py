@@ -12,14 +12,14 @@ class ExportDataService(ABC):
 	def __init__(self, db: AsyncSession) -> None: ...
 
 	@abstractmethod
-	async def get_user_data(self, user_id: int) -> list[dict]: ...
+	async def get_user_data(self, user_id: int) -> list[dict[str, Any]]: ...
 
 
 class NestedExportDataService(ExportDataService):
 	def __init__(self, db: AsyncSession):
 		self.db = db
 
-	async def get_user_data(self, user_id: int) -> list[dict]:
+	async def get_user_data(self, user_id: int) -> list[dict[str, Any]]:
 		try:
 			cars_result = await self.db.execute(select(Car).where(Car.owner_id == user_id))
 			cars = cars_result.scalars().all()
@@ -70,7 +70,7 @@ class FlatExportDataService(ExportDataService):
 	def __init__(self, db: AsyncSession):
 		self.db = db
 
-	async def get_user_data(self, user_id: int) -> list[dict]:
+	async def get_user_data(self, user_id: int) -> list[dict[str, Any]]:
 		try:
 			result = []
 			car_query_result = await self.db.execute(select(Car).where(Car.owner_id == user_id))
