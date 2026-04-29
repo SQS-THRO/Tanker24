@@ -1,13 +1,10 @@
-import json
 from unittest.mock import AsyncMock
 
 import pytest
 from fastapi import HTTPException
-from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.models import Car, HistoryRecord, FuelType, User
-from app.routers.export import get_user_data_as_json, get_user_data_as_csv
 from app.services.export_data_service import NestedExportDataService, FlatExportDataService
 
 

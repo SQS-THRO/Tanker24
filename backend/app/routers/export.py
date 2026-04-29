@@ -2,19 +2,14 @@ from io import StringIO
 import csv
 
 
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
-from sqlalchemy import select
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from typing import Annotated
 
 from starlette.responses import StreamingResponse
 
 from app.auth import get_current_active_user
-from app.database import get_db
-from app.models import HistoryRecord, Car
 from app.schemas.user import UserRead
 from app.services.export_data_service import ExportDataService
 from app.dependencies import get_flat_export_data_service, get_nested_export_data_service
@@ -30,7 +25,7 @@ router = APIRouter(prefix="/export", tags=["export"])
 	responses={503: {"description": "Database temporarily unavailable."}},
 )
 async def get_user_data_as_json(
-    user: Annotated[UserRead, Depends(get_current_active_user)],
+	user: Annotated[UserRead, Depends(get_current_active_user)],
 	service: Annotated[ExportDataService, Depends(get_nested_export_data_service)],
 ) -> JSONResponse:
 	result = await service.get_user_data(user.id)
@@ -48,7 +43,6 @@ async def get_user_data_as_json(
 async def get_user_data_as_csv(
 	user: Annotated[UserRead, Depends(get_current_active_user)],
 	service: Annotated[ExportDataService, Depends(get_flat_export_data_service)],
-
 ) -> StreamingResponse:
 	result = await service.get_user_data(user.id)
 

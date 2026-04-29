@@ -9,12 +9,12 @@ from app.services.export_data_service import ExportDataService, FlatExportDataSe
 
 
 def get_nested_export_data_service(
-    db: Annotated[AsyncSession, Depends(get_db)],
+	db: Annotated[AsyncSession, Depends(get_db)],
 ) -> ExportDataService:
-    return NestedExportDataService(db)
+	return NestedExportDataService(db)
 
 
 def get_flat_export_data_service(
-    db: Annotated[AsyncSession, Depends(get_db)],
+	db: Annotated[AsyncSession, Depends(get_db)],
 ) -> ExportDataService:
-    return FlatExportDataService(db)
+	return FlatExportDataService(db)

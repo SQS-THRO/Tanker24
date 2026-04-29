@@ -11,8 +11,8 @@ from starlette.responses import JSONResponse
 
 from app.auth import get_current_active_user
 from app.dependencies import (
-    get_flat_export_data_service,
-    get_nested_export_data_service,
+	get_flat_export_data_service,
+	get_nested_export_data_service,
 )
 from app.models import Car, HistoryRecord, FuelType, User
 from app.routers.export import router
@@ -21,7 +21,8 @@ from app.routers.export import get_user_data_as_json, get_user_data_as_csv
 
 
 class FakeUser:
-    id = 1
+	id = 1
+
 
 # Helper class for the db mock
 class FakeScalarResult:
@@ -42,48 +43,49 @@ class FakeExecuteResult:
 
 
 class FakeNestedExportDataService:
-    async def get_user_data(self, user_id: int) -> list[dict]:  #NOSONAR
-        assert user_id == 1
+	async def get_user_data(self, user_id: int) -> list[dict]:  # NOSONAR
+		assert user_id == 1
 
-        return [
-            {
-                "id": 10,
-                "type": "Limousine",
-                "license_plate_number": "RO-AB-123",
-                "history": [
-                    {
-                        "id": 100,
-                        "car_id": 10,
-                        "created_at": "2026-03-01T10:00:00",
-                        "mileage": 50000,
-                        "price_per_litre": 1.8,
-                        "litres": 40,
-                        "total_price": 72.0,
-                        "fuel_type": "Diesel",
-                    }
-                ],
-            }
-        ]
+		return [
+			{
+				"id": 10,
+				"type": "Limousine",
+				"license_plate_number": "RO-AB-123",
+				"history": [
+					{
+						"id": 100,
+						"car_id": 10,
+						"created_at": "2026-03-01T10:00:00",
+						"mileage": 50000,
+						"price_per_litre": 1.8,
+						"litres": 40,
+						"total_price": 72.0,
+						"fuel_type": "Diesel",
+					}
+				],
+			}
+		]
 
 
 class FakeFlatExportDataService:
-    async def get_user_data(self, user_id: int) -> list[dict]: #NOSONAR
-        assert user_id == 1
+	async def get_user_data(self, user_id: int) -> list[dict]:  # NOSONAR
+		assert user_id == 1
 
-        return [
-            {
-                "id": 100,
-                "car_id": 10,
-                "car_type": "Limousine",
-                "license_plate_number": "RO-AB-123",
-                "created_at": "2026-03-01T10:00:00",
-                "mileage": 50000,
-                "price_per_litre": 1.8,
-                "litres": 40,
-                "total_price": 72.0,
-                "fuel_type": "Diesel",
-            }
-        ]
+		return [
+			{
+				"id": 100,
+				"car_id": 10,
+				"car_type": "Limousine",
+				"license_plate_number": "RO-AB-123",
+				"created_at": "2026-03-01T10:00:00",
+				"mileage": 50000,
+				"price_per_litre": 1.8,
+				"litres": 40,
+				"total_price": 72.0,
+				"fuel_type": "Diesel",
+			}
+		]
+
 
 class TestExportEndpointConnectivity:
 	@pytest.fixture
@@ -92,26 +94,19 @@ class TestExportEndpointConnectivity:
 		app.include_router(router)
 
 		app.dependency_overrides[get_current_active_user] = lambda: FakeUser()
-		app.dependency_overrides[get_nested_export_data_service] = (
-			lambda: FakeNestedExportDataService()
-		)
-		app.dependency_overrides[get_flat_export_data_service] = (
-			lambda: FakeFlatExportDataService()
-		)
+		app.dependency_overrides[get_nested_export_data_service] = lambda: FakeNestedExportDataService()
+		app.dependency_overrides[get_flat_export_data_service] = lambda: FakeFlatExportDataService()
 
 		with TestClient(app) as test_client:
 			yield test_client
 
 		app.dependency_overrides.clear()
 
-
 	def test_get_user_data_as_json(self, client):
 		response = client.get("/export/json")
 
 		assert response.status_code == 200
-		assert response.headers["content-disposition"] == (
-			"attachment; filename=user_data.json"
-		)
+		assert response.headers["content-disposition"] == ("attachment; filename=user_data.json")
 
 		data = response.json()
 
@@ -132,14 +127,11 @@ class TestExportEndpointConnectivity:
 			"fuel_type": "Diesel",
 		}
 
-
 	def test_get_user_data_as_csv(self, client):
 		response = client.get("/export/csv")
 
 		assert response.status_code == 200
-		assert response.headers["content-disposition"] == (
-			"attachment; filename=car_history_data.csv"
-		)
+		assert response.headers["content-disposition"] == ("attachment; filename=car_history_data.csv")
 		assert response.headers["content-type"].startswith("text/csv")
 
 		csv_content = response.text
@@ -160,6 +152,7 @@ class TestExportEndpointConnectivity:
 			"total_price": "72.0",
 			"fuel_type": "Diesel",
 		}
+
 
 # This is a bit of an integration test because the service is not mocked. The service is tested specifically in another test class.
 # I think it is not worth setting up the fake returns all the time like above. It really is just bloat and we should reuse the existing tests we created before based on our test concet.
@@ -200,7 +193,6 @@ class TestExportEndpointFunctionality:
 				"history": [],
 			}
 		]
-
 
 	@pytest.mark.asyncio
 	async def test_get_user_data_as_json_successful(self):
@@ -432,8 +424,8 @@ class TestExportEndpointFunctionality:
 		# Check that only the header line is returned
 		assert len(lines) == 1
 		assert (
-				lines[0]
-				== "id;car_id;car_type;license_plate_number;created_at;mileage;price_per_litre;litres;total_price;fuel_type"
+			lines[0]
+			== "id;car_id;car_type;license_plate_number;created_at;mileage;price_per_litre;litres;total_price;fuel_type"
 		)
 
 	@pytest.mark.asyncio
