@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Any
 
 from fastapi import HTTPException
 from sqlalchemy import select
