@@ -1,14 +1,27 @@
+import csv
 import json
 from unittest.mock import AsyncMock
+from io import StringIO
 
 import pytest
-from fastapi import HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, HTTPException
+from fastapi.testclient import TestClient
 from sqlalchemy.exc import SQLAlchemyError
+from starlette.responses import JSONResponse
 
+from app.auth import get_current_active_user
+from app.dependencies import (
+    get_flat_export_data_service,
+    get_nested_export_data_service,
+)
 from app.models import Car, HistoryRecord, FuelType, User
+from app.routers.export import router
+
 from app.routers.export import get_user_data_as_json, get_user_data_as_csv
 
+
+class FakeUser:
+    id = 1
 
 # Helper class for the db mock
 class FakeScalarResult:
@@ -28,9 +41,169 @@ class FakeExecuteResult:
 		return FakeScalarResult(self._items)
 
 
-class TestExportEndpoint:
+class FakeNestedExportDataService:
+    async def get_user_data(self, user_id: int) -> list[dict]:  #NOSONAR
+        assert user_id == 1
+
+        return [
+            {
+                "id": 10,
+                "type": "Limousine",
+                "license_plate_number": "RO-AB-123",
+                "history": [
+                    {
+                        "id": 100,
+                        "car_id": 10,
+                        "created_at": "2026-03-01T10:00:00",
+                        "mileage": 50000,
+                        "price_per_litre": 1.8,
+                        "litres": 40,
+                        "total_price": 72.0,
+                        "fuel_type": "Diesel",
+                    }
+                ],
+            }
+        ]
+
+
+class FakeFlatExportDataService:
+    async def get_user_data(self, user_id: int) -> list[dict]: #NOSONAR
+        assert user_id == 1
+
+        return [
+            {
+                "id": 100,
+                "car_id": 10,
+                "car_type": "Limousine",
+                "license_plate_number": "RO-AB-123",
+                "created_at": "2026-03-01T10:00:00",
+                "mileage": 50000,
+                "price_per_litre": 1.8,
+                "litres": 40,
+                "total_price": 72.0,
+                "fuel_type": "Diesel",
+            }
+        ]
+
+class TestExportEndpointConnectivity:
+	@pytest.fixture
+	def client(self):
+		app = FastAPI()
+		app.include_router(router)
+
+		app.dependency_overrides[get_current_active_user] = lambda: FakeUser()
+		app.dependency_overrides[get_nested_export_data_service] = (
+			lambda: FakeNestedExportDataService()
+		)
+		app.dependency_overrides[get_flat_export_data_service] = (
+			lambda: FakeFlatExportDataService()
+		)
+
+		with TestClient(app) as test_client:
+			yield test_client
+
+		app.dependency_overrides.clear()
+
+
+	def test_get_user_data_as_json(self, client):
+		response = client.get("/export/json")
+
+		assert response.status_code == 200
+		assert response.headers["content-disposition"] == (
+			"attachment; filename=user_data.json"
+		)
+
+		data = response.json()
+
+		assert len(data) == 1
+		assert data[0]["id"] == 10
+		assert data[0]["type"] == "Limousine"
+		assert data[0]["license_plate_number"] == "RO-AB-123"
+		assert len(data[0]["history"]) == 1
+
+		assert data[0]["history"][0] == {
+			"id": 100,
+			"car_id": 10,
+			"created_at": "2026-03-01T10:00:00",
+			"mileage": 50000,
+			"price_per_litre": 1.8,
+			"litres": 40,
+			"total_price": 72.0,
+			"fuel_type": "Diesel",
+		}
+
+
+	def test_get_user_data_as_csv(self, client):
+		response = client.get("/export/csv")
+
+		assert response.status_code == 200
+		assert response.headers["content-disposition"] == (
+			"attachment; filename=car_history_data.csv"
+		)
+		assert response.headers["content-type"].startswith("text/csv")
+
+		csv_content = response.text
+		reader = csv.DictReader(StringIO(csv_content), delimiter=";")
+		rows = list(reader)
+
+		assert len(rows) == 1
+
+		assert rows[0] == {
+			"id": "100",
+			"car_id": "10",
+			"car_type": "Limousine",
+			"license_plate_number": "RO-AB-123",
+			"created_at": "2026-03-01T10:00:00",
+			"mileage": "50000",
+			"price_per_litre": "1.8",
+			"litres": "40",
+			"total_price": "72.0",
+			"fuel_type": "Diesel",
+		}
+
+# This is a bit of an integration test because the service is not mocked. The service is tested specifically in another test class.
+# I think it is not worth setting up the fake returns all the time like above. It really is just bloat and we should reuse the existing tests we created before based on our test concet.
+class TestExportEndpointFunctionality:
 	@pytest.mark.asyncio
-	async def test_get_user_data_successful(self):
+	async def test_get_user_data_as_json_empty_history(self):
+		user = User(id=1)
+
+		car = Car(
+			id=20,
+			owner_id=1,
+			type="Kombi",
+			license_plate_number="MUC-CD-456",
+		)
+
+		db = AsyncMock()
+		db.execute = AsyncMock(
+			side_effect=[
+				FakeExecuteResult([car]),  # Car query
+				FakeExecuteResult([]),  # History query for this car is empty
+			]
+		)
+
+		service = get_nested_export_data_service(db)
+
+		# Call the function for getting the user data. It should not throw an exception
+		# as empty histories are handled gracefully.
+		response = await get_user_data_as_json(service=service, user=user)
+
+		data = json.loads(response.body.decode())
+
+		# Check if the history is really empty
+		assert data == [
+			{
+				"id": 20,
+				"type": "Kombi",
+				"license_plate_number": "MUC-CD-456",
+				"history": [],
+			}
+		]
+
+
+	@pytest.mark.asyncio
+	async def test_get_user_data_as_json_successful(self):
 		user = User(id=1)
 
 		car1 = Car(
@@ -84,9 +257,10 @@ class TestExportEndpoint:
 				FakeExecuteResult([record3]),  # history for car2
 			]
 		)
+		service = get_nested_export_data_service(db)
 
-		# Call the function under test
-		response = await get_user_data_as_json(db=db, user=user)
+		# Call the endpoint function
+		response = await get_user_data_as_json(service=service, user=user)
 		data = json.loads(response.body.decode())
 
 		# Check if the fields are parsed correctly from the database fields
@@ -113,42 +287,7 @@ class TestExportEndpoint:
 		assert data[1]["history"][0]["fuel_type"] == "E5"
 
 	@pytest.mark.asyncio
-	async def test_get_user_data_empty_history(self):
-		user = User(id=1)
-
-		car = Car(
-			id=20,
-			owner_id=1,
-			type="Kombi",
-			license_plate_number="MUC-CD-456",
-		)
-
-		db = AsyncMock()
-		db.execute = AsyncMock(
-			side_effect=[
-				FakeExecuteResult([car]),  # Car query
-				FakeExecuteResult([]),  # History query for this car is empty
-			]
-		)
-
-		# Call the function for getting the user data. It should not throw an exception
-		# as empty histories are handled gracefully.
-		response = await get_user_data_as_json(db=db, user=user)
-
-		data = json.loads(response.body.decode())
-
-		# Check if the history is really empty
-		assert data == [
-			{
-				"id": 20,
-				"type": "Kombi",
-				"license_plate_number": "MUC-CD-456",
-				"history": [],
-			}
-		]
-
-	@pytest.mark.asyncio
-	async def test_get_user_data_no_cars(self):
+	async def test_get_user_data_as_json_no_cars(self):
 		user = User(id=1)
 
 		db = AsyncMock()
@@ -159,14 +298,17 @@ class TestExportEndpoint:
 			]
 		)
 
-		response = await get_user_data_as_json(db=db, user=user)
+		service = get_nested_export_data_service(db)
+
+		# Call the endpoint function
+		response = await get_user_data_as_json(service=service, user=user)
 		data = json.loads(response.body.decode())
 
 		# Check the array is empty for real
 		assert data == []
 
 	@pytest.mark.asyncio
-	async def test_get_user_data_multiple_cars(self):
+	async def test_get_user_data_as_json_multiple_cars(self):
 		user = User(id=1)
 
 		car1 = Car(id=1, owner_id=1, type="Kombi", license_plate_number="MÜB-DF-7777")
@@ -181,7 +323,9 @@ class TestExportEndpoint:
 			]
 		)
 
-		response = await get_user_data_as_json(db=db, user=user)
+		service = get_nested_export_data_service(db)
+
+		response = await get_user_data_as_json(service=service, user=user)
 
 		# Check if the response is indeed a JSONResponse and not an exception
 		assert isinstance(response, JSONResponse)
@@ -192,7 +336,7 @@ class TestExportEndpoint:
 		assert db.execute.await_count == 3
 
 	@pytest.mark.asyncio
-	async def test_get_user_data_db_failure_(self):
+	async def test_get_user_data_as_json_db_failure_(self):
 		user = User(id=1)
 
 		db = AsyncMock()
@@ -200,8 +344,10 @@ class TestExportEndpoint:
 		db.execute = AsyncMock(side_effect=SQLAlchemyError("The database encountered an error."))
 		db.rollback = AsyncMock()
 
+		service = get_nested_export_data_service(db)
+
 		with pytest.raises(HTTPException) as exc_info:
-			await get_user_data_as_json(db=db, user=user)
+			await get_user_data_as_json(service=service, user=user)
 
 		# Check the exception returned by the endpoint
 		assert exc_info.value.status_code == 503
@@ -247,7 +393,9 @@ class TestExportEndpoint:
 		)
 		db.rollback = AsyncMock()
 
-		response = await get_user_data_as_csv(db=db, user=user)
+		service = get_flat_export_data_service(db)
+
+		response = await get_user_data_as_csv(service=service, user=user)
 		body = await self.read_streaming_response_body(response)
 
 		expected_header = (
@@ -274,7 +422,9 @@ class TestExportEndpoint:
 		)
 		db.rollback = AsyncMock()
 
-		response = await get_user_data_as_csv(db=db, user=user)
+		service = get_flat_export_data_service(db)
+
+		response = await get_user_data_as_csv(service=service, user=user)
 		body = await self.read_streaming_response_body(response)
 
 		lines = body.splitlines()
@@ -282,8 +432,8 @@ class TestExportEndpoint:
 		# Check that only the header line is returned
 		assert len(lines) == 1
 		assert (
-			lines[0]
-			== "id;car_id;car_type;license_plate_number;created_at;mileage;price_per_litre;litres;total_price;fuel_type"
+				lines[0]
+				== "id;car_id;car_type;license_plate_number;created_at;mileage;price_per_litre;litres;total_price;fuel_type"
 		)
 
 	@pytest.mark.asyncio
@@ -306,8 +456,9 @@ class TestExportEndpoint:
 			]
 		)
 		db.rollback = AsyncMock()
+		service = get_flat_export_data_service(db)
 
-		response = await get_user_data_as_csv(db=db, user=user)
+		response = await get_user_data_as_csv(service=service, user=user)
 		body = await self.read_streaming_response_body(response)
 
 		lines = body.splitlines()
@@ -357,8 +508,9 @@ class TestExportEndpoint:
 			]
 		)
 		db.rollback = AsyncMock()
+		service = get_flat_export_data_service(db)
 
-		response = await get_user_data_as_csv(db=db, user=user)
+		response = await get_user_data_as_csv(service=service, user=user)
 		body = await self.read_streaming_response_body(response)
 
 		lines = body.splitlines()
@@ -414,8 +566,9 @@ class TestExportEndpoint:
 			]
 		)
 		db.rollback = AsyncMock()
+		service = get_flat_export_data_service(db)
 
-		response = await get_user_data_as_csv(db=db, user=user)
+		response = await get_user_data_as_csv(service=service, user=user)
 		body = await self.read_streaming_response_body(response)
 
 		assert "401;50;SUV;REH-AU-12;2026-03-01T10:00:00;15000;1.9;35;66.5;E10" in body
@@ -450,8 +603,9 @@ class TestExportEndpoint:
 			]
 		)
 		db.rollback = AsyncMock()
+		service = get_flat_export_data_service(db)
 
-		response = await get_user_data_as_csv(db=db, user=user)
+		response = await get_user_data_as_csv(service=service, user=user)
 		body = await self.read_streaming_response_body(response)
 
 		assert "15.425" in body
@@ -476,9 +630,10 @@ class TestExportEndpoint:
 			]
 		)
 		db.rollback = AsyncMock()
+		service = get_flat_export_data_service(db)
 
 		with pytest.raises(HTTPException) as exc_info:
-			await get_user_data_as_csv(db=db, user=user)
+			await get_user_data_as_csv(service=service, user=user)
 
 		assert exc_info.value.status_code == 503
 		assert exc_info.value.detail == "Database temporarily unavailable."
