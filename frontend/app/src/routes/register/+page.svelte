@@ -5,6 +5,13 @@
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import { t } from '$lib/stores/locale';
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		if (localStorage.getItem('token')) {
+			goto(resolve('/account'));
+		}
+	});
 
 	let last_name = $state('');
 	let first_name = $state('');
