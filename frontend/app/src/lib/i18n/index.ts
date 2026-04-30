@@ -121,7 +121,13 @@ export const translations = {
 			previewAccent: 'Accent',
 			previewSuccess: 'Success',
 			previewError: 'Error',
-			previewWarning: 'Warning'
+			previewWarning: 'Warning',
+			exportSection: 'Data Export',
+			exportDescription: 'Download your fuel history data',
+			exportAsJson: 'Export as JSON',
+			exportAsCsv: 'Export as CSV',
+			exporting: 'Exporting...',
+			exportFailed: 'Export failed'
 		},
 		map: {
 			searchPlaceholder: 'Search stations...',
@@ -326,7 +332,13 @@ export const translations = {
 			previewAccent: 'Akzent',
 			previewSuccess: 'Erfolg',
 			previewError: 'Fehler',
-			previewWarning: 'Warnung'
+			previewWarning: 'Warnung',
+			exportSection: 'Daten Export',
+			exportDescription: 'Lade deine Kraftstoffverlaufsdaten herunter',
+			exportAsJson: 'Als JSON exportieren',
+			exportAsCsv: 'Als CSV exportieren',
+			exporting: 'Exportieren...',
+			exportFailed: 'Export fehlgeschlagen'
 		},
 		map: {
 			searchPlaceholder: 'Tankstellen suchen...',
