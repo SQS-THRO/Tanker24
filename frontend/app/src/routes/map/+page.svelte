@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 	import { resolve } from '$app/paths';
-	import { stationService, type Station } from '$lib/services/stations_api';
+	import { stationService, type Station, type TankerkoenigStation } from '$lib/services/stations_api';
 	import { authService } from '$lib/services/auth_api';
 	import { goto } from '$app/navigation';
 	import Logo from '$lib/components/Logo.svelte';
@@ -10,21 +10,39 @@
 	import AuthRequiredModal from '$lib/components/AuthRequiredModal.svelte';
 	import { t } from '$lib/stores/locale';
 	import { themeStore } from '$lib/stores/theme';
-	import type { Map } from 'leaflet';
+	import type { Map, LayerGroup } from 'leaflet';
 
 	const DEFAULT_LAT = 47.79;
 	const DEFAULT_LNG = 12.1;
 	const DEFAULT_ZOOM = 11;
+	const NEARBY_DEBOUNCE_MS = 2500;
 
 	let mapContainer: HTMLDivElement;
 	let stations: Station[] = $state([]);
+	let nearbyStations: TankerkoenigStation[] = $state([]);
 	let error = $state('');
+	let nearbyFetchError = $state('');
+	let searchQuery = $state('');
 	let userLat = $state<number | null>(null);
 	let userLng = $state<number | null>(null);
 	let user = $state<{ forename: string; surname?: string } | null>(null);
 	let showUserMenu = $state(false);
 	let showAuthModal = $state(false);
 	let map: Map | null = null;
+	let userLayerGroup: LayerGroup | null = null;
+	let nearbyLayerGroup: LayerGroup | null = null;
+	let moveDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+	let isNearbyLoading = $state(false);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	let L: any = null;
+
+	function debounce(fn: () => void, ms: number) {
+		if (moveDebounceTimer) clearTimeout(moveDebounceTimer);
+		moveDebounceTimer = setTimeout(() => {
+			moveDebounceTimer = null;
+			fn();
+		}, ms);
+	}
 
 	function getUserLocation(): Promise<{ lat: number; lng: number }> {
 		return new Promise((resolve) => {
@@ -59,6 +77,107 @@
 		}
 	}
 
+	async function fetchNearbyStations(lat: number, lng: number) {
+		const token = localStorage.getItem('token');
+		if (!token || !map) return;
+
+		isNearbyLoading = true;
+		nearbyFetchError = '';
+
+		try {
+			nearbyStations = await stationService.getNearbyStations(lat, lng, token);
+		} catch {
+			nearbyFetchError = $t.map.nearbyFetchFailed;
+			nearbyStations = [];
+		} finally {
+			isNearbyLoading = false;
+		}
+
+		updateNearbyMarkers();
+	}
+
+	function updateNearbyMarkers() {
+		if (!nearbyLayerGroup || !map || !L) return;
+
+		nearbyLayerGroup.clearLayers();
+
+		nearbyStations.forEach((station) => {
+			const prices = [
+				{ type: 'diesel', value: station.diesel },
+				{ type: 'e5', value: station.e5 },
+				{ type: 'e10', value: station.e10 }
+			].filter((p) => p.value !== null && p.value !== undefined);
+
+			const minPrice = prices.length > 0 ? Math.min(...prices.map((p) => p.value as number)) : null;
+
+			const addressParts = [station.street, station.house_number, station.post_code, station.place].filter(Boolean);
+			const address = addressParts.join(', ');
+
+			const priceRows = prices
+				.map((p) => {
+					const isCheapest = p.value === minPrice;
+					const priceDisplay = p.value !== null ? `${(p.value as number).toFixed(3)}€` : '—';
+					return `
+					<div class="price-item${isCheapest ? ' cheapest' : ''}">
+						<div class="fuel-label">${p.type.toUpperCase()}</div>
+						<div class="fuel-price${isCheapest ? '' : ''}">${priceDisplay}</div>
+					</div>
+				`;
+				})
+				.join('');
+
+			const popupContent = `
+				<div class="station-popup-card">
+					<h4>${station.name}</h4>
+					<div class="brand-label">${station.brand}</div>
+					${address ? `<div class="station-address">${address}</div>` : ''}
+					<div class="open-badge ${station.is_open ? 'open' : 'closed'}">
+						${station.is_open ? '●' : '●'} ${station.is_open ? $t.map.open : $t.map.closed}
+					</div>
+					<div class="price-grid">
+						${priceRows}
+					</div>
+					${
+						station.distance !== null
+							? `<div class="station-distance">
+						<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+							<circle cx="12" cy="9" r="2.5"/>
+						</svg>
+						${station.distance.toFixed(1)} ${$t.map.kilometers}
+					</div>`
+							: ''
+					}
+				</div>
+			`;
+
+			const stationIcon = L.divIcon({
+				className: 'nearby-station-marker',
+				html: `
+					<div class="nearby-station-marker-inner">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M3 22V6l9-4 9 4v16H3z"/>
+							<path d="M9 22V12h6v10"/>
+							<path d="M12 2v4"/>
+							<circle cx="12" cy="10" r="1.5" fill="currentColor"/>
+						</svg>
+					</div>
+				`,
+				iconSize: [40, 40],
+				iconAnchor: [20, 20],
+				popupAnchor: [0, -20]
+			});
+
+			L.marker([station.latitude, station.longitude], { icon: stationIcon }).bindPopup(popupContent).addTo(nearbyLayerGroup);
+		});
+	}
+
+	async function handleMapSearch() {
+		if (!map || !searchQuery.trim()) return;
+		const center = map.getCenter();
+		await fetchNearbyStations(center.lat, center.lng);
+	}
+
 	async function logout() {
 		await authService.logout();
 		localStorage.removeItem('token');
@@ -88,9 +207,12 @@
 		userLat = lat;
 		userLng = lng;
 
-		const L = (await import('leaflet')).default;
+		L = (await import('leaflet')).default;
 
 		map = L.map(mapContainer).setView([lat, lng], DEFAULT_ZOOM);
+
+		userLayerGroup = L.layerGroup().addTo(map);
+		nearbyLayerGroup = L.layerGroup().addTo(map);
 
 		const isDarkTheme = $themeStore.globalTheme === 'dark-modern';
 		const tileUrl = isDarkTheme ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -139,9 +261,27 @@
 						${station.description ? `<p>${station.description}</p>` : ''}
 					</div>
 				`;
-				L.marker([station.latitude, station.longitude], { icon: stationIcon }).addTo(map).bindPopup(popupContent);
+				L.marker([station.latitude, station.longitude], { icon: stationIcon }).bindPopup(popupContent).addTo(userLayerGroup!);
 			}
 		});
+
+		await fetchNearbyStations(lat, lng);
+
+		map.on('moveend', () => {
+			debounce(async () => {
+				if (!map) return;
+				const center = map.getCenter();
+				await fetchNearbyStations(center.lat, center.lng);
+			}, NEARBY_DEBOUNCE_MS);
+		});
+	});
+
+	onDestroy(() => {
+		if (moveDebounceTimer) clearTimeout(moveDebounceTimer);
+		if (map) {
+			map.off('moveend');
+			map.remove();
+		}
 	});
 </script>
 
@@ -159,7 +299,24 @@
 					<circle cx="11" cy="11" r="8" />
 					<path d="M21 21l-4.35-4.35" />
 				</svg>
-				<input type="text" placeholder={$t.map.searchPlaceholder} class="search-input" />
+				<input
+					type="text"
+					placeholder={$t.map.searchPlaceholder}
+					class="search-input"
+					bind:value={searchQuery}
+					onkeydown={(e) => {
+						if (e.key === 'Enter') {
+							handleMapSearch();
+						}
+					}}
+				/>
+				{#if searchQuery}
+					<button class="search-btn" onclick={handleMapSearch} aria-label="Search map center">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M5 12h14M12 5l7 7-7 7" />
+						</svg>
+					</button>
+				{/if}
 			</div>
 		</div>
 
@@ -216,6 +373,17 @@
 		</div>
 	{/if}
 
+	{#if nearbyFetchError}
+		<div class="nearby-error-banner">
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+				<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+				<line x1="12" y1="9" x2="12" y2="13" />
+				<line x1="12" y1="17" x2="12.01" y2="17" />
+			</svg>
+			{nearbyFetchError}
+		</div>
+	{/if}
+
 	<div class="map-container" bind:this={mapContainer}></div>
 
 	<div class="map-controls glass">
@@ -224,7 +392,17 @@
 				<path d="M3 22V8l9-6 9 6v14H3z" />
 				<path d="M9 22V12h6v10" />
 			</svg>
-			<span>{stations.length} {$t.map.stations}</span>
+			<span>{stations.length} {$t.map.myStations}</span>
+			{#if nearbyStations.length > 0}
+				<span class="separator">·</span>
+				<span>
+					{nearbyStations.length}
+					{$t.map.nearby}
+					{#if isNearbyLoading}
+						<span class="loading-spinner" />
+					{/if}
+				</span>
+			{/if}
 		</div>
 		<a href={resolve('/')} class="btn btn-secondary btn-sm">
 			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
