@@ -2,7 +2,6 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from pydantic import ValidationError
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import get_current_active_user
@@ -12,6 +11,7 @@ from app.schemas.station import Station as StationSchema
 from app.schemas.station import StationCreate, StationUpdate, TankerkoenigStation
 from app.schemas.user import UserRead
 from app.services.nearby_stations_service import NearbyStationsService
+from app.services.station_service import StationService
 
 router = APIRouter(prefix="/stations", tags=["stations"])
 
@@ -37,8 +37,8 @@ async def list_stations(
 	db: Annotated[AsyncSession, Depends(get_db)],
 	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> list[StationSchema]:
-	result = await db.execute(select(Station).where(Station.owner_id == user.id))
-	stations = result.scalars().all()
+	service = StationService(db)
+	stations = await service.get_stations_by_owner(user.id)
 	return [_validate_station(s) for s in stations]
 
 
@@ -53,10 +53,8 @@ async def create_station(
 	db: Annotated[AsyncSession, Depends(get_db)],
 	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> StationSchema:
-	db_station = Station(**station.model_dump(), owner_id=user.id)
-	db.add(db_station)
-	await db.commit()
-	await db.refresh(db_station)
+	service = StationService(db)
+	db_station = await service.create_station(station, user.id)
 	return _validate_station(db_station)
 
 
@@ -95,8 +93,8 @@ async def get_station(
 	db: Annotated[AsyncSession, Depends(get_db)],
 	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> StationSchema:
-	result = await db.execute(select(Station).where(Station.id == station_id, Station.owner_id == user.id))
-	station = result.scalar_one_or_none()
+	service = StationService(db)
+	station = await service.get_station_by_id_and_owner(station_id, user.id)
 	if not station:
 		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=STATION_NOT_FOUND)
 	return _validate_station(station)
@@ -114,17 +112,12 @@ async def update_station(
 	db: Annotated[AsyncSession, Depends(get_db)],
 	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> StationSchema:
-	result = await db.execute(select(Station).where(Station.id == station_id, Station.owner_id == user.id))
-	station = result.scalar_one_or_none()
+	service = StationService(db)
+	station = await service.get_station_by_id_and_owner(station_id, user.id)
 	if not station:
 		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=STATION_NOT_FOUND)
 
-	update_data = station_update.model_dump(exclude_unset=True)
-	for key, value in update_data.items():
-		setattr(station, key, value)
-
-	await db.commit()
-	await db.refresh(station)
+	station = await service.update_station(station, station_update)
 	return _validate_station(station)
 
 
@@ -140,10 +133,9 @@ async def delete_station(
 	db: Annotated[AsyncSession, Depends(get_db)],
 	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> None:
-	result = await db.execute(select(Station).where(Station.id == station_id, Station.owner_id == user.id))
-	station = result.scalar_one_or_none()
+	service = StationService(db)
+	station = await service.get_station_by_id_and_owner(station_id, user.id)
 	if not station:
 		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=STATION_NOT_FOUND)
 
-	await db.delete(station)
-	await db.commit()
+	await service.delete_station(station)
