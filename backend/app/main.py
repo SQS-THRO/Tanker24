@@ -1,9 +1,11 @@
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRouter
+from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.config import settings
 from app.database import async_session_maker, init_db
@@ -43,3 +45,19 @@ app.add_middleware(
 	allow_methods=["*"],
 	allow_headers=["*"],
 )
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+	"""Custom exception handler that returns detail directly for dict details."""
+	if isinstance(exc.detail, dict):
+		return JSONResponse(
+			status_code=exc.status_code,
+			content=exc.detail,
+			headers=exc.headers,
+		)
+	return JSONResponse(
+		status_code=exc.status_code,
+		content={"detail": exc.detail},
+		headers=exc.headers,
+	)

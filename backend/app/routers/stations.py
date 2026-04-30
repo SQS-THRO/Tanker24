@@ -11,11 +11,44 @@ from app.schemas.station import Station as StationSchema
 from app.schemas.station import StationCreate, StationUpdate, TankerkoenigStation
 from app.schemas.user import UserRead
 from app.services.nearby_stations_service import NearbyStationsService
+from app.services.rate_limiter import RateLimiterStatus, user_rate_limiter
 from app.services.station_service import StationService
 
 router = APIRouter(prefix="/stations", tags=["stations"])
 
 STATION_NOT_FOUND = "Station not found"
+
+
+async def check_rate_limit(user: Annotated[UserRead, Depends(get_current_active_user)]) -> None:
+	"""
+	Dependency that enforces per-user rate limiting on the nearby stations endpoint.
+
+	Raises HTTP 429 if the user has exceeded their rate limit.
+	"""
+	allowed, wait_time = await user_rate_limiter.check(user.id)
+	if not allowed:
+		# Return HTTP 429 with Retry-After header
+		headers = {"Retry-After": str(int(wait_time))} if wait_time > 0 else {}
+		raise HTTPException(
+			status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+			detail={
+				"error": "Rate limit exceeded",
+				"retry_after_seconds": round(wait_time, 2),
+			},
+			headers=headers,
+		)
+
+
+@router.get(
+	"/rate-limit/status",
+	summary="Get nearby stations rate limit status",
+	description="Retrieve the current rate limit status for the authenticated user. Shows remaining requests and cooldown information.",
+)
+async def get_rate_limit_status(
+	user: Annotated[UserRead, Depends(get_current_active_user)],
+) -> RateLimiterStatus:
+	"""Return rate limit status for the current user."""
+	return user_rate_limiter.get_status(user.id)
 
 
 def _validate_station(station: Station | StationSchema) -> StationSchema:
@@ -67,7 +100,19 @@ async def create_station(
 			"description": "Invalid latitude or longitude parameters",
 			"content": {"application/json": {"example": {"detail": "Latitude must be between -90 and 90"}}},
 		},
+		status.HTTP_429_TOO_MANY_REQUESTS: {
+			"description": "Rate limit exceeded",
+			"content": {
+				"application/json": {
+					"example": {
+						"error": "Rate limit exceeded",
+						"retry_after_seconds": 120.5,
+					},
+				},
+			},
+		},
 	},
+	dependencies=[Depends(check_rate_limit)],
 )
 async def get_nearby_stations(
 	db: Annotated[AsyncSession, Depends(get_db)],
@@ -79,7 +124,7 @@ async def get_nearby_stations(
 		service = NearbyStationsService(db)
 		return await service.get_nearby_stations(latitude, longitude)
 	except ValueError as e:
-		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
 
 
 @router.get(
