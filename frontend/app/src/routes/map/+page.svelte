@@ -11,6 +11,7 @@
 	import { t } from '$lib/stores/locale';
 	import { themeStore } from '$lib/stores/theme';
 	import type { Map, LayerGroup } from 'leaflet';
+	import L from 'leaflet';
 
 	const DEFAULT_LAT = 47.79;
 	const DEFAULT_LNG = 12.1;
@@ -33,8 +34,6 @@
 	let nearbyLayerGroup: LayerGroup | null = null;
 	let moveDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 	let isNearbyLoading = $state(false);
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	let L: any = null;
 
 	function debounce(fn: () => void, ms: number) {
 		if (moveDebounceTimer) clearTimeout(moveDebounceTimer);
@@ -207,8 +206,6 @@
 		userLat = lat;
 		userLng = lng;
 
-		L = (await import('leaflet')).default;
-
 		map = L.map(mapContainer).setView([lat, lng], DEFAULT_ZOOM);
 
 		userLayerGroup = L.layerGroup().addTo(map);
@@ -246,8 +243,8 @@
 					html: `
 						<div class="station-marker-inner">
 							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-								<path d="M3 22V8l9-6 9 6v14H3z" />
-								<path d="M9 22V12h6v10" />
+-								<path d="M3 22V8l9-6 9 6v14H3z" />
+-                               <path d="M9 22V12h6v10" />
 							</svg>
 						</div>
 					`,
