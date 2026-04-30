@@ -25,7 +25,7 @@ class NearbyStationsService:
 
 		radius = settings.tankerkoenig_search_radius_km
 		cache_expiry = timedelta(minutes=settings.station_cache_expiry_minutes)
-		now = datetime.now(UTC)
+		now = datetime.now(UTC).replace(tzinfo=None)
 
 		cached_stations = await self._get_cached_stations(latitude, longitude, radius, now - cache_expiry)
 
@@ -83,7 +83,7 @@ class NearbyStationsService:
 		cache_lon: float,
 		cache_radius: float,
 	) -> None:
-		now = datetime.now(UTC)
+		now = datetime.now(UTC).replace(tzinfo=None)
 
 		result = await self.db.execute(
 			select(TankerkoenigStation.tankerkoenig_id).where(
