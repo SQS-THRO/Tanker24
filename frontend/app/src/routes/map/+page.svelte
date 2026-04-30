@@ -12,6 +12,8 @@
 	import { themeStore } from '$lib/stores/theme';
 	import type { Map, LayerGroup } from 'leaflet';
 	import L from 'leaflet';
+	import gasStationIcon from '$lib/assets/gasstation-icons/gasstation.svg?url';
+	import gasStationDarkIcon from '$lib/assets/gasstation-icons/gasstation-dark.svg?url';
 
 	const DEFAULT_LAT = 47.79;
 	const DEFAULT_LNG = 12.1;
@@ -42,6 +44,59 @@
 			fn();
 		}, ms);
 	}
+
+	function getStationIconUrl() {
+		return $themeStore.globalTheme === 'light-modern' ? gasStationIcon : gasStationDarkIcon;
+	}
+
+	function refreshAllMarkers() {
+		if (!map) return;
+
+		// Refresh nearby stations
+		if (nearbyLayerGroup) {
+			nearbyLayerGroup.clearLayers();
+			const center = map.getCenter();
+			fetchNearbyStations(center.lat, center.lng);
+		}
+
+		// Refresh user's saved stations
+		if (userLayerGroup && stations.length > 0) {
+			userLayerGroup.clearLayers();
+			const iconUrl = getStationIconUrl();
+			stations.forEach((station) => {
+				if (station.latitude !== null && station.longitude !== null) {
+					const stationIcon = L.divIcon({
+						className: 'station-marker',
+						html: `
+							<div class="station-marker-inner">
+								<img src="${iconUrl}" alt="Station" width="24" height="24" />
+							</div>
+						`,
+						iconSize: [40, 40],
+						iconAnchor: [20, 40],
+						popupAnchor: [0, -40]
+					});
+					const popupContent = `
+						<div class="popup station-popup">
+							<h4>${station.name}</h4>
+							${station.description ? `<p>${station.description}</p>` : ''}
+						</div>
+					`;
+					L.marker([station.latitude, station.longitude], { icon: stationIcon }).bindPopup(popupContent).addTo(userLayerGroup!);
+				}
+			});
+		}
+	}
+
+	let themeInitialized = false;
+	$effect(() => {
+		const theme = $themeStore.globalTheme;
+		if (!themeInitialized) {
+			themeInitialized = true;
+			return;
+		}
+		refreshAllMarkers();
+	});
 
 	function getUserLocation(): Promise<{ lat: number; lng: number }> {
 		return new Promise((resolve) => {
@@ -150,16 +205,13 @@
 				</div>
 			`;
 
+		const iconUrl = getStationIconUrl();
+
 			const stationIcon = L.divIcon({
 				className: 'nearby-station-marker',
 				html: `
 					<div class="nearby-station-marker-inner">
-						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<path d="M3 22V6l9-4 9 4v16H3z"/>
-							<path d="M9 22V12h6v10"/>
-							<path d="M12 2v4"/>
-							<circle cx="12" cy="10" r="1.5" fill="currentColor"/>
-						</svg>
+						<img src="${iconUrl}" alt="Station" width="24" height="24" />
 					</div>
 				`,
 				iconSize: [40, 40],
@@ -236,31 +288,32 @@
 			L.marker([userLat, userLng], { icon: userIcon }).addTo(map).bindPopup(`<div class="popup user-popup"><strong>${$t.map.yourLocation}</strong></div>`).openPopup();
 		}
 
-		stations.forEach((station) => {
-			if (station.latitude !== null && station.longitude !== null) {
-				const stationIcon = L.divIcon({
-					className: 'station-marker',
-					html: `
-						<div class="station-marker-inner">
-							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
--								<path d="M3 22V8l9-6 9 6v14H3z" />
--                               <path d="M9 22V12h6v10" />
-							</svg>
+		// Create user's saved station markers
+		if (userLayerGroup && stations.length > 0) {
+			const iconUrl = getStationIconUrl();
+			stations.forEach((station) => {
+				if (station.latitude !== null && station.longitude !== null) {
+					const stationIcon = L.divIcon({
+						className: 'station-marker',
+						html: `
+							<div class="station-marker-inner">
+								<img src="${iconUrl}" alt="Station" width="24" height="24" />
+							</div>
+						`,
+						iconSize: [40, 40],
+						iconAnchor: [20, 40],
+						popupAnchor: [0, -40]
+					});
+					const popupContent = `
+						<div class="popup station-popup">
+							<h4>${station.name}</h4>
+							${station.description ? `<p>${station.description}</p>` : ''}
 						</div>
-					`,
-					iconSize: [40, 40],
-					iconAnchor: [20, 40],
-					popupAnchor: [0, -40]
-				});
-				const popupContent = `
-					<div class="popup station-popup">
-						<h4>${station.name}</h4>
-						${station.description ? `<p>${station.description}</p>` : ''}
-					</div>
-				`;
-				L.marker([station.latitude, station.longitude], { icon: stationIcon }).bindPopup(popupContent).addTo(userLayerGroup!);
-			}
-		});
+					`;
+					L.marker([station.latitude, station.longitude], { icon: stationIcon }).bindPopup(popupContent).addTo(userLayerGroup!);
+				}
+			});
+		}
 
 		await fetchNearbyStations(lat, lng);
 
