@@ -40,7 +40,7 @@ class TestNearbyStationsServiceValidation:
 
 	@pytest.mark.asyncio
 	async def test_valid_coordinates(self, test_db_session):
-		async def mock_to_thread(func, *args, **kwargs):
+		async def mock_to_thread(func, *args, **kwargs):  # NOSONAR
 			return []
 
 		with patch("app.services.nearby_stations_service.asyncio.to_thread", new=mock_to_thread):
@@ -100,7 +100,7 @@ class TestNearbyStationsServiceApi:
 
 	@pytest.mark.asyncio
 	async def test_get_nearby_stations_returns_empty_on_empty_response(self, test_db_session):
-		async def mock_to_thread(func, *args, **kwargs):
+		async def mock_to_thread(func, *args, **kwargs):  # NOSONAR
 			return []
 
 		with patch("app.services.nearby_stations_service.asyncio.to_thread", new=mock_to_thread):
