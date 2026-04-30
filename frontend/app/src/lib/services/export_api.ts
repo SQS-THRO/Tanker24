@@ -33,12 +33,12 @@ export async function exportAsCsv(token: string): Promise<Blob> {
 }
 
 export function downloadBlob(blob: Blob, filename: string): void {
-	const url = window.URL.createObjectURL(blob);
+	const url = globalThis.URL.createObjectURL(blob);
 	const a = document.createElement('a');
 	a.href = url;
 	a.download = filename;
 	document.body.appendChild(a);
 	a.click();
-	document.body.removeChild(a);
-	window.URL.revokeObjectURL(url);
+	a.remove();
+	globalThis.URL.revokeObjectURL(url);
 }
