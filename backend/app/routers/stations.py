@@ -1,11 +1,14 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, Request, status, Query
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import get_current_active_user
+from app.config import settings
 from app.database import get_db
+from app.dependencies import get_current_user_with_request_state
+from app.limiter import limiter
 from app.models import Station
 from app.schemas.station import Station as StationSchema
 from app.schemas.station import StationCreate, StationUpdate, TankerkoenigStation
@@ -67,11 +70,17 @@ async def create_station(
 			"description": "Invalid latitude or longitude parameters",
 			"content": {"application/json": {"example": {"detail": "Latitude must be between -90 and 90"}}},
 		},
+		status.HTTP_429_TOO_MANY_REQUESTS: {
+			"description": "Rate limit exceeded",
+			"content": {"application/json": {"example": {"detail": "Rate limit exceeded"}}},
+		},
 	},
 )
+@limiter.limit(settings.nearby_stations_rate_limit)
 async def get_nearby_stations(
+	request: Request,
 	db: Annotated[AsyncSession, Depends(get_db)],
-	user: Annotated[UserRead, Depends(get_current_active_user)],
+	user: Annotated[UserRead, Depends(get_current_user_with_request_state)],
 	latitude: Annotated[float, Query(ge=-90, le=90, description="Latitude coordinate (-90 to 90)")],
 	longitude: Annotated[float, Query(ge=-180, le=180, description="Longitude coordinate (-180 to 180)")],
 ) -> list[TankerkoenigStation]:
