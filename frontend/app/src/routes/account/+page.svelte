@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { authService } from '$lib/services/auth_api';
+	import { exportAsJson, exportAsCsv, downloadBlob } from '$lib/services/export_api';
 	import { goto } from '$app/navigation';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
@@ -15,6 +16,7 @@
 	} | null>(null);
 	let loading = $state(true);
 	let error = $state('');
+	let exporting = $state<'json' | 'csv' | null>(null);
 
 	function getPreviewColors(): ThemePalette {
 		const override = $themeStore.colorBlindOverride;
@@ -60,6 +62,24 @@
 		await authService.logout();
 		localStorage.removeItem('token');
 		await goto(resolve('/'));
+	}
+
+	async function handleExport(format: 'json' | 'csv') {
+		const token = localStorage.getItem('token');
+		if (!token) return;
+
+		exporting = format;
+		try {
+			const blob = format === 'json' ? await exportAsJson(token) : await exportAsCsv(token);
+
+			const filename = format === 'json' ? 'user_data.json' : 'car_history_data.csv';
+
+			downloadBlob(blob, filename);
+		} catch {
+			error = $t.account.exportFailed;
+		} finally {
+			exporting = null;
+		}
 	}
 </script>
 
@@ -177,6 +197,39 @@
 				<div class="stat-item">
 					<span class="stat-value">{$t.account.planFree}</span>
 					<span class="stat-label">{$t.account.planLabel}</span>
+				</div>
+			</div>
+
+			<div class="export-section page-card">
+				<h2>{$t.account.exportSection}</h2>
+				<p class="export-description">{$t.account.exportDescription}</p>
+				<div class="export-buttons">
+					<button class="btn btn-primary" onclick={() => handleExport('json')} disabled={exporting !== null}>
+						{#if exporting === 'json'}
+							<div class="spinner"></div>
+							{$t.account.exporting}
+						{:else}
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+								<polyline points="7,10 12,15 17,10" />
+								<line x1="12" y1="15" x2="12" y2="3" />
+							</svg>
+							{$t.account.exportAsJson}
+						{/if}
+					</button>
+					<button class="btn btn-secondary" onclick={() => handleExport('csv')} disabled={exporting !== null}>
+						{#if exporting === 'csv'}
+							<div class="spinner"></div>
+							{$t.account.exporting}
+						{:else}
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+								<polyline points="7,10 12,15 17,10" />
+								<line x1="12" y1="15" x2="12" y2="3" />
+							</svg>
+							{$t.account.exportAsCsv}
+						{/if}
+					</button>
 				</div>
 			</div>
 
