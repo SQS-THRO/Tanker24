@@ -25,6 +25,7 @@
 	let mapContainer: HTMLDivElement;
 	let stations: Station[] = $state([]);
 	let nearbyStations: TankerkoenigStation[] = $state([]);
+	let knownStations = new Map<string, TankerkoenigStation>();
 	let error = $state('');
 	let nearbyFetchError = $state('');
 	let searchQuery = $state('');
@@ -207,10 +208,13 @@
 		nearbyFetchError = '';
 
 		try {
-			nearbyStations = await stationService.getNearbyStations(lat, lng, token);
+			const fresh = await stationService.getNearbyStations(lat, lng, token);
+			for (const station of fresh) {
+				knownStations.set(station.tankerkoenig_id, station);
+			}
+			nearbyStations = Array.from(knownStations.values());
 		} catch {
 			nearbyFetchError = $t.map.nearbyFetchFailed;
-			nearbyStations = [];
 		} finally {
 			isNearbyLoading = false;
 		}
