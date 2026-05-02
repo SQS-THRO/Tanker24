@@ -130,6 +130,7 @@ export const translations = {
 			exportFailed: 'Export failed'
 		},
 		map: {
+			priceDevider: '.',
 			searchPlaceholder: 'Search stations...',
 			stations: 'Stations',
 			myStations: 'My Stations',
@@ -356,6 +357,7 @@ export const translations = {
 			exportFailed: 'Export fehlgeschlagen'
 		},
 		map: {
+			priceDevider: ',',
 			searchPlaceholder: 'Tankstellen suchen...',
 			stations: 'Tankstellen',
 			myStations: 'Meine Tankstellen',

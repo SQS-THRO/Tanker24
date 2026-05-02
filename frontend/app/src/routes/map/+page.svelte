@@ -186,7 +186,9 @@
 				.map((p) => {
 					const isSelectedFuel = p.type === selectedFuel;
 					const isCheapest = isSelectedFuel && p.value === minSelectedFuelPrice && minSelectedFuelPrice !== null;
-					const priceDisplay = p.value !== null ? `${(p.value as number).toFixed(3)}€` : '—';
+					const integer = Math.trunc(p.value as number);
+					const dec = (p.value as number).toFixed(3).split('.')[1];
+					const priceDisplay = p.value !== null ? `${integer}${$t.map.priceDevider}${dec}€` : '—';
 					const classes = ['price-item'];
 					if (isSelectedFuel) classes.push('selected-fuel');
 					if (isCheapest) classes.push('cheapest');
