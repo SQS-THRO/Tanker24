@@ -95,7 +95,7 @@
 
 	let themeInitialized = false;
 	$effect(() => {
-		const theme = $themeStore.globalTheme;
+		void $themeStore.globalTheme;
 		if (!themeInitialized) {
 			themeInitialized = true;
 			return;
@@ -104,7 +104,7 @@
 	});
 
 	$effect(() => {
-		$fuelType;
+		void $fuelType;
 		if (nearbyLayerGroup && nearbyStations.length > 0) {
 			updateNearbyMarkers();
 		}
@@ -224,8 +224,8 @@
 				</div>
 			`;
 
-		const iconUrl = getStationIconUrl();
-		const isCheapestStation = station[selectedFuel] !== null && station[selectedFuel] === minSelectedFuelPrice;
+			const iconUrl = getStationIconUrl();
+			const isCheapestStation = station[selectedFuel] !== null && station[selectedFuel] === minSelectedFuelPrice;
 
 			const stationIcon = L.divIcon({
 				className: 'nearby-station-marker',
@@ -407,11 +407,14 @@
 				</button>
 				{#if showFuelDropdown}
 					<div class="fuel-dropdown glass">
-						{#each fuelTypes as type}
+						{#each fuelTypes as type (type)}
 							<button
 								class="fuel-dropdown-item"
 								class:active={type === $fuelType}
-								onclick={() => { fuelType.set(type); showFuelDropdown = false; }}
+								onclick={() => {
+									fuelType.set(type);
+									showFuelDropdown = false;
+								}}
 							>
 								{type === 'diesel' ? $t.map.diesel : type === 'e5' ? $t.map.e5 : $t.map.e10}
 							</button>
@@ -500,7 +503,7 @@
 					{nearbyStations.length}
 					{$t.map.nearby}
 					{#if isNearbyLoading}
-						<span class="loading-spinner" />
+						<span class="loading-spinner"></span>
 					{/if}
 				</span>
 			{/if}
@@ -531,14 +534,14 @@
 	{/if}
 </main>
 
-	<svelte:window
-		onclick={(e) => {
-			const target = e.target as HTMLElement;
-			if (!target.closest('.profile-wrapper')) {
-				showUserMenu = false;
-			}
-			if (!target.closest('.fuel-selector-wrapper')) {
-				showFuelDropdown = false;
-			}
-		}}
-	/>
+<svelte:window
+	onclick={(e) => {
+		const target = e.target as HTMLElement;
+		if (!target.closest('.profile-wrapper')) {
+			showUserMenu = false;
+		}
+		if (!target.closest('.fuel-selector-wrapper')) {
+			showFuelDropdown = false;
+		}
+	}}
+/>

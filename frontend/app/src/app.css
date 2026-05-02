@@ -1733,7 +1733,10 @@
 	}
 
 	.nearby-station-marker:hover .nearby-station-marker-inner {
-		box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.4), 0 0 16px rgba(34, 197, 94, 0.25), var(--shadow-lg);
+		box-shadow:
+			0 0 0 3px rgba(34, 197, 94, 0.4),
+			0 0 16px rgba(34, 197, 94, 0.25),
+			var(--shadow-lg);
 		transform: scale(1.15);
 	}
 
