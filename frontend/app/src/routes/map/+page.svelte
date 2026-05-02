@@ -8,10 +8,10 @@
 	import Logo from '$lib/components/Logo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import AuthRequiredModal from '$lib/components/AuthRequiredModal.svelte';
-	import { t } from '$lib/stores/locale';
+	import { t, locale } from '$lib/stores/locale';
 	import { themeStore } from '$lib/stores/theme';
 	import { fuelType, fuelTypeLabel, type FuelType } from '$lib/stores/fuelType';
-	import type { Map, LayerGroup } from 'leaflet';
+	import type { Map, LayerGroup, Marker } from 'leaflet';
 	import gasStationIcon from '$lib/assets/gasstation-icons/gasstation.svg?url';
 	import gasStationDarkIcon from '$lib/assets/gasstation-icons/gasstation-dark.svg?url';
 
@@ -34,6 +34,7 @@
 	let showUserMenu = $state(false);
 	let showAuthModal = $state(false);
 	let map: Map | null = null;
+	let userLocationMarker: Marker | null = null;
 	let userLayerGroup: LayerGroup | null = null;
 	let nearbyLayerGroup: LayerGroup | null = null;
 	let moveDebounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -93,6 +94,43 @@
 		}
 	}
 
+	function refreshPopups() {
+		if (!map || !L) return;
+
+		if (userLocationMarker && userLat !== null && userLng !== null) {
+			userLocationMarker.setPopupContent(`<div class="popup user-popup"><strong>${$t.map.yourLocation}</strong></div>`);
+		}
+
+		if (userLayerGroup && stations.length > 0) {
+			userLayerGroup.clearLayers();
+			const iconUrl = getStationIconUrl();
+			stations.forEach((station) => {
+				if (station.latitude !== null && station.longitude !== null) {
+					const stationIcon = L.divIcon({
+						className: 'station-marker',
+						html: `
+							<div class="station-marker-inner">
+								<img src="${iconUrl}" alt="Station" width="24" height="24" />
+							</div>
+						`,
+						iconSize: [40, 40],
+						iconAnchor: [20, 40],
+						popupAnchor: [0, -40]
+					});
+					const popupContent = `
+						<div class="popup station-popup">
+							<h4>${station.name}</h4>
+							${station.description ? `<p>${station.description}</p>` : ''}
+						</div>
+					`;
+					L.marker([station.latitude, station.longitude], { icon: stationIcon }).bindPopup(popupContent).addTo(userLayerGroup!);
+				}
+			});
+		}
+
+		updateNearbyMarkers();
+	}
+
 	let themeInitialized = false;
 	$effect(() => {
 		void $themeStore.globalTheme;
@@ -101,6 +139,16 @@
 			return;
 		}
 		refreshAllMarkers();
+	});
+
+	let localeInitialized = false;
+	$effect(() => {
+		void $locale;
+		if (!localeInitialized) {
+			localeInitialized = true;
+			return;
+		}
+		refreshPopups();
 	});
 
 	$effect(() => {
@@ -310,7 +358,8 @@
 				iconSize: [24, 24],
 				iconAnchor: [12, 12]
 			});
-			L.marker([userLat, userLng], { icon: userIcon }).addTo(map).bindPopup(`<div class="popup user-popup"><strong>${$t.map.yourLocation}</strong></div>`).openPopup();
+			userLocationMarker = L.marker([userLat, userLng], { icon: userIcon }).addTo(map);
+			userLocationMarker.bindPopup(`<div class="popup user-popup"><strong>${$t.map.yourLocation}</strong></div>`).openPopup();
 		}
 
 		// Create user's saved station markers
