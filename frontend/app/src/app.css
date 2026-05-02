@@ -1292,6 +1292,34 @@
 		}
 	}
 
+	.zoom-controls {
+		position: absolute;
+		bottom: calc(44px + 1.5rem + 0.5rem);
+		right: 1rem;
+		z-index: 1000;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.zoom-btn {
+		width: 44px;
+		height: 44px;
+		border-radius: var(--radius-md);
+		border: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		color: var(--accent-primary);
+		transition: all var(--transition-base);
+	}
+
+	.zoom-btn:hover {
+		color: var(--accent-secondary);
+		transform: scale(1.05);
+	}
+
 	.location-btn {
 		position: absolute;
 		bottom: 1.5rem;

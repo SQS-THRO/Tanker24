@@ -131,6 +131,14 @@
 		updateNearbyMarkers();
 	}
 
+	function zoomIn() {
+		if (map) map.zoomIn();
+	}
+
+	function zoomOut() {
+		if (map) map.zoomOut();
+	}
+
 	let themeInitialized = false;
 	$effect(() => {
 		void $themeStore.globalTheme;
@@ -331,7 +339,7 @@
 		userLat = lat;
 		userLng = lng;
 
-		map = L.map(mapContainer).setView([lat, lng], DEFAULT_ZOOM);
+		map = L.map(mapContainer, { zoomControl: false }).setView([lat, lng], DEFAULT_ZOOM);
 
 		userLayerGroup = L.layerGroup().addTo(map);
 		nearbyLayerGroup = L.layerGroup().addTo(map);
@@ -568,6 +576,18 @@
 	</div>
 
 	{#if userLat !== null && userLng !== null}
+		<div class="zoom-controls">
+			<button class="zoom-btn glass" onclick={zoomIn} aria-label="Zoom in">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M12 5v14M5 12h14" />
+				</svg>
+			</button>
+			<button class="zoom-btn glass" onclick={zoomOut} aria-label="Zoom out">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M5 12h14" />
+				</svg>
+			</button>
+		</div>
 		<button
 			class="location-btn glass"
 			onclick={() => {
