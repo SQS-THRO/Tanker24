@@ -10,15 +10,17 @@
 	import AuthRequiredModal from '$lib/components/AuthRequiredModal.svelte';
 	import { t } from '$lib/stores/locale';
 	import { themeStore } from '$lib/stores/theme';
+	import { fuelType, fuelTypeLabel, type FuelType } from '$lib/stores/fuelType';
 	import type { Map, LayerGroup } from 'leaflet';
-	import L from 'leaflet';
 	import gasStationIcon from '$lib/assets/gasstation-icons/gasstation.svg?url';
 	import gasStationDarkIcon from '$lib/assets/gasstation-icons/gasstation-dark.svg?url';
 
 	const DEFAULT_LAT = 47.79;
 	const DEFAULT_LNG = 12.1;
 	const DEFAULT_ZOOM = 11;
-	const NEARBY_DEBOUNCE_MS = 2500;
+	const NEARBY_DEBOUNCE_MS = 1500;
+
+	let L: typeof import('leaflet').default;
 
 	let mapContainer: HTMLDivElement;
 	let stations: Station[] = $state([]);
@@ -36,6 +38,9 @@
 	let nearbyLayerGroup: LayerGroup | null = null;
 	let moveDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 	let isNearbyLoading = $state(false);
+	let showFuelDropdown = $state(false);
+
+	const fuelTypes: FuelType[] = ['diesel', 'e5', 'e10'];
 
 	function debounce(fn: () => void, ms: number) {
 		if (moveDebounceTimer) clearTimeout(moveDebounceTimer);
@@ -98,6 +103,13 @@
 		refreshAllMarkers();
 	});
 
+	$effect(() => {
+		$fuelType;
+		if (nearbyLayerGroup && nearbyStations.length > 0) {
+			updateNearbyMarkers();
+		}
+	});
+
 	function getUserLocation(): Promise<{ lat: number; lng: number }> {
 		return new Promise((resolve) => {
 			if (!navigator.geolocation) {
@@ -155,6 +167,11 @@
 
 		nearbyLayerGroup.clearLayers();
 
+		const selectedFuel = $fuelType;
+
+		const fuelValues = nearbyStations.map((s) => s[selectedFuel]).filter((v): v is number => v !== null && v !== undefined);
+		const minSelectedFuelPrice = fuelValues.length > 0 ? Math.min(...fuelValues) : null;
+
 		nearbyStations.forEach((station) => {
 			const prices = [
 				{ type: 'diesel', value: station.diesel },
@@ -162,19 +179,21 @@
 				{ type: 'e10', value: station.e10 }
 			].filter((p) => p.value !== null && p.value !== undefined);
 
-			const minPrice = prices.length > 0 ? Math.min(...prices.map((p) => p.value as number)) : null;
-
 			const addressParts = [station.street, station.house_number, station.post_code, station.place].filter(Boolean);
 			const address = addressParts.join(', ');
 
 			const priceRows = prices
 				.map((p) => {
-					const isCheapest = p.value === minPrice;
+					const isSelectedFuel = p.type === selectedFuel;
+					const isCheapest = isSelectedFuel && p.value === minSelectedFuelPrice && minSelectedFuelPrice !== null;
 					const priceDisplay = p.value !== null ? `${(p.value as number).toFixed(3)}€` : '—';
+					const classes = ['price-item'];
+					if (isSelectedFuel) classes.push('selected-fuel');
+					if (isCheapest) classes.push('cheapest');
 					return `
-					<div class="price-item${isCheapest ? ' cheapest' : ''}">
+					<div class="${classes.join(' ')}">
 						<div class="fuel-label">${p.type.toUpperCase()}</div>
-						<div class="fuel-price${isCheapest ? '' : ''}">${priceDisplay}</div>
+						<div class="fuel-price">${priceDisplay}</div>
 					</div>
 				`;
 				})
@@ -206,11 +225,12 @@
 			`;
 
 		const iconUrl = getStationIconUrl();
+		const isCheapestStation = station[selectedFuel] !== null && station[selectedFuel] === minSelectedFuelPrice;
 
 			const stationIcon = L.divIcon({
 				className: 'nearby-station-marker',
 				html: `
-					<div class="nearby-station-marker-inner">
+					<div class="nearby-station-marker-inner${isCheapestStation ? ' cheapest-marker' : ''}">
 						<img src="${iconUrl}" alt="Station" width="24" height="24" />
 					</div>
 				`,
@@ -239,6 +259,9 @@
 
 	onMount(async () => {
 		if (!browser) return;
+
+		const leaflet = await import('leaflet');
+		L = leaflet.default;
 
 		const token = localStorage.getItem('token');
 		if (!token) {
@@ -368,6 +391,34 @@
 					</button>
 				{/if}
 			</div>
+
+			<div class="fuel-selector-wrapper">
+				<button class="fuel-selector-btn glass" onclick={() => (showFuelDropdown = !showFuelDropdown)} aria-label={$t.map.selectFuel}>
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M3 22V6a2 2 0 012-2h8a2 2 0 012 2v16" />
+						<path d="M3 22h12" />
+						<path d="M15 10l2.5-2.5a1.414 1.414 0 012 0l1 1a1.414 1.414 0 010 2L18 13" />
+						<path d="M15 10v6a2 2 0 002 2h0a2 2 0 002-2v-2" />
+					</svg>
+					<span>{$fuelTypeLabel}</span>
+					<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M6 9l6 6 6-6" />
+					</svg>
+				</button>
+				{#if showFuelDropdown}
+					<div class="fuel-dropdown glass">
+						{#each fuelTypes as type}
+							<button
+								class="fuel-dropdown-item"
+								class:active={type === $fuelType}
+								onclick={() => { fuelType.set(type); showFuelDropdown = false; }}
+							>
+								{type === 'diesel' ? $t.map.diesel : type === 'e5' ? $t.map.e5 : $t.map.e10}
+							</button>
+						{/each}
+					</div>
+				{/if}
+			</div>
 		</div>
 
 		<div class="header-actions">
@@ -480,11 +531,14 @@
 	{/if}
 </main>
 
-<svelte:window
-	onclick={(e) => {
-		const target = e.target as HTMLElement;
-		if (!target.closest('.profile-wrapper')) {
-			showUserMenu = false;
-		}
-	}}
-/>
+	<svelte:window
+		onclick={(e) => {
+			const target = e.target as HTMLElement;
+			if (!target.closest('.profile-wrapper')) {
+				showUserMenu = false;
+			}
+			if (!target.closest('.fuel-selector-wrapper')) {
+				showFuelDropdown = false;
+			}
+		}}
+	/>

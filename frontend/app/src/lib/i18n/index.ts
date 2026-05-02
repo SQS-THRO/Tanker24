@@ -149,7 +149,8 @@ export const translations = {
 			brand: 'Brand',
 			address: 'Address',
 			nearbyFetchFailed: 'Nearby stations unavailable',
-			kilometers: 'km'
+			kilometers: 'km',
+			selectFuel: 'Select fuel'
 		},
 		authRequired: {
 			title: 'Login Required',
@@ -374,7 +375,8 @@ export const translations = {
 			brand: 'Marke',
 			address: 'Adresse',
 			nearbyFetchFailed: 'Tankstellen in der Nähe nicht verfügbar',
-			kilometers: 'km'
+			kilometers: 'km',
+			selectFuel: 'Kraftstoff wählen'
 		},
 		authRequired: {
 			title: 'Anmeldung erforderlich',
