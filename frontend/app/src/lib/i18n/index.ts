@@ -130,12 +130,28 @@ export const translations = {
 			exportFailed: 'Export failed'
 		},
 		map: {
+			priceDevider: '.',
 			searchPlaceholder: 'Search stations...',
 			stations: 'Stations',
+			myStations: 'My Stations',
+			nearby: 'Nearby',
 			back: 'Back',
 			yourLocation: 'Your Location',
 			loginRequired: 'Please log in to view stations',
-			login: 'Login'
+			login: 'Login',
+			open: 'Open',
+			closed: 'Closed',
+			cheapest: 'Cheapest',
+			price: 'Price',
+			distance: 'Distance',
+			diesel: 'Diesel',
+			e5: 'E5',
+			e10: 'E10',
+			brand: 'Brand',
+			address: 'Address',
+			nearbyFetchFailed: 'Nearby stations unavailable',
+			kilometers: 'km',
+			selectFuel: 'Select fuel'
 		},
 		authRequired: {
 			title: 'Login Required',
@@ -341,12 +357,28 @@ export const translations = {
 			exportFailed: 'Export fehlgeschlagen'
 		},
 		map: {
+			priceDevider: ',',
 			searchPlaceholder: 'Tankstellen suchen...',
 			stations: 'Tankstellen',
+			myStations: 'Meine Tankstellen',
+			nearby: 'In der Nähe',
 			back: 'Zurück',
 			yourLocation: 'Dein Standort',
 			loginRequired: 'Bitte melde dich an um Tankstellen anzuzeigen',
-			login: 'Anmelden'
+			login: 'Anmelden',
+			open: 'Geöffnet',
+			closed: 'Geschlossen',
+			cheapest: 'Günstigste',
+			price: 'Preis',
+			distance: 'Entfernung',
+			diesel: 'Diesel',
+			e5: 'E5',
+			e10: 'E10',
+			brand: 'Marke',
+			address: 'Adresse',
+			nearbyFetchFailed: 'Tankstellen in der Nähe nicht verfügbar',
+			kilometers: 'km',
+			selectFuel: 'Kraftstoff wählen'
 		},
 		authRequired: {
 			title: 'Anmeldung erforderlich',
