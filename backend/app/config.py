@@ -43,6 +43,9 @@ class Settings(BaseSettings):
 	tankerkoenig_search_radius_km: float = 5.0
 	station_cache_tolerance_km: float = 0.01
 
+	# Rate limiting for nearby stations endpoint
+	nearby_stations_rate_limit: str = "10/minute"
+
 	CORSorigins: list[str] = [
 		"http://localhost:5173",
 		"http://localhost:3000",

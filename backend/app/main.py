@@ -1,13 +1,17 @@
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRouter
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from starlette.responses import JSONResponse
 
 from app.config import settings
 from app.database import async_session_maker, init_db
 from app.invitation_keys import sync_invitation_keys
+from app.limiter import limiter
 from app.routers import auth, health, stations, export
 
 
@@ -24,6 +28,22 @@ app = FastAPI(
 	version=settings.app_version,
 	lifespan=lifespan,
 )
+
+# Store limiter in app state
+app.state.limiter = limiter
+
+# Add SlowAPI middleware for rate limiting
+app.add_middleware(SlowAPIMiddleware)
+
+
+# Add exception handler for rate limit exceeded
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
+	return JSONResponse(
+		status_code=429,
+		content={"detail": "Rate limit exceeded. Please try again later."},
+	)
+
 
 api_router = APIRouter(prefix="/api/v0")
 

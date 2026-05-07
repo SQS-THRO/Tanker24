@@ -17,6 +17,7 @@ dependencies = [
     "passlib[bcrypt]>=1.7.4",
     "asyncpg>=0.31.0",
     "httpx>=0.28.0",
+    "slowapi>=0.1.9",
 ]
 
 [project.optional-dependencies]
