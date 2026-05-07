@@ -241,6 +241,8 @@
 
 			const addressParts = [station.street, station.house_number, station.post_code, station.place].filter(Boolean);
 			const address = addressParts.join(', ');
+            // calculate distance in kilometers using euclidean distance and multiplying with 111 (approx km per degree)
+            const distance = (Math.sqrt((station.latitude - userLat!)**2 + (station.longitude - userLng!)**2) * 111).toFixed(1);
 
 			const priceRows = prices
 				.map((p) => {
@@ -279,7 +281,7 @@
 							<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
 							<circle cx="12" cy="9" r="2.5"/>
 						</svg>
-						${station.distance.toFixed(1)} ${$t.map.kilometers}
+						${distance} ${$t.map.kilometers}
 					</div>`
 							: ''
 					}
