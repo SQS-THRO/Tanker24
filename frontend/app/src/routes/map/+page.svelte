@@ -241,8 +241,8 @@
 
 			const addressParts = [station.street, station.house_number, station.post_code, station.place].filter(Boolean);
 			const address = addressParts.join(', ');
-            // calculate distance in kilometers using euclidean distance and multiplying with 111 (approx km per degree)
-            const distance = (Math.sqrt((station.latitude - userLat!)**2 + (station.longitude - userLng!)**2) * 111).toFixed(1);
+			// calculate distance in kilometers using euclidean distance and multiplying with 111 (approx km per degree)
+			const distance = (Math.sqrt((station.latitude - userLat!) ** 2 + (station.longitude - userLng!) ** 2) * 111).toFixed(1);
 
 			const priceRows = prices
 				.map((p) => {
