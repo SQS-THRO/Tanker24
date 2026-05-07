@@ -46,7 +46,7 @@ class Settings(BaseSettings):
 	# Rate limiting for nearby stations endpoint
 	nearby_stations_rate_limit: str = "10/minute"
 
-	CORSorigins: list[str] = [
+	cors_origins: list[str] = [
 		"http://localhost:5173",
 		"http://localhost:3000",
 		"http://127.0.0.1:5173",
