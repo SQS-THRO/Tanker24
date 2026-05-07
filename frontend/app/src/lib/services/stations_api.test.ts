@@ -54,7 +54,7 @@ const tankerkoenigStationFixture = {
 	cached_at: '2024-01-01T12:00:00Z',
 	cache_lat: 52.52,
 	cache_lon: 13.405,
-	cache_radius: 5.0
+	cache_radius: 5.1
 };
 
 const nearbyStationsListFixture = [
@@ -70,7 +70,7 @@ const nearbyStationsListFixture = [
 		place: 'Berlin',
 		latitude: 52.53,
 		longitude: 13.406,
-		distance: 1.0,
+		distance: 1.1,
 		diesel: 1.66,
 		e5: 1.76,
 		e10: 1.71,
@@ -78,7 +78,7 @@ const nearbyStationsListFixture = [
 		cached_at: '2024-01-01T12:00:00Z',
 		cache_lat: 52.52,
 		cache_lon: 13.405,
-		cache_radius: 5.0
+		cache_radius: 5.1
 	}
 ];
 
