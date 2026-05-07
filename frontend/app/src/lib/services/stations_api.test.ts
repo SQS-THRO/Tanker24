@@ -49,7 +49,7 @@ const tankerkoenigStationFixture = {
 	distance: 0.5,
 	diesel: 1.65,
 	e5: 1.75,
-	e10: 1.70,
+	e10: 1.7,
 	is_open: true,
 	cached_at: '2024-01-01T12:00:00Z',
 	cache_lat: 52.52,

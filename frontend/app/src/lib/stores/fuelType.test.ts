@@ -94,7 +94,12 @@ describe('fuelTypeLabel derived store', () => {
 
 	test('returns "Diesel" when fuelType is "diesel"', async () => {
 		vi.doMock('$lib/stores/locale', () => ({
-			t: { subscribe: (run: (v: unknown) => void) => { run({ map: { diesel: 'Diesel', e5: 'Super E5', e10: 'Super E10' } }); return () => {}; } }
+			t: {
+				subscribe: (run: (v: unknown) => void) => {
+					run({ map: { diesel: 'Diesel', e5: 'Super E5', e10: 'Super E10' } });
+					return () => {};
+				}
+			}
 		}));
 		vi.resetModules();
 		const { fuelType, fuelTypeLabel } = await import('$lib/stores/fuelType');
@@ -104,7 +109,12 @@ describe('fuelTypeLabel derived store', () => {
 
 	test('returns "Super E5" when fuelType is "e5"', async () => {
 		vi.doMock('$lib/stores/locale', () => ({
-			t: { subscribe: (run: (v: unknown) => void) => { run({ map: { diesel: 'Diesel', e5: 'Super E5', e10: 'Super E10' } }); return () => {}; } }
+			t: {
+				subscribe: (run: (v: unknown) => void) => {
+					run({ map: { diesel: 'Diesel', e5: 'Super E5', e10: 'Super E10' } });
+					return () => {};
+				}
+			}
 		}));
 		vi.resetModules();
 		const { fuelType, fuelTypeLabel } = await import('$lib/stores/fuelType');
@@ -114,7 +124,12 @@ describe('fuelTypeLabel derived store', () => {
 
 	test('returns "Super E10" when fuelType is "e10"', async () => {
 		vi.doMock('$lib/stores/locale', () => ({
-			t: { subscribe: (run: (v: unknown) => void) => { run({ map: { diesel: 'Diesel', e5: 'Super E5', e10: 'Super E10' } }); return () => {}; } }
+			t: {
+				subscribe: (run: (v: unknown) => void) => {
+					run({ map: { diesel: 'Diesel', e5: 'Super E5', e10: 'Super E10' } });
+					return () => {};
+				}
+			}
 		}));
 		vi.resetModules();
 		const { fuelType, fuelTypeLabel } = await import('$lib/stores/fuelType');
@@ -124,7 +139,12 @@ describe('fuelTypeLabel derived store', () => {
 
 	test('updates label reactively when fuelType changes', async () => {
 		vi.doMock('$lib/stores/locale', () => ({
-			t: { subscribe: (run: (v: unknown) => void) => { run({ map: { diesel: 'Diesel', e5: 'Super E5', e10: 'Super E10' } }); return () => {}; } }
+			t: {
+				subscribe: (run: (v: unknown) => void) => {
+					run({ map: { diesel: 'Diesel', e5: 'Super E5', e10: 'Super E10' } });
+					return () => {};
+				}
+			}
 		}));
 		vi.resetModules();
 		const { fuelType, fuelTypeLabel } = await import('$lib/stores/fuelType');
