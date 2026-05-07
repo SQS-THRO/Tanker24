@@ -3,10 +3,10 @@ FROM node:24-alpine AS build
 WORKDIR /app
 
 # install dependencies
-COPY package*.json ./
+COPY app/package*.json ./
 RUN npm ci
 
-COPY . .
+COPY ./app .
 
 # build the app
 RUN npm run build
@@ -19,7 +19,7 @@ WORKDIR /app
 # only copy necessary files
 COPY --from=build /app/build build/
 COPY --from=build /app/node_modules node_modules/
-COPY package.json .
+COPY app/package.json .
 
 ENV NODE_ENV=production
 
