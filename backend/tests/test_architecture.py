@@ -65,3 +65,25 @@ class TestArchitecture:
 			.are_sub_modules_of("backend.app.services")
 		)
 		rule.assert_applies(arch)
+
+	def test_repositories_must_not_import_routers(self, arch):
+		rule = (
+			Rule()
+			.modules_that()
+			.are_sub_modules_of("backend.app.repositories")
+			.should_not()
+			.import_modules_that()
+			.are_sub_modules_of("backend.app.routers")
+		)
+		rule.assert_applies(arch)
+
+	def test_repositories_must_not_import_services(self, arch):
+		rule = (
+			Rule()
+			.modules_that()
+			.are_sub_modules_of("backend.app.repositories")
+			.should_not()
+			.import_modules_that()
+			.are_sub_modules_of("backend.app.services")
+		)
+		rule.assert_applies(arch)

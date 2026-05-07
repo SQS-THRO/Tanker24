@@ -11,13 +11,13 @@ from fastapi_users.authentication import (
 from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users.manager import BaseUserManager
 from fastapi_users.exceptions import InvalidPasswordException, UserAlreadyExists
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi_users import schemas
 from app.config import settings
 from app.database import get_db
-from app.models import InvitationKey, User
+from app.models import User
+from app.repositories.invitation_key_repository import InvitationKeyRepository
 from app.schemas.user import UserCreate, UserRead
 
 
@@ -58,10 +58,8 @@ class CustomUserManager(BaseUserManager[User, int]):
 		invitation_key_str = user_dict.pop("invitation_key", "")
 
 		if settings.invitation_keys:
-			result = await self.user_db.session.execute(  # type: ignore[attr-defined]
-				select(InvitationKey).where(InvitationKey.key == invitation_key_str)
-			)
-			invitation_key = result.scalar_one_or_none()
+			repo = InvitationKeyRepository(self.user_db.session)  # type: ignore[attr-defined]
+			invitation_key = await repo.find_by_key(invitation_key_str)
 			if not invitation_key:
 				raise InvalidPasswordException(reason="Invalid invitation key")
 			user_dict["invitation_key_id"] = invitation_key.id

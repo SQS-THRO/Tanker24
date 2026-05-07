@@ -10,6 +10,8 @@ from app.database import get_db
 from app.dependencies import get_current_user_with_request_state
 from app.limiter import limiter
 from app.models import Station
+from app.repositories.station_repository import StationRepository
+from app.repositories.tankerkoenig_station_repository import TankerkoenigStationRepository
 from app.schemas.station import Station as StationSchema
 from app.schemas.station import StationCreate, StationUpdate, TankerkoenigStation
 from app.schemas.user import UserRead
@@ -40,7 +42,7 @@ async def list_stations(
 	db: Annotated[AsyncSession, Depends(get_db)],
 	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> list[StationSchema]:
-	service = StationService(db)
+	service = StationService(StationRepository(db))
 	stations = await service.get_stations_by_owner(user.id)
 	return [_validate_station(s) for s in stations]
 
@@ -56,7 +58,7 @@ async def create_station(
 	db: Annotated[AsyncSession, Depends(get_db)],
 	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> StationSchema:
-	service = StationService(db)
+	service = StationService(StationRepository(db))
 	db_station = await service.create_station(station, user.id)
 	return _validate_station(db_station)
 
@@ -85,7 +87,7 @@ async def get_nearby_stations(
 	longitude: Annotated[float, Query(ge=-180, le=180, description="Longitude coordinate (-180 to 180)")],
 ) -> list[TankerkoenigStation]:
 	try:
-		service = NearbyStationsService(db)
+		service = NearbyStationsService(TankerkoenigStationRepository(db))
 		return await service.get_nearby_stations(latitude, longitude)
 	except ValueError as e:
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
@@ -102,7 +104,7 @@ async def get_station(
 	db: Annotated[AsyncSession, Depends(get_db)],
 	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> StationSchema:
-	service = StationService(db)
+	service = StationService(StationRepository(db))
 	station = await service.get_station_by_id_and_owner(station_id, user.id)
 	if not station:
 		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=STATION_NOT_FOUND)
@@ -121,7 +123,7 @@ async def update_station(
 	db: Annotated[AsyncSession, Depends(get_db)],
 	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> StationSchema:
-	service = StationService(db)
+	service = StationService(StationRepository(db))
 	station = await service.get_station_by_id_and_owner(station_id, user.id)
 	if not station:
 		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=STATION_NOT_FOUND)
@@ -142,7 +144,7 @@ async def delete_station(
 	db: Annotated[AsyncSession, Depends(get_db)],
 	user: Annotated[UserRead, Depends(get_current_active_user)],
 ) -> None:
-	service = StationService(db)
+	service = StationService(StationRepository(db))
 	station = await service.get_station_by_id_and_owner(station_id, user.id)
 	if not station:
 		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=STATION_NOT_FOUND)

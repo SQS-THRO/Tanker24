@@ -2,11 +2,11 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 from fastapi import HTTPException
-from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import HistoryRecord, Car
+from app.repositories.car_repository import CarRepository
+from app.repositories.history_record_repository import HistoryRecordRepository
 
 
 class ExportDataService(ABC):
@@ -18,22 +18,19 @@ class ExportDataService(ABC):
 
 class NestedExportDataService(ExportDataService):
 	def __init__(self, db: AsyncSession):
+		self.car_repo = CarRepository(db)
+		self.history_repo = HistoryRecordRepository(db)
 		self.db = db
 
 	async def get_user_data(self, user_id: int) -> list[dict[str, Any]]:
 		try:
-			cars_result = await self.db.execute(select(Car).where(Car.owner_id == user_id))
-			cars = cars_result.scalars().all()
+			cars = await self.car_repo.get_cars_by_owner(user_id)
 
 			result = []
 
 			for car in cars:
+				history_records = await self.history_repo.get_history_records_by_car(car.id)
 				history = []
-				history_query_result = await self.db.execute(
-					select(HistoryRecord).where(HistoryRecord.car_id == car.id)
-				)
-				history_records = history_query_result.scalars().all()
-				# Check if the car has any history records before processing
 				if len(history_records) > 0:
 					for record in history_records:
 						history.append(
@@ -69,19 +66,16 @@ class NestedExportDataService(ExportDataService):
 
 class FlatExportDataService(ExportDataService):
 	def __init__(self, db: AsyncSession):
+		self.car_repo = CarRepository(db)
+		self.history_repo = HistoryRecordRepository(db)
 		self.db = db
 
 	async def get_user_data(self, user_id: int) -> list[dict[str, Any]]:
 		try:
 			result = []
-			car_query_result = await self.db.execute(select(Car).where(Car.owner_id == user_id))
-			cars = car_query_result.scalars().all()
+			cars = await self.car_repo.get_cars_by_owner(user_id)
 			for car in cars:
-				history_query_result = await self.db.execute(
-					select(HistoryRecord).where(HistoryRecord.car_id == car.id)
-				)
-				history_records = history_query_result.scalars().all()
-				# Check if the car has any history records before processing
+				history_records = await self.history_repo.get_history_records_by_car(car.id)
 				if len(history_records) > 0:
 					for record in history_records:
 						result.append(
