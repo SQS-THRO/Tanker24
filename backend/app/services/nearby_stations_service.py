@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta, UTC
 import asyncio
 
@@ -7,6 +8,8 @@ from app.schemas.station import TankerkoenigStation as TankerkoenigStationSchema
 from app.repositories.tankerkoenig_station_repository import TankerkoenigStationRepository
 from app.services.gas_station_service import TankerkoenigGasStationService
 from app.services.rate_limiter import global_rate_limiter
+
+logger = logging.getLogger("app.nearby_stations_service")
 
 
 class NearbyStationsService:
@@ -27,7 +30,15 @@ class NearbyStationsService:
 		cached_stations = await self._get_cached_stations(latitude, longitude, radius, now - cache_expiry)
 
 		if cached_stations is not None:
+			logger.debug(
+				"Cache hit for nearby stations: lat=%.4f lon=%.4f (%d results)",
+				latitude,
+				longitude,
+				len(cached_stations),
+			)
 			return cached_stations
+
+		logger.info("Cache miss for nearby stations: lat=%.4f lon=%.4f, fetching from API", latitude, longitude)
 
 		await global_rate_limiter.wait_for_token()
 
@@ -36,10 +47,14 @@ class NearbyStationsService:
 				self.gas_station_service.get_gas_stations, latitude=latitude, longitude=longitude, radius=radius
 			)
 		except Exception:
+			logger.exception("Failed to fetch stations from Tankerkoenig API: lat=%.4f lon=%.4f", latitude, longitude)
 			return []
 
 		if not api_stations:
+			logger.info("No stations found from API: lat=%.4f lon=%.4f", latitude, longitude)
 			return []
+
+		logger.info("Fetched %d stations from API: lat=%.4f lon=%.4f", len(api_stations), latitude, longitude)
 
 		await self.repository.upsert_stations(api_stations, latitude, longitude, radius)
 
