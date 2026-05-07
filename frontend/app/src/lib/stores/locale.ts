@@ -2,7 +2,7 @@ import { writable, derived } from 'svelte/store';
 import { browser } from '$app/environment';
 import { translations, type Locale, type TranslationKeys } from '$lib/i18n/index';
 
-function detectLocale(): Locale {
+export function detectLocale(): Locale {
 	if (!browser) return 'en';
 
 	const stored = localStorage.getItem('locale');

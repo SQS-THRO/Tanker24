@@ -53,6 +53,17 @@ test('exportAsJson handles generic error response', async () => {
 	await expect(exportAsJson('test-token')).rejects.toThrow('Export failed');
 });
 
+test('exportAsJson throws fallback error when response has no detail', async () => {
+	const { exportAsJson } = await import('./export_api');
+
+	mockFetch.mockResolvedValueOnce({
+		ok: false,
+		json: () => Promise.resolve({ message: 'Forbidden' })
+	});
+
+	await expect(exportAsJson('test-token')).rejects.toThrow('Export failed');
+});
+
 test('exportAsCsv sends authorization header and returns blob', async () => {
 	const { exportAsCsv } = await import('./export_api');
 
@@ -91,6 +102,17 @@ test('exportAsCsv handles malformed error JSON', async () => {
 	mockFetch.mockResolvedValueOnce({
 		ok: false,
 		json: () => Promise.reject(new Error('Parse error'))
+	});
+
+	await expect(exportAsCsv('test-token')).rejects.toThrow('Export failed');
+});
+
+test('exportAsCsv throws fallback error when response has no detail', async () => {
+	const { exportAsCsv } = await import('./export_api');
+
+	mockFetch.mockResolvedValueOnce({
+		ok: false,
+		json: () => Promise.resolve({ message: 'Server error' })
 	});
 
 	await expect(exportAsCsv('test-token')).rejects.toThrow('Export failed');

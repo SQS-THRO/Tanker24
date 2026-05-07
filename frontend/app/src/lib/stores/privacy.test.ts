@@ -80,4 +80,85 @@ describe('privacyStore', () => {
 		expect(settings.analyticsAccepted).toBe(true);
 		expect(settings.hidden).toBe(false);
 	});
+
+	test('falls back to defaults when stored JSON is corrupt', async () => {
+		mockLocalStorage.getItem.mockReturnValue('not-valid-json');
+		vi.resetModules();
+		const { privacyStore } = await import('$lib/stores/privacy');
+		const settings = get(privacyStore);
+		expect(settings.analyticsAccepted).toBe(false);
+		expect(settings.hidden).toBe(false);
+	});
+
+	test('falls back to defaults when stored value is null', async () => {
+		mockLocalStorage.getItem.mockReturnValue('null');
+		vi.resetModules();
+		const { privacyStore } = await import('$lib/stores/privacy');
+		const settings = get(privacyStore);
+		expect(settings.analyticsAccepted).toBe(false);
+		expect(settings.hidden).toBe(false);
+	});
+
+	test('reset persists defaults to localStorage', async () => {
+		const { privacyStore } = await import('$lib/stores/privacy');
+		mockLocalStorage.setItem.mockClear();
+		privacyStore.acceptAnalytics();
+		privacyStore.reset();
+		expect(mockLocalStorage.setItem).toHaveBeenLastCalledWith('privacy-settings', JSON.stringify({ analyticsAccepted: false, hidden: false }));
+	});
+
+	test('declineAnalytics persists hidden:true to localStorage', async () => {
+		const { privacyStore } = await import('$lib/stores/privacy');
+		mockLocalStorage.setItem.mockClear();
+		privacyStore.declineAnalytics();
+		expect(mockLocalStorage.setItem).toHaveBeenLastCalledWith('privacy-settings', JSON.stringify({ analyticsAccepted: false, hidden: true }));
+	});
+
+	test('acceptAnalytics after decline sets analyticsAccepted but keeps hidden', async () => {
+		const { privacyStore } = await import('$lib/stores/privacy');
+		privacyStore.declineAnalytics();
+		privacyStore.acceptAnalytics();
+		const settings = get(privacyStore);
+		expect(settings.analyticsAccepted).toBe(true);
+		expect(settings.hidden).toBe(true);
+	});
+});
+
+describe('privacyStore in non-browser environment', () => {
+	beforeEach(() => {
+		vi.stubGlobal('window', undefined);
+	});
+
+	afterEach(() => {
+		vi.stubGlobal('window', {});
+		vi.resetModules();
+	});
+
+	test('initializes with default settings without calling localStorage', async () => {
+		mockLocalStorage.getItem.mockClear();
+		vi.resetModules();
+		const { privacyStore } = await import('$lib/stores/privacy');
+		const settings = get(privacyStore);
+		expect(settings.analyticsAccepted).toBe(false);
+		expect(settings.hidden).toBe(false);
+		expect(mockLocalStorage.getItem).not.toHaveBeenCalled();
+	});
+
+	test('acceptAnalytics does not write to localStorage', async () => {
+		vi.resetModules();
+		const { privacyStore } = await import('$lib/stores/privacy');
+		mockLocalStorage.setItem.mockClear();
+		privacyStore.acceptAnalytics();
+		expect(get(privacyStore).analyticsAccepted).toBe(true);
+		expect(mockLocalStorage.setItem).not.toHaveBeenCalled();
+	});
+
+	test('declineAnalytics does not write to localStorage', async () => {
+		vi.resetModules();
+		const { privacyStore } = await import('$lib/stores/privacy');
+		mockLocalStorage.setItem.mockClear();
+		privacyStore.declineAnalytics();
+		expect(get(privacyStore).hidden).toBe(true);
+		expect(mockLocalStorage.setItem).not.toHaveBeenCalled();
+	});
 });
