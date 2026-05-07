@@ -20,7 +20,7 @@ class InvitationKeyRepository:
 		if keys:
 			await self.db.execute(delete(InvitationKey).where(InvitationKey.key.in_(keys)))
 
-	async def add(self, invitation_key: InvitationKey) -> None:
+	def add(self, invitation_key: InvitationKey) -> None:
 		self.db.add(invitation_key)
 
 	async def commit(self) -> None:

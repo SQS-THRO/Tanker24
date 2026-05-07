@@ -22,6 +22,6 @@ async def sync_invitation_keys(session: AsyncSession) -> None:
 
 	keys_to_add = env_keys - db_keys_set
 	for key in keys_to_add:
-		await repo.add(InvitationKey(key=key))
+		repo.add(InvitationKey(key=key))
 
 	await repo.commit()
