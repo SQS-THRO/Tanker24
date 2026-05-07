@@ -241,7 +241,6 @@
 
 			const addressParts = [station.street, station.house_number, station.post_code, station.place].filter(Boolean);
 			const address = addressParts.join(', ');
-
 			const priceRows = prices
 				.map((p) => {
 					const isSelectedFuel = p.type === selectedFuel;
@@ -273,13 +272,13 @@
 						${priceRows}
 					</div>
 					${
-						station.distance !== null
+						userLat !== null && userLng !== null && station.latitude !== null && station.longitude !== null
 							? `<div class="station-distance">
 						<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
 							<circle cx="12" cy="9" r="2.5"/>
 						</svg>
-						${station.distance.toFixed(1)} ${$t.map.kilometers}
+						${(map.distance([station.latitude, station.longitude], [userLat, userLng]) / 1000).toFixed(1)} ${$t.map.kilometers}
 					</div>`
 							: ''
 					}
