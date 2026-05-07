@@ -1,3 +1,6 @@
+import logging
+import time
+
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
@@ -6,21 +9,30 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRouter
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 
 from app.config import settings
 from app.database import async_session_maker, init_db
 from app.invitation_keys import sync_invitation_keys
 from app.limiter import limiter
+from app.logging_config import setup_logging
 from app.routers import auth, health, stations, export
+
+logger = logging.getLogger("app")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+	setup_logging()
+	logger.info("Starting %s v%s", settings.app_name, settings.app_version)
+	logger.info("Database: %s", settings.db_type)
 	await init_db()
 	async with async_session_maker() as session:
 		await sync_invitation_keys(session)
+	logger.info("Application startup complete")
 	yield
+	logger.info("Application shutting down")
 
 
 app = FastAPI(
@@ -28,6 +40,24 @@ app = FastAPI(
 	version=settings.app_version,
 	lifespan=lifespan,
 )
+
+
+class RequestLoggingMiddleware(BaseHTTPMiddleware):
+	async def dispatch(self, request: Request, call_next):
+		start = time.perf_counter()
+		response = await call_next(request)
+		duration_ms = (time.perf_counter() - start) * 1000
+		logger.info(
+			"%s %s -> %d (%.1fms)",
+			request.method,
+			request.url.path,
+			response.status_code,
+			duration_ms,
+		)
+		return response
+
+
+app.add_middleware(RequestLoggingMiddleware)
 
 # Store limiter in app state
 app.state.limiter = limiter
