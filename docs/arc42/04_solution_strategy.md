@@ -27,7 +27,7 @@ The container diagram shows how Tanker24 is structured internally without puttin
     Person_Ext(user, "German car drivers", $tags= "customer")
 
     System_Boundary(tanker24Application, "Tanker24"){
-        Container(web_app, "User Interface", "VueJS", $tags="webApp")
+        Container(web_app, "User Interface", "SvelteKit", $tags="webApp")
         ContainerDb(postgre, "Data Store & Cache", "PostgreSQL", $tags="db")
         Container(backend, "Tanker24 Backend", "Python 3", $tags="conApp")
 
@@ -56,15 +56,13 @@ As per organizational constraint OC-3 all relevant technology decisions need to 
 
 ## Quality Goals
 
-!!! warning
-    How to write quality goals for the functional stability aspect?
-    Maybe specify the solution approach with TDD?
+The following table maps the quality goals from [Section 1.2](01_intro_goals.md#12-quality-goals) to concrete solution approaches implemented in the architecture.
 
 |Quality Goal|Scenario|Solution approach|Link to Details|
 |--|---|--|--|
-|Reliability|The Tankerkoenig data API is unavailable.|Implement soft retry with increasing waits.|link to issue|
-|Reliability|The Tankerkoenig data API is unavailable.|Implement caching to deliver at least information on gas stations in the area.|link to issue|
-|Reliability|The Tankerkoenig data API is unavailable.|Implement soft retry with increasing waits.|link to issue|
-|Security|A user requests user specific data.|Implement a secure user based authentication system with JWT tokens.|link to issue|
-|Transferability|The user wants to export it's data as JSON.|Extend a generic data aggregation class to output the data in JSON format.|Link to issue|
-|Transferability|The user wants to export it's data as a semicolon separated csv.|Extend a generic data aggregation class to output the data in the semicolon separated csv format.|Link to issue|
+|Functional Stability|All main use cases must be covered.|Implement Test-Driven Development (TDD) with pytest and Playwright E2E tests. CI pipeline enforces passing tests before merge.|[Test Concept](../testConcept.md)|
+|Reliability|The Tankerkoenig data API is unavailable.|Implement caching of station data in PostgreSQL to serve location information even without live price data.|[Section 8.4](08_crosscutting_concepts.md#84-caching-strategy)|
+|Reliability|The Tankerkoenig data API returns errors or times out.|Implement graceful degradation: catch exceptions, log them, return an empty station list without propagating 500 errors.|[Section 6.1](06_runtime_view.md#61-scenario-search-nearby-gas-stations-uc1-uc7)|
+|Security|A user requests user-specific data.|Implement JWT-based authentication via fastapi-users library. All protected endpoints require a valid bearer token.|[Section 8.2](08_crosscutting_concepts.md#82-authentication-and-authorization)|
+|Transferability|The user wants to export their data as JSON.|NestedExportDataService builds hierarchical JSON (cars → history records) and returns it with Content-Disposition header for download.|[Section 5.2.2](05_building_block_view.md#522-service-layer)|
+|Transferability|The user wants to export their data as a semicolon-separated CSV.|FlatExportDataService flattens data into CSV rows (one per history record) using Python's csv.DictWriter with semicolon delimiter.|[Section 5.2.2](05_building_block_view.md#522-service-layer)|
