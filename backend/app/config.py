@@ -8,6 +8,7 @@ class Settings(BaseSettings):
 	app_name: str = "Tanker24 Backend"
 	app_version: str = "1.0.0"
 	debug: bool = False
+	log_level: str = "INFO"
 
 	model_config = SettingsConfigDict(
 		env_file=".env",

@@ -1,7 +1,11 @@
+import logging
+
 from app.dtos.gas_station_dtos import GasStation, OpeningTime
 from abc import ABC, abstractmethod
 import httpx
 from typing import List
+
+logger = logging.getLogger("app.gas_station_service")
 
 
 class GasStationService(ABC):
@@ -32,12 +36,14 @@ class TankerkoenigGasStationService(GasStationService):
 		# Required parameters for the api
 		params = {"id": id, "apikey": self.api_key}
 
+		logger.debug("Fetching gas station by id=%s", id)
 		response = httpx.get(self.BASE_URL + endpoint_url, params=params, timeout=10.0)
 		response.raise_for_status()
 
 		data = response.json()
 
 		if not data.get("ok"):
+			logger.error("Tankerkoenig API returned error for station id=%s", id)
 			raise RuntimeError(
 				"Tankerkoenig API was unable to return the data for a specific station. The request was bad."
 			)
@@ -78,7 +84,7 @@ class TankerkoenigGasStationService(GasStationService):
 		return result
 
 	"""It is possible to set the desired fuel type in the api request for more
-    specific filtering. Use the enum FuelType for applying this filter."""
+	specific filtering. Use the enum FuelType for applying this filter."""
 
 	def get_gas_stations(self, latitude: float, longitude: float, radius: float) -> List[GasStation]:
 		endpoint_url = "list.php"
@@ -93,12 +99,14 @@ class TankerkoenigGasStationService(GasStationService):
 			"apikey": self.api_key,
 		}
 
+		logger.debug("Fetching nearby stations: lat=%.4f lon=%.4f radius=%.1f", latitude, longitude, radius)
 		response = httpx.get(self.BASE_URL + endpoint_url, params=params, timeout=10.0)  # type: ignore[arg-type]
 		response.raise_for_status()
 
 		data = response.json()
 
 		if not data.get("ok"):
+			logger.error("Tankerkoenig API returned error for list request: lat=%.4f lon=%.4f", latitude, longitude)
 			raise RuntimeError("Tankerkoenig API returned an error. The request was bad.")
 
 		# prepare a list of stations to return.

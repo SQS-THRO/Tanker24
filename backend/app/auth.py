@@ -1,3 +1,4 @@
+import logging
 import re
 from typing import Any, Annotated
 
@@ -19,6 +20,8 @@ from app.database import get_db
 from app.models import User
 from app.repositories.invitation_key_repository import InvitationKeyRepository
 from app.schemas.user import UserCreate, UserRead
+
+logger = logging.getLogger("app.auth")
 
 
 class CustomUserManager(BaseUserManager[User, int]):
@@ -74,13 +77,7 @@ class CustomUserManager(BaseUserManager[User, int]):
 		return db_obj
 
 	async def on_after_register(self, user: User, request: Request | None = None) -> None:
-		"""
-		Hook called after a user registers.
-
-		Intentionally empty: no additional actions (e.g., sending welcome emails,
-		activating accounts, or triggering workflows) currently.
-		"""
-		pass
+		logger.info("User registered: id=%d email=%s", user.id, user.email)
 
 	def parse_id(self, normalized_id: str) -> int:
 		return int(normalized_id)

@@ -1,3 +1,4 @@
+import logging
 from abc import ABC, abstractmethod
 from typing import Any
 
@@ -7,6 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repositories.car_repository import CarRepository
 from app.repositories.history_record_repository import HistoryRecordRepository
+
+logger = logging.getLogger("app.export_data_service")
 
 
 class ExportDataService(ABC):
@@ -57,6 +60,7 @@ class NestedExportDataService(ExportDataService):
 			return result
 
 		except SQLAlchemyError as e:
+			logger.exception("Database error during nested export for user_id=%d", user_id)
 			await self.db.rollback()
 			raise HTTPException(
 				status_code=503,
@@ -95,6 +99,7 @@ class FlatExportDataService(ExportDataService):
 
 			return result
 		except SQLAlchemyError as e:
+			logger.exception("Database error during flat export for user_id=%d", user_id)
 			await self.db.rollback()
 			raise HTTPException(
 				status_code=503,
