@@ -74,6 +74,83 @@ describe('themeStore', () => {
 		expect(settings.globalTheme).toBe('dark-modern');
 		expect(settings.colorBlindOverride).toBe('protanopia');
 	});
+
+	test('setGlobalTheme works with light-modern', async () => {
+		const { themeStore } = await import('$lib/stores/theme');
+		themeStore.setGlobalTheme('light-modern');
+		const settings = get(themeStore);
+		expect(settings.globalTheme).toBe('light-modern');
+	});
+
+	test('falls back to defaults when stored JSON is corrupt', async () => {
+		mockLocalStorage.getItem.mockReturnValue('not-valid-json');
+		vi.resetModules();
+		const { themeStore } = await import('$lib/stores/theme');
+		const settings = get(themeStore);
+		expect(settings.globalTheme).toBe('dark-modern');
+		expect(settings.colorBlindOverride).toBe('none');
+	});
+
+	test('reset persists defaults to localStorage', async () => {
+		const { themeStore } = await import('$lib/stores/theme');
+		themeStore.setGlobalTheme('light-modern');
+		mockLocalStorage.setItem.mockClear();
+		themeStore.reset();
+		expect(mockLocalStorage.setItem).toHaveBeenLastCalledWith('theme-settings', JSON.stringify({ globalTheme: 'dark-modern', colorBlindOverride: 'none' }));
+	});
+
+	test('setColorBlindOverride persists to localStorage', async () => {
+		const { themeStore } = await import('$lib/stores/theme');
+		mockLocalStorage.setItem.mockClear();
+		themeStore.setColorBlindOverride('protanopia');
+		expect(mockLocalStorage.setItem).toHaveBeenLastCalledWith('theme-settings', JSON.stringify({ globalTheme: 'dark-modern', colorBlindOverride: 'protanopia' }));
+	});
+
+	test('setGlobalTheme persists to localStorage', async () => {
+		const { themeStore } = await import('$lib/stores/theme');
+		mockLocalStorage.setItem.mockClear();
+		themeStore.setGlobalTheme('light-modern');
+		expect(mockLocalStorage.setItem).toHaveBeenLastCalledWith('theme-settings', JSON.stringify({ globalTheme: 'light-modern', colorBlindOverride: 'none' }));
+	});
+});
+
+describe('themeStore in non-browser environment', () => {
+	beforeEach(() => {
+		vi.stubGlobal('window', undefined);
+	});
+
+	afterEach(() => {
+		vi.stubGlobal('window', {});
+		vi.resetModules();
+	});
+
+	test('initializes with default settings without calling localStorage', async () => {
+		mockLocalStorage.getItem.mockClear();
+		vi.resetModules();
+		const { themeStore } = await import('$lib/stores/theme');
+		const settings = get(themeStore);
+		expect(settings.globalTheme).toBe('dark-modern');
+		expect(settings.colorBlindOverride).toBe('none');
+		expect(mockLocalStorage.getItem).not.toHaveBeenCalledWith('theme-settings');
+	});
+
+	test('setGlobalTheme does not write to localStorage', async () => {
+		vi.resetModules();
+		const { themeStore } = await import('$lib/stores/theme');
+		mockLocalStorage.setItem.mockClear();
+		themeStore.setGlobalTheme('light-modern');
+		expect(get(themeStore).globalTheme).toBe('light-modern');
+		expect(mockLocalStorage.setItem).not.toHaveBeenCalledWith('theme-settings');
+	});
+
+	test('setColorBlindOverride does not write to localStorage', async () => {
+		vi.resetModules();
+		const { themeStore } = await import('$lib/stores/theme');
+		mockLocalStorage.setItem.mockClear();
+		themeStore.setColorBlindOverride('protanopia');
+		expect(get(themeStore).colorBlindOverride).toBe('protanopia');
+		expect(mockLocalStorage.setItem).not.toHaveBeenCalledWith('theme-settings');
+	});
 });
 
 describe('CVD_PALETTES', () => {
@@ -117,6 +194,16 @@ describe('GLOBAL_THEMES', () => {
 	test('contains dark-modern theme', async () => {
 		const { GLOBAL_THEMES } = await import('$lib/stores/theme');
 		expect(GLOBAL_THEMES).toContainEqual({ id: 'dark-modern', name: 'Dark Modern' });
+	});
+
+	test('contains light-modern theme', async () => {
+		const { GLOBAL_THEMES } = await import('$lib/stores/theme');
+		expect(GLOBAL_THEMES).toContainEqual({ id: 'light-modern', name: 'Light Modern' });
+	});
+
+	test('contains exactly two themes', async () => {
+		const { GLOBAL_THEMES } = await import('$lib/stores/theme');
+		expect(GLOBAL_THEMES).toHaveLength(2);
 	});
 });
 

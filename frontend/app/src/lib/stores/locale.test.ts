@@ -1,4 +1,4 @@
-import { test, expect, describe, beforeEach, vi } from 'vitest';
+import { test, expect, describe, beforeEach, afterEach, vi } from 'vitest';
 import { get } from 'svelte/store';
 
 const mockLocalStorage = {
@@ -13,9 +13,9 @@ vi.stubGlobal('localStorage', mockLocalStorage);
 const mockNavigator = { language: 'en', languages: ['en'] };
 vi.stubGlobal('navigator', mockNavigator);
 
-vi.mock('$app/environment', () => ({
-	browser: true
-}));
+const mockEnv = { browser: true };
+
+vi.mock('$app/environment', () => mockEnv);
 
 beforeEach(() => {
 	mockLocalStorage.getItem.mockReturnValue(null);
@@ -62,6 +62,100 @@ describe('locale store', () => {
 		locale.toggle();
 		expect(get(locale)).toBe('en');
 	});
+
+	test('initializes with "en" for invalid stored value', async () => {
+		mockLocalStorage.getItem.mockReturnValue('fr');
+		vi.resetModules();
+		const { locale } = await import('$lib/stores/locale');
+		expect(get(locale)).toBe('en');
+	});
+
+	test('toggle persists to localStorage on each switch', async () => {
+		const { locale } = await import('$lib/stores/locale');
+		mockLocalStorage.setItem.mockClear();
+		locale.toggle();
+		expect(mockLocalStorage.setItem).toHaveBeenCalledWith('locale', 'de');
+		locale.toggle();
+		expect(mockLocalStorage.setItem).toHaveBeenCalledWith('locale', 'en');
+	});
+});
+
+describe('detectLocale in non-browser environment', () => {
+	beforeEach(() => {
+		mockEnv.browser = false;
+		vi.resetModules();
+	});
+
+	afterEach(() => {
+		mockEnv.browser = true;
+	});
+
+	test('returns "en" without calling localStorage', async () => {
+		mockLocalStorage.getItem.mockClear();
+		const { detectLocale } = await import('$lib/stores/locale');
+		expect(detectLocale()).toBe('en');
+		expect(mockLocalStorage.getItem).not.toHaveBeenCalled();
+	});
+});
+
+describe('detectLocale navigator fallback', () => {
+	test('falls back to navigator.languages[0] when navigator.language is empty', async () => {
+		mockNavigator.language = '';
+		mockNavigator.languages = ['de-DE'];
+		vi.resetModules();
+		const { locale } = await import('$lib/stores/locale');
+		expect(get(locale)).toBe('de');
+	});
+
+	test('returns "en" when navigator.language and navigator.languages are empty', async () => {
+		mockNavigator.language = '';
+		mockNavigator.languages = [];
+		vi.resetModules();
+		const { locale } = await import('$lib/stores/locale');
+		expect(get(locale)).toBe('en');
+	});
+
+	test('returns "en" when navigator.language is undefined and navigator.languages is empty', async () => {
+		mockNavigator.language = undefined as unknown as string;
+		mockNavigator.languages = [];
+		vi.resetModules();
+		const { locale } = await import('$lib/stores/locale');
+		expect(get(locale)).toBe('en');
+	});
+});
+
+describe('locale store in non-browser environment', () => {
+	beforeEach(() => {
+		mockEnv.browser = false;
+		vi.resetModules();
+	});
+
+	afterEach(() => {
+		mockEnv.browser = true;
+	});
+
+	test('initializes with "en" without calling localStorage', async () => {
+		mockLocalStorage.getItem.mockClear();
+		const { locale } = await import('$lib/stores/locale');
+		expect(get(locale)).toBe('en');
+		expect(mockLocalStorage.getItem).not.toHaveBeenCalled();
+	});
+
+	test('set does not write to localStorage', async () => {
+		const { locale } = await import('$lib/stores/locale');
+		mockLocalStorage.setItem.mockClear();
+		locale.set('de');
+		expect(get(locale)).toBe('de');
+		expect(mockLocalStorage.setItem).not.toHaveBeenCalled();
+	});
+
+	test('toggle does not write to localStorage', async () => {
+		const { locale } = await import('$lib/stores/locale');
+		mockLocalStorage.setItem.mockClear();
+		locale.toggle();
+		expect(get(locale)).toBe('de');
+		expect(mockLocalStorage.setItem).not.toHaveBeenCalled();
+	});
 });
 
 describe('t derived store', () => {
@@ -77,6 +171,16 @@ describe('t derived store', () => {
 		locale.set('de');
 		const translations = get(t);
 		expect(translations.nav.map).toBe('Karte');
+	});
+
+	test('t updates reactively when locale changes', async () => {
+		const { locale, t } = await import('$lib/stores/locale');
+		locale.set('en');
+		expect(get(t).nav.map).toBe('Map');
+		locale.set('de');
+		expect(get(t).nav.map).toBe('Karte');
+		locale.set('en');
+		expect(get(t).nav.map).toBe('Map');
 	});
 });
 
@@ -107,5 +211,12 @@ describe('getTranslation function', () => {
 		const { translations } = await import('$lib/i18n/index');
 		const result = getTranslation(translations.en, 'hero.badge');
 		expect(result).toBe('Save money on fuel');
+	});
+
+	test('returns path when result is an object instead of string', async () => {
+		const { getTranslation } = await import('$lib/stores/locale');
+		const { translations } = await import('$lib/i18n/index');
+		const result = getTranslation(translations.en, 'nav');
+		expect(result).toBe('nav');
 	});
 });

@@ -130,6 +130,30 @@ test('login throws error on failure', async () => {
 	await expect(authService.login(loginDataFixture)).rejects.toThrow('Invalid credentials');
 });
 
+test('login throws fallback error when response has no detail', async () => {
+	const { authService } = await import('./auth_api');
+
+	mockFetch.mockResolvedValueOnce({
+		ok: false,
+		status: 401,
+		json: () => Promise.resolve({ message: 'Unauthorized' })
+	});
+
+	await expect(authService.login(loginDataFixture)).rejects.toThrow('Login failed');
+});
+
+test('login throws fallback error when response JSON is malformed', async () => {
+	const { authService } = await import('./auth_api');
+
+	mockFetch.mockResolvedValueOnce({
+		ok: false,
+		status: 500,
+		json: () => Promise.reject(new Error('Parse error'))
+	});
+
+	await expect(authService.login(loginDataFixture)).rejects.toThrow('Login failed');
+});
+
 test('logout calls correct endpoint', async () => {
 	const { authService } = await import('./auth_api');
 
