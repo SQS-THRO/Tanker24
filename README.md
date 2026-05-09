@@ -28,3 +28,14 @@
 > [!IMPORTANT]
 > The documentation for this project is hosted on readthedocs.io:
 > https://tanker24.readthedocs.io/en/latest/
+
+> [!TIP]
+> The live demo is available at [www.tanker24.eu](https://www.tanker24.eu).
+
+## Contributors
+
+<a href="https://github.com/sqs-thro/tanker24/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=sqs-thro/tanker24" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).
