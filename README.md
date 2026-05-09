@@ -32,6 +32,57 @@
 > [!TIP]
 > The live demo is available at [www.tanker24.eu](https://www.tanker24.eu).
 
+## Quickstart
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) and Docker Compose
+- Or: [uv](https://docs.astral.sh/uv/) (Python), [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) (Node.js), and [PostgreSQL](https://www.postgresql.org/download/) 18
+
+### Docker (recommended)
+
+```bash
+git clone https://github.com/SQS-THRO/Tanker24
+cd Tanker24
+cp .env.example .env
+docker compose up -d
+```
+
+The app is now running at:
+| Service       | URL                              |
+|---------------|----------------------------------|
+| Frontend      | http://localhost:3000            |
+| Backend API   | http://localhost:8000/docs       |
+| Uptime-Kuma   | http://localhost:3001            |
+
+### Manual setup
+
+#### Backend
+
+```bash
+cd backend
+uv pip install --system .[dev]
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+#### Frontend
+
+```bash
+cd frontend/app
+npm install
+npm run dev
+```
+
+### Running tests
+
+```bash
+# Backend
+cd backend && pytest tests/ -v --cov=app
+
+# Frontend
+cd frontend/app && npm test
+```
+
 ## Contributors
 
 <a href="https://github.com/sqs-thro/tanker24/graphs/contributors">
