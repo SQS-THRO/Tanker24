@@ -70,8 +70,20 @@ The ISO 25010 specifies the eight quality goals for software applications. They 
 |3|Security| The software shall protect the collected user data with authentication.|
 |4|Transferability|The software shall allow the user to transfer their collected user data (filling data) into JSON and CSV.|
 
-## 1.3 Stakeholder
+## 1.3 Stakeholders
+
+### External Stakeholders
+
 | Role/Name | Needs | Expectations |
 |-----------|-------|--------------|
 |German car driver|Find the cheapest gas station in their area.|Accurate and up-to-date fuel prices, fast search results, and easy comparison of nearby stations.|
-|Foreign drivers new to Germany|Find the closest gas station to their location.|Simple and intuitive interface and integration into common navigation apps. |
+|Foreign drivers new to Germany|Find the closest gas station to their location.|Simple and intuitive interface and integration into common navigation apps.|
+
+### Project Stakeholders
+
+| Role/Name | Needs | Expectations |
+|-----------|-------|--------------|
+|Project team (students)|Demonstrate software quality assurance methods on a real-world application.|Practical experience with arc42 documentation, ADRs, TDD, CI/CD, code quality tooling, and modern web frameworks.|
+|University supervisor|Evaluate the team's application of SQA concepts.|Code coverage ≥80%, complete arc42 documentation, functioning CI/CD pipeline, quality gate enforcement, and traceable architecture decisions.|
+|Open-source community|Understand, reuse, and extend the project.|Well-structured code, comprehensive documentation, clear contribution guidelines.|
+|Administrator / Operator|Deploy and maintain the application.|Simple deployment process (docker compose up -d), health monitoring, clear environment configuration, and logging.|
