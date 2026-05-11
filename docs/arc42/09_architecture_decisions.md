@@ -36,7 +36,7 @@ The technology stack was chosen to balance developer productivity, performance, 
 | Decision | Description |
 |---|---|
 | **Layered Architecture** | Backend follows a three-layer pattern: Router → Service → Repository. Each layer has a single responsibility and is independently testable. |
-| **Interface Abstraction** | Gas station data provider and data export are abstracted behind interfaces (ABCs), enabling easy swapping of implementations. |
+| **Interface Abstraction** | Gas station data provider and data export are abstracted behind interfaces (ABCs), enabling easy swapping of implementations and advanced API drop out handling. |
 | **Database Cache** | Tankerkönig API responses are cached in PostgreSQL with spatial and temporal metadata, reducing external API calls. |
 | **Graceful Degradation** | When the Tankerkönig API is unavailable, the system returns an empty result list rather than failing. |
 | **Rate Limiting** | Two-level rate limiting: per-user (SlowAPI) for the nearby stations endpoint, and global token-bucket for Tankerkönig API calls. |

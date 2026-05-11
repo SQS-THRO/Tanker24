@@ -2,9 +2,9 @@
 
 ## 3.1 Business Context
 
-Tanker24 is a web application designed for German car drivers to check real-time fuel prices at gas stations in their vicinity and track their fuel expenditures over time. Gas prices in Germany are regulated by the Market Transparency Unit for Fuels (MTS-K), which publishes prices via a public API. Tanker24 integrates with the Tankerkönig API — a free, community-driven service that proxies the MTS-K data — to provide up-to-date station and price information.
+Tanker24 is a web application designed for German car drivers to check real-time fuel prices at gas stations in their vicinity and track their fuel expenditures over time. Gas prices in Germany are regulated by the Market Transparency Unit for Fuels (MTS-K), which publishes prices via a registration-only API. Tanker24 integrates with the Tankerkönig API — a free, community-driven service that proxies the MTS-K data — to provide up-to-date station and price information.
 
-The application fills a gap in the market for a free, privacy-respecting fuel price comparison tool that also offers personal expenditure tracking. Unlike commercial alternatives, Tanker24 requires no payment, no third-party analytics, and gives users full control over their data via JSON and CSV export.
+The application fills a gap in the market for a free, privacy-respecting fuel price comparison tool that also offers personal expenditure tracking. Unlike commercial alternatives, Tanker24 requires no payment, no third-party analytics, and gives users full control over their expendature data via JSON (nested-data) and CSV (flat-data) export.
 
 ## 3.2 System Scope
 

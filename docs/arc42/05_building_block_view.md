@@ -2,9 +2,9 @@
 
 The following figure shows the internal structure of Tanker24 at C4-Model Level 2 (Container) and Level 3 (Component).
 
-## 5.1 Whitebox Overall System (Level 1)
+## 5.1 Whitebox Overall System (Level 2)
 
-Tanker24 is composed of four main building blocks:
+Tanker24 is composed of four main building blocks. The building blocks are decomposed by their responsibilities in the application. The decomposition points to attached external providers as well:
 
 ```puml
 @startuml
@@ -85,6 +85,8 @@ Rel(repositories, models_orm, "Uses ORM mappings", "SQLAlchemy")
 
 ### 5.2.1 Router Layer
 
+The router layer specifies all outward facing interfaces. They specify secured (where necessary) endpoints for interacting with the application. 
+
 | Router | Prefix | Purpose |
 |---|---|---|
 | `health.py` | `/` | Health check (`/health`) and root welcome endpoint (`/`). Unauthenticated. |
@@ -93,6 +95,8 @@ Rel(repositories, models_orm, "Uses ORM mappings", "SQLAlchemy")
 | `export.py` | `/api/v0/export` | JSON and CSV export of user's car and fueling history data. Requires authentication. |
 
 ### 5.2.2 Service Layer
+
+The service layer provides an abstraction layer for the business logic of the application. It seperates the data handling from the interface to minimize the business logic in the interfaces. Any interface implementation may consume the information provided by service implementation. 
 
 | Service | Responsibility |
 |---|---|
@@ -104,6 +108,8 @@ Rel(repositories, models_orm, "Uses ORM mappings", "SQLAlchemy")
 | `RateLimiter` | Token-bucket-based rate limiter for Tankerkönig API calls. Configured at 100 requests per minute. |
 
 ### 5.2.3 Repository Layer
+
+The repository layer provides an abstraction for querying information from the database. It enforces prepared SQL queries which are located in one place instead of being distributed across the application. 
 
 | Repository | Entity | Key Operations |
 |---|---|---|
@@ -265,6 +271,8 @@ Rel(routes, osm_tiles, "Renders map tiles", "HTTPS (Leaflet)")
 | Vite | latest | Build tool and development server |
 
 ## 5.4 External Interfaces
+
+The services listed below are required for running the application. 
 
 | Interface | Provider | Protocol | Purpose |
 |---|---|---|---|
