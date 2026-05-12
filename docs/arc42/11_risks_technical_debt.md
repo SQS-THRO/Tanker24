@@ -174,4 +174,4 @@ This page lists all identified risks and technical debts, ordered by priority. F
 | TD4 | Missing Frontend Validation | LOW | Open |
 | TD5 | ER Model Outdated | LOW | Open |
 | TD6 | Secret in Containerfile | MEDIUM | Open |
-| TD7 | Test Concept Incomplete | LOW | Open |
+| TD7 | Test Concept Incomplete | LOW | Avoided by improving the test concept |

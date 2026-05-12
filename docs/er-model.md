@@ -8,39 +8,87 @@ icon: fontawesome/solid/cubes
 left to right direction
 
 entity "User" as User {
-  *User Id
+  *id
+  *invitation_key_id
   --
-  Forname
-  Surname
-  Pin
+  email
+  hashed_password
+  is_active
+  is_superuser
+  is_verified
+  forename
+  surname
 }
 
-entity "Car" as Car {
-  *Car Id
+entity "Cars" as Car {
+  *id
+  *owner_id
   --
-  Type
-  License Plate Number
+  type
+  license_plate_number
 }
 
-entity "Fuel Type" as FuelType {
-  *Fuel Type Id
+entity "Fuel Types" as FuelType {
+  *id
   --
-  Name
+  name
 }
 
-entity "History Record" as HistoryRecord {
-  *Record Id
+entity "History Records" as HistoryRecord {
+  *id
+  *car_id
+  *fuel_type_id
   --
-  Timestamp
-  Mileage
-  Price Per Litre
-  Litres
+  timestamp
+  mileage
+  price_per_litre
+  litres
 }
 
+entity "Tankerkoenig Stations" as TankerkoenigStation {
+  *id
+  --
+  tankerkoenig_id
+  name
+  brand
+  street
+  house_number
+  post_code
+  place
+  latitude
+  longitude
+  distance
+  diesel
+  e5
+  e10
+  is_open
+  cached_at
+  cache_lat
+  cache_lon
+  cache_radius
+}
+
+entity "Stations" as Stations {
+  *id
+  *owner_id
+  --
+  name
+  description
+  latitude
+  longitude
+}
+
+entity "Invitation Keys" as InvitationKeys{
+  *id
+  --
+  key
+}
+
+User }o--o| InvitationKeys: uses
 User ||--o{ Car : owns
+User ||--o{ Stations : owns
 Car ||--o{ HistoryRecord : has
 FuelType ||--o{ HistoryRecord : has
 
 @enduml
 ```
-

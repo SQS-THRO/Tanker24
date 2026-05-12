@@ -242,10 +242,12 @@ Two implementations exist:
 - `NestedExportDataService`: Returns hierarchical JSON (cars → history records)
 - `FlatExportDataService`: Returns flat CSV-compatible rows (one row per history record with car details repeated)
 
+More export types can be added as needed with varying data structures.
+
 ## 8.13 Privacy and Consent
 
 The frontend implements a consent management system:
-- **ConsentModal**: Displays privacy policy and requests user consent on first visit
-- **Privacy store** (`$lib/stores/privacy.ts`): Manages consent state
-- **GDPR compliance**: Privacy policy available at `/privacy`, legal imprint at `/impressum`
-- **No tracking**: No third-party analytics or tracking cookies are used
+- **ConsentModal**: Displays privacy policy and requests user consent on first visit  
+- **Privacy store** (`$lib/stores/privacy.ts`): Manages consent state  
+- **GDPR compliance**: Privacy policy available at `/privacy`, legal imprint at `/impressum`  
+- **No tracking**: No third-party analytics or tracking cookies are used  

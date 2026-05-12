@@ -117,7 +117,7 @@ Every code change must pass the following pipeline before merging:
 
 | Stage | Checks | Tool |
 |---|---|---|
-| **Local** | Linting, formatting, type checking | Ruff, Prettier, ESLint, Mypy |
+| **Local** | Linting, formatting, type checking | Ruff, Prettier, ESLint, Mypy, Local SonarQube |
 | **CI (Backend)** | Linting, formatting, type checking, unit/integration tests, coverage | Ruff, Mypy, pytest-cov |
 | **CI (Frontend)** | Linting, formatting, unit tests, E2E tests | ESLint, Prettier, Vitest, Playwright |
 | **Quality Gate** | Comprehensive analysis: bugs, vulnerabilities, smells, coverage, duplication | SonarCloud |
