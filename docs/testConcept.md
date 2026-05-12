@@ -66,3 +66,5 @@ The diagram below displays the allowed and forbidden namespace imports of the ba
 Static code analysis with SonarQube creates metrics for checking the code quality. These metrics include: coverage, errors, common shortcomings, maintainability grade, cognitive complexity, number of functions per class, lines of code per class and package security analysis. The static code analysis is integrated in the GitHub pipeline. If SonarQube discovers issues, the pipeline fails and prevents the pull request from being merged. 
 
 The goal is to maintain high code quality, readability, maintainability, and security by following the quality standards enforced through SonarQube which takes industry standards into account.
+
+Link to SonarQube Cloud: https://sonarcloud.io/project/overview?id=SQS-THRO_Tanker24
