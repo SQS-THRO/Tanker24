@@ -18,7 +18,6 @@ entity "User" as User {
   is_verified
   forename
   surname
-  pin
 }
 
 entity "Cars" as Car {
