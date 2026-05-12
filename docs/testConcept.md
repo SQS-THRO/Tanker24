@@ -32,24 +32,24 @@ Architecture tests ensure that certain namespaces are not allowed to import or u
 
 The diagram below displays the allowed and forbidden namespace imports of the backend application. The routers are in the center of the application and use services to provide functionality to callers.
 ```puml
-[repositories]
-[dtos]
 [routers]
 [services]
+[dtos]
+[repositories]
 [schemas]
 
-[services] -[#red]-> [routers]: <color:red>forbidden</color>
-[schemas] -[#red]-> [routers]: <color:red>forbidden</color>
-[dtos] -[#red]-> [routers]: <color:red>forbidden</color>
-[dtos] -[#red]-> [services]: <color:red>forbidden</color>
-[repositories] -[#red]-> [routers]: <color:red>forbidden</color>
-[repositories] -[#red]-> [services]: <color:red>forbidden</color>
+[services] -[#red]up-> [routers]: <color:red>forbidden</color>
+[schemas] -[#red]up-> [routers]: <color:red>forbidden</color>
+[dtos] -[#red]up-> [routers]: <color:red>forbidden</color>
+[dtos] -[#red]left-> [services]: <color:red>forbidden</color>
+[repositories] -[#red]up-> [routers]: <color:red>forbidden</color>
+[repositories] -[#red]up-> [services]: <color:red>forbidden</color>
 
-[routers] --> [services]
-[services] --> [repositories]
-[services] --> [dtos]
-[routers] --> [dtos]
-[repositories] --> [schemas]
+[routers] -down-> [services]
+[services] -down-> [repositories]
+[services] -right-> [dtos]
+[routers] -down-> [dtos]
+[repositories] -down-> [schemas]
 ```
 ## Static Code Analysis
 Static code analysis with SonarQube creates metrics for checking the code quality. These metrics include: coverage, errors, common short commings, maintainability grade, cognitive complexity, number of functions per class, lines of code per class and package security analysis. The static code analysis is integrated in the Github pipeline. If SonarQube discovers issues the pipeline fails and prevents merge requests.  
