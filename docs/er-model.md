@@ -45,9 +45,10 @@ entity "History Records" as HistoryRecord {
   litres
 }
 
-entity "Tankerkoening Stations" as TankerkoenigStation {
-  *tankerkoenig_id
+entity "Tankerkoenig Stations" as TankerkoenigStation {
+  *id
   --
+  tankerkoenig_id
   name
   brand
   street
@@ -83,8 +84,9 @@ entity "Invitation Keys" as InvitationKeys{
   key
 }
 
-User ||--|| InvitationKeys: has
+User }o--o| InvitationKeys: uses
 User ||--o{ Car : owns
+User ||--o{ Stations : owns
 Car ||--o{ HistoryRecord : has
 FuelType ||--o{ HistoryRecord : has
 
