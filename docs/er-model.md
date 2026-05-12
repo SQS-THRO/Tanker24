@@ -63,9 +63,9 @@ entity "Tankerkoening Stations" as TankerkoenigStation {
   e10
   is_open
   cached_at
-  chache_lat
-  chache_lon
-  chache_radius
+  cache_lat
+  cache_lon
+  cache_radius
 }
 
 entity "Stations" as Stations {
