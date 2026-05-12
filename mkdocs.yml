@@ -69,6 +69,7 @@ plugins:
       default_handler: python
   - plantuml:
       puml_url: https://www.plantuml.com/plantuml/
+      num_retries: 20
 markdown_extensions:
   - admonition
   - codehilite
