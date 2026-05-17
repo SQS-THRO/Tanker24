@@ -26,6 +26,19 @@
 	let mapContainer: HTMLDivElement;
 	let stations: Station[] = $state([]);
 	let nearbyStations: TankerkoenigStation[] = $state([]);
+	let sortedNearbyStations: TankerkoenigStation[] = $state([]);
+	let minSelectedFuelPrice: number | null = $state(null);
+
+	function sortStations(fuel: FuelType) {
+		sortedNearbyStations = [...nearbyStations].sort((a, b) => {
+			const pA = a[fuel];
+			const pB = b[fuel];
+			if (pA === null && pB === null) return 0;
+			if (pA === null) return 1;
+			if (pB === null) return -1;
+			return pA - pB;
+		});
+	}
 	let knownStations = new Map<string, TankerkoenigStation>();
 	let error = $state('');
 	let nearbyFetchError = $state('');
@@ -43,6 +56,8 @@
 	let moveDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 	let isNearbyLoading = $state(false);
 	let showFuelDropdown = $state(false);
+	let sidebarOpen = $state(false);
+	let nearbyMarkersMap = new Map<string, Marker>();
 
 	const fuelTypes: FuelType[] = ['diesel', 'e5', 'e10'];
 
@@ -201,7 +216,10 @@
 	});
 
 	$effect(() => {
-		void $fuelType;
+		const fuel = $fuelType;
+		sortStations(fuel);
+		const prices = nearbyStations.map((s) => s[fuel]).filter((v): v is number => v !== null && v !== undefined);
+		minSelectedFuelPrice = prices.length > 0 ? Math.min(...prices) : null;
 		if (nearbyLayerGroup && nearbyStations.length > 0) {
 			updateNearbyMarkers();
 		}
@@ -253,6 +271,7 @@
 				knownStations.set(station.tankerkoenig_id, station);
 			}
 			nearbyStations = Array.from(knownStations.values());
+			sortStations($fuelType);
 		} catch {
 			nearbyFetchError = $t.map.nearbyFetchFailed;
 		} finally {
@@ -262,10 +281,20 @@
 		updateNearbyMarkers();
 	}
 
+	function focusStation(station: TankerkoenigStation) {
+		if (!map) return;
+		map.setView([station.latitude, station.longitude], 15, { animate: true });
+		const marker = nearbyMarkersMap.get(station.tankerkoenig_id);
+		if (marker) {
+			setTimeout(() => marker.openPopup(), 400);
+		}
+	}
+
 	function updateNearbyMarkers() {
 		if (!nearbyLayerGroup || !map || !L) return;
 
 		nearbyLayerGroup.clearLayers();
+		nearbyMarkersMap.clear();
 
 		const selectedFuel = $fuelType;
 
@@ -340,7 +369,8 @@
 				popupAnchor: [0, -20]
 			});
 
-			L.marker([station.latitude, station.longitude], { icon: stationIcon }).bindPopup(popupContent).addTo(nearbyLayerGroup);
+			const marker = L.marker([station.latitude, station.longitude], { icon: stationIcon }).bindPopup(popupContent).addTo(nearbyLayerGroup);
+			nearbyMarkersMap.set(station.tankerkoenig_id, marker);
 		});
 	}
 
@@ -468,6 +498,13 @@
 <main>
 	<AuthRequiredModal show={showAuthModal} />
 	<div class="map-header glass">
+		<button class="sidebar-toggle glass" onclick={() => (sidebarOpen = !sidebarOpen)} aria-label="Toggle station list">
+			<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+				<line x1="3" y1="6" x2="21" y2="6" />
+				<line x1="3" y1="12" x2="21" y2="12" />
+				<line x1="3" y1="18" x2="21" y2="18" />
+			</svg>
+		</button>
 		<a href={resolve('/')} class="navbar-logo">
 			<Logo size={28} />
 			<span>Tanker24</span>
@@ -619,6 +656,62 @@
 			{nearbyFetchError}
 		</div>
 	{/if}
+
+	<div class="station-sidebar" class:open={sidebarOpen}>
+		<div class="sidebar-header">
+			<h3>{$t.map.nearby} <span class="station-count-badge">{nearbyStations.length}</span></h3>
+			<button class="sidebar-close" onclick={() => (sidebarOpen = false)} aria-label="Close sidebar">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<line x1="18" y1="6" x2="6" y2="18" />
+					<line x1="6" y1="6" x2="18" y2="18" />
+				</svg>
+			</button>
+		</div>
+		<div class="sidebar-list">
+			{#if isNearbyLoading && nearbyStations.length === 0}
+				<div class="sidebar-loading">{$t.map.selectFuel}...</div>
+			{:else if nearbyStations.length === 0}
+				<div class="sidebar-empty">{$t.map.nearbyFetchFailed}</div>
+			{:else}
+				{#each sortedNearbyStations as station (station.tankerkoenig_id)}
+					{@const address = [station.street, station.house_number, station.post_code, station.place].filter(Boolean).join(', ')}
+					{@const price = station[$fuelType] as number | null}
+					{@const isCheapest = price !== null && minSelectedFuelPrice !== null && price === minSelectedFuelPrice}
+					<button class="station-card" onclick={() => focusStation(station)}>
+						<div class="station-card-header">
+							<h4>{station.name}</h4>
+							<span class="station-card-brand">{station.brand}</span>
+						</div>
+						{#if address}
+							<div class="station-card-address">{address}</div>
+						{/if}
+						<div class="station-card-meta">
+							<span class="open-badge {station.is_open ? 'open' : 'closed'}">
+								● {station.is_open ? $t.map.open : $t.map.closed}
+							</span>
+							{#if userLat !== null && userLng !== null && station.latitude !== null && station.longitude !== null}
+								<span class="station-card-distance">
+									<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+										<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+										<circle cx="12" cy="9" r="2.5" />
+									</svg>
+									{map ? (map.distance([station.latitude, station.longitude], [userLat, userLng]) / 1000).toFixed(1) : '?'}
+									{$t.map.kilometers}
+								</span>
+							{/if}
+						</div>
+						<div class="station-card-price" class:cheapest={isCheapest}>
+							{#if price !== null}
+								{Math.trunc(price)}{$t.map.priceDevider}{price.toFixed(3).split('.')[1]}€
+							{:else}
+								—
+							{/if}
+						</div>
+					</button>
+				{/each}
+			{/if}
+		</div>
+	</div>
 
 	<div class="map-container" bind:this={mapContainer}></div>
 
