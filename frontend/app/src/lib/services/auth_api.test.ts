@@ -158,22 +158,24 @@ test('logout calls correct endpoint', async () => {
 	const { authService } = await import('./auth_api');
 
 	mockFetch.mockResolvedValueOnce({
-		ok: true
+		ok: true,
+		status: 204
 	});
 
-	await authService.logout();
+	await authService.logout('test-token');
 
 	expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/auth/jwt/logout'), expect.objectContaining({ method: 'POST' }));
 });
 
-test('logout does not throw on failure', async () => {
+test('logout throws on server error', async () => {
 	const { authService } = await import('./auth_api');
 
 	mockFetch.mockResolvedValueOnce({
-		ok: false
+		ok: false,
+		json: () => Promise.resolve({ detail: 'Unauthorized' })
 	});
 
-	await expect(authService.logout()).resolves.toBeUndefined();
+	await expect(authService.logout('test-token')).rejects.toThrow('Unauthorized');
 });
 
 test('getCurrentUser sends authorization header', async () => {

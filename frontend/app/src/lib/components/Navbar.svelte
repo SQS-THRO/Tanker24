@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
+	import { goto } from '$app/navigation';
 	import { auth } from '$lib/stores/auth';
 	import Logo from '$lib/components/Logo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
@@ -33,6 +34,7 @@
 	async function logout() {
 		await auth.logout();
 		showDropdown = false;
+		goto(resolve('/'));
 	}
 
 	function handleWindowClick(e: MouseEvent) {

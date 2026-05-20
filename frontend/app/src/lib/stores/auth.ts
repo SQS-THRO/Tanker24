@@ -78,8 +78,11 @@ function createAuthStore() {
 		},
 
 		async logout(): Promise<void> {
+			const token = getToken();
 			try {
-				await authService.logout();
+				if (token) {
+					await authService.logout(token);
+				}
 			} catch {
 				// proceed with local logout even if server call fails
 			}
