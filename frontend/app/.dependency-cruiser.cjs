@@ -1,6 +1,22 @@
 /** @type {import('dependency-cruiser').IConfiguration} */
 module.exports = {
+	required: [
+		{
+			name: 'services-must-use-request-util',
+			severity: 'error',
+			comment: 'All services must use the request utility for HTTP calls.',
+			module: { path: '^src/lib/services/', pathNot: '[.]test[.]' },
+			to: { path: '^src/lib/utils/request' }
+		}
+	],
 	forbidden: [
+		{
+			name: 'services-not-to-import-env',
+			severity: 'error',
+			comment: 'Services must not import $env directly. Use the request utility instead.',
+			from: { path: '^src/lib/services/' },
+			to: { path: '^\\$env/' }
+		},
 		{
 			name: 'no-circular',
 			severity: 'warn',
