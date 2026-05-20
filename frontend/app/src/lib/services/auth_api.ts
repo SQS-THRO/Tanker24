@@ -3,7 +3,7 @@ import { env } from '$env/dynamic/public';
 
 const API_BASE = (env.PUBLIC_BACKEND_URL ?? 'http://127.0.0.1:8000') + '/api/v0';
 
-interface User {
+export interface User {
 	id: number;
 	email: string;
 	forename: string;

@@ -209,9 +209,9 @@ module.exports = {
 		{
 			name: 'stores-not-to-internals',
 			severity: 'error',
-			comment: 'Stores should not import from components, services, or routes.',
+			comment: 'Stores should not import from components, routes, or assets.',
 			from: { path: '^src/lib/stores/' },
-			to: { path: '^(src/routes/|src/lib/(components/|services/|assets/))' }
+			to: { path: '^(src/routes/|src/lib/(components/|assets/))' }
 		},
 		{
 			name: 'i18n-not-to-internals',
