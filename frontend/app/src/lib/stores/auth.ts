@@ -9,26 +9,26 @@ interface AuthState {
 	error: string | null;
 }
 
+function getToken(): string | null {
+	if (!browser) return null;
+	return localStorage.getItem('token');
+}
+
+function setToken(token: string | null) {
+	if (!browser) return;
+	if (token) {
+		localStorage.setItem('token', token);
+	} else {
+		localStorage.removeItem('token');
+	}
+}
+
 function createAuthStore() {
 	const { subscribe, set, update } = writable<AuthState>({
 		user: null,
 		loading: true,
 		error: null
 	});
-
-	function getToken(): string | null {
-		if (!browser) return null;
-		return localStorage.getItem('token');
-	}
-
-	function setToken(token: string | null) {
-		if (!browser) return;
-		if (token) {
-			localStorage.setItem('token', token);
-		} else {
-			localStorage.removeItem('token');
-		}
-	}
 
 	return {
 		subscribe,
