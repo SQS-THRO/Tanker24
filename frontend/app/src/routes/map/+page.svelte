@@ -52,6 +52,15 @@
 		}, ms);
 	}
 
+	function isDarkTheme(): boolean {
+		const theme = $themeStore.globalTheme;
+		if (theme === 'auto') {
+			if (typeof window === 'undefined') return true;
+			return window.matchMedia('(prefers-color-scheme: dark)').matches;
+		}
+		return theme === 'dark-modern';
+	}
+
 	function getStationIconUrl() {
 		return $themeStore.globalTheme === 'light-modern' ? gasStationIcon : gasStationDarkIcon;
 	}
