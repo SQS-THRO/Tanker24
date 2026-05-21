@@ -102,16 +102,17 @@
 							<svg class="validation-icon valid" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<polyline points="20 6 9 17 4 12" />
 							</svg>
-						{:else if isEmailTouched && email && !emailValid()}
-							<svg class="validation-icon invalid" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						{/if}
+					</div>
+					<div class="field-error-wrapper" class:visible={isEmailTouched && email && !emailValid()}>
+						<div class="field-error">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<line x1="18" y1="6" x2="6" y2="18" />
 								<line x1="6" y1="6" x2="18" y2="18" />
 							</svg>
-						{/if}
+							<span>{$t.login.emailInvalid}</span>
+						</div>
 					</div>
-					{#if isEmailTouched && email && !emailValid()}
-						<p class="validation-text error">{$t.login.emailInvalid}</p>
-					{/if}
 				</div>
 
 				<div class="form-group">

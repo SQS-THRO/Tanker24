@@ -16,6 +16,7 @@
 	let loading = $state(false);
 	let showPassword = $state(false);
 	let showConfirmPassword = $state(false);
+	let passwordFocused = $state(false);
 
 	const emailValid = $derived(() => {
 		if (!email) return null;
@@ -142,16 +143,17 @@
 							<svg class="validation-icon valid" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<polyline points="20 6 9 17 4 12" />
 							</svg>
-						{:else if email && !emailValid()}
-							<svg class="validation-icon invalid" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						{/if}
+					</div>
+					<div class="field-error-wrapper" class:visible={email && !emailValid()}>
+						<div class="field-error">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<line x1="18" y1="6" x2="6" y2="18" />
 								<line x1="6" y1="6" x2="18" y2="18" />
 							</svg>
-						{/if}
+							<span>{$t.register.emailInvalid}</span>
+						</div>
 					</div>
-					{#if email && !emailValid()}
-						<p class="validation-text error">{$t.register.emailInvalid}</p>
-					{/if}
 				</div>
 
 				<div class="form-group">
@@ -175,6 +177,8 @@
 							type={showPassword ? 'text' : 'password'}
 							id="password"
 							bind:value={password}
+							onfocus={() => (passwordFocused = true)}
+							onblur={() => (passwordFocused = false)}
 							placeholder={$t.register.passwordPlaceholder}
 							class="input with-icon toggle-btn"
 							disabled={loading}
@@ -195,7 +199,7 @@
 							{/if}
 						</button>
 					</div>
-					{#if password}
+					<div class="password-checklist-wrapper" class:visible={passwordFocused}>
 						<div class="password-checklist">
 							<div class="checklist-item" class:valid={passwordChecks.minLength}>
 								{#if passwordChecks.minLength}
@@ -263,7 +267,7 @@
 								<span>{$t.register.passwordSpecial}</span>
 							</div>
 						</div>
-					{/if}
+					</div>
 				</div>
 
 				<div class="form-group">
@@ -299,9 +303,15 @@
 							{/if}
 						</button>
 					</div>
-					{#if confirmPassword && !confirmPasswordValid}
-						<p class="validation-text error">{$t.register.passwordsNotMatch}</p>
-					{/if}
+					<div class="field-error-wrapper" class:visible={confirmPassword && !confirmPasswordValid}>
+						<div class="field-error">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<line x1="18" y1="6" x2="6" y2="18" />
+								<line x1="6" y1="6" x2="18" y2="18" />
+							</svg>
+							<span>{$t.register.passwordsNotMatch}</span>
+						</div>
+					</div>
 				</div>
 
 				<button type="submit" class="btn btn-primary submit-btn" disabled={loading || !passwordValid || !confirmPasswordValid}>
