@@ -390,11 +390,56 @@
 		margin-bottom: 0.5rem;
 	}
 
+	.password-checklist-wrapper {
+		max-height: 0;
+		opacity: 0;
+		overflow: hidden;
+		transition:
+			max-height 0.35s ease,
+			opacity 0.35s ease,
+			margin-top 0.35s ease;
+		margin-top: 0;
+	}
+
+	.password-checklist-wrapper.visible {
+		max-height: 300px;
+		opacity: 1;
+		margin-top: 0.75rem;
+	}
+
 	.password-checklist {
 		display: flex;
 		flex-direction: column;
 		gap: 0.375rem;
-		margin-top: 0.75rem;
+	}
+
+	.field-error-wrapper {
+		max-height: 0;
+		opacity: 0;
+		overflow: hidden;
+		transition:
+			max-height 0.35s ease,
+			opacity 0.35s ease,
+			margin-top 0.35s ease;
+		margin-top: 0;
+	}
+
+	.field-error-wrapper.visible {
+		max-height: 100px;
+		opacity: 1;
+		margin-top: 0.5rem;
+	}
+
+	.field-error {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.75rem;
+		color: var(--error);
+	}
+
+	.field-error svg {
+		flex-shrink: 0;
 	}
 
 	.checklist-item {
