@@ -3,6 +3,7 @@
 	import { browser } from '$app/environment';
 	import { resolve } from '$app/paths';
 	import { stationService, type Station, type TankerkoenigStation } from '$lib/services/stations_api';
+	import { auth } from '$lib/stores/auth';
 	import { authService } from '$lib/services/auth_api';
 	import { goto } from '$app/navigation';
 	import Logo from '$lib/components/Logo.svelte';
@@ -311,8 +312,7 @@
 	}
 
 	async function logout() {
-		await authService.logout();
-		localStorage.removeItem('token');
+		await auth.logout();
 		user = null;
 		showUserMenu = false;
 		await goto(resolve('/'));

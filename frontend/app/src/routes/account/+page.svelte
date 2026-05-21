@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
+	import { auth } from '$lib/stores/auth';
 	import { authService } from '$lib/services/auth_api';
 	import { exportAsJson, exportAsCsv, downloadBlob } from '$lib/services/export_api';
 	import { goto } from '$app/navigation';
@@ -59,8 +60,7 @@
 	});
 
 	async function handleLogout() {
-		await authService.logout();
-		localStorage.removeItem('token');
+		await auth.logout();
 		await goto(resolve('/'));
 	}
 

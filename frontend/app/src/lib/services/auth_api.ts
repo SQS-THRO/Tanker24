@@ -1,9 +1,6 @@
 import { request } from '$lib/utils/request';
-import { env } from '$env/dynamic/public';
 
-const API_BASE = (env.PUBLIC_BACKEND_URL ?? 'http://127.0.0.1:8000') + '/api/v0';
-
-interface User {
+export interface User {
 	id: number;
 	email: string;
 	forename: string;
@@ -44,24 +41,24 @@ export const authService = {
 		formData.append('username', data.email);
 		formData.append('password', data.password);
 
-		const response = await fetch(`${API_BASE}/auth/jwt/login`, {
+		return request<AuthResponse>('/auth/jwt/login', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded'
 			},
-			body: formData
+			body: formData,
+			fallbackError: 'Login failed'
 		});
-
-		if (!response.ok) {
-			const error = await response.json().catch(() => ({ detail: 'Login failed' }));
-			throw new Error(error.detail || 'Login failed');
-		}
-
-		return response.json();
 	},
 
-	async logout(): Promise<void> {
-		await fetch(`${API_BASE}/auth/jwt/logout`, { method: 'POST' });
+	async logout(token: string): Promise<void> {
+		await request<void>('/auth/jwt/logout', {
+			method: 'POST',
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			fallbackError: 'Logout failed'
+		});
 	},
 
 	async getCurrentUser(token: string): Promise<User> {

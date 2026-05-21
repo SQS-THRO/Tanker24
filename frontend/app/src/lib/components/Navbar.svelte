@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
-	import { authService } from '$lib/services/auth_api';
+	import { goto } from '$app/navigation';
+	import { auth } from '$lib/stores/auth';
 	import Logo from '$lib/components/Logo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import { t } from '$lib/stores/locale';
@@ -13,29 +14,17 @@
 
 	let { showMapLink = true, showAuthButtons = true }: Props = $props();
 
-	let user = $state<{ forename: string; surname?: string } | null>(null);
 	let showDropdown = $state(false);
 	let scrolled = $state(false);
 
 	onMount(() => {
-		const init = async () => {
-			const token = localStorage.getItem('token');
-			if (token) {
-				try {
-					const userData = await authService.getCurrentUser(token);
-					user = userData;
-				} catch {
-					localStorage.removeItem('token');
-				}
-			}
+		auth.checkAuth();
 
+		scrolled = window.scrollY > 50;
+		const handleScroll = () => {
 			scrolled = window.scrollY > 50;
-			const handleScroll = () => {
-				scrolled = window.scrollY > 50;
-			};
-			window.addEventListener('scroll', handleScroll);
 		};
-		init();
+		window.addEventListener('scroll', handleScroll);
 	});
 
 	function toggleDropdown() {
@@ -43,10 +32,9 @@
 	}
 
 	async function logout() {
-		await authService.logout();
-		localStorage.removeItem('token');
-		user = null;
+		await auth.logout();
 		showDropdown = false;
+		goto(resolve('/'));
 	}
 
 	function handleWindowClick(e: MouseEvent) {
@@ -78,13 +66,13 @@
 					{$t.nav.map}
 				</a>
 			{/if}
-			{#if user}
+			{#if $auth.user}
 				<div class="profile-wrapper">
 					<button class="profile-btn" onclick={toggleDropdown}>
 						<span class="avatar">
-							{user.forename[0]}{user.surname?.[0] || ''}
+							{$auth.user.forename[0]}{$auth.user.surname?.[0] || ''}
 						</span>
-						<span class="username">{user.forename}</span>
+						<span class="username">{$auth.user.forename}</span>
 						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<path d="M6 9l6 6 6-6" />
 						</svg>
