@@ -48,7 +48,7 @@
 	let user = $state<{ forename: string; surname?: string } | null>(null);
 	let showUserMenu = $state(false);
 	let showAuthModal = $state(false);
-	let map: Map | null = null;
+	let map: Map | null = $state(null);
 	let tileLayer: ReturnType<L['tileLayer']> | null = null;
 	let userLocationMarker: Marker | null = null;
 	let userLayerGroup: LayerGroup | null = null;
@@ -181,7 +181,7 @@
 			errorTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
 		}).addTo(map);
 	}
-	
+
 	function closeSidebar() {
 		manuallyClosed = true;
 		sidebarOpen = false;
