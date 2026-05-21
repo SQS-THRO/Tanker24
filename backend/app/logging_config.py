@@ -8,7 +8,7 @@ from app.config import settings
 class ApikeyFilter(logging.Filter):
 	def filter(self, record: logging.LogRecord) -> bool:
 		if record.msg and "apikey" in str(record.msg).lower():
-			record.msg = re.sub(r"apikey=[^&\s]+", "apikey=***", str(record.msg))
+			record.msg = re.sub(r"apikey=[^&\s]+", "apikey=***", str(record.msg), flags=re.IGNORECASE)
 		return True
 
 
