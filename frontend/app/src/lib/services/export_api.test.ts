@@ -154,13 +154,13 @@ describe('downloadBlob', () => {
 		};
 
 		// Stub globals
-		vi.stubGlobal('document', mockDocument as unknown as Document);
+		vi.stubGlobal('document', mockDocument);
 
 		// Stub URL as a plain object with methods
 		vi.stubGlobal('URL', {
 			createObjectURL: createObjectURLMock,
 			revokeObjectURL: revokeObjectURLMock
-		} as unknown as typeof URL);
+		});
 	});
 
 	afterEach(() => {
