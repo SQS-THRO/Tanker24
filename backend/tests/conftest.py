@@ -13,7 +13,8 @@ if not os.environ.get("SECRET"):
 from app.auth import get_jwt_strategy
 from app.database import get_db
 from app.main import app
-from app.models import Base, Station, User
+from app.models import Base, User
+from datetime import datetime, UTC
 
 
 @pytest_asyncio.fixture
@@ -96,37 +97,30 @@ async def second_user(test_db_session):
 	return user
 
 
-@pytest.fixture
-def station_data():
-	return {
-		"name": "Test Station",
-		"description": "A test gas station",
-	}
-
-
-@pytest.fixture
-def station_update_data():
-	return {
-		"name": "Updated Station Name",
-		"description": "Updated description",
-	}
-
-
 @pytest_asyncio.fixture
-async def owned_station(test_db_session, test_user, station_data):
-	station = Station(**station_data, owner_id=test_user.id)
-	test_db_session.add(station)
-	await test_db_session.commit()
-	await test_db_session.refresh(station)
-	return station
+async def cached_station(test_db_session):
+	from app.models import Station
 
-
-@pytest_asyncio.fixture
-async def other_user_station(test_db_session, second_user):
+	now = datetime.now(UTC).replace(tzinfo=None)
 	station = Station(
-		name="Other User Station",
-		description="Station owned by second user",
-		owner_id=second_user.id,
+		tankerkoenig_id="test-uuid-123",
+		name="Cached Station",
+		brand="Shell",
+		street="Main St",
+		house_number="1",
+		post_code=10115,
+		place="Berlin",
+		latitude=52.52,
+		longitude=13.405,
+		distance=0.5,
+		diesel=1.65,
+		e5=1.75,
+		e10=1.70,
+		is_open=True,
+		cached_at=now,
+		cache_lat=52.52,
+		cache_lon=13.405,
+		cache_radius=5.0,
 	)
 	test_db_session.add(station)
 	await test_db_session.commit()

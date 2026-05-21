@@ -10,5 +10,5 @@ from app.schemas.history_record import (
 	HistoryRecordUpdate,
 	HistoryRecordWithRelations,
 )
-from app.schemas.station import Station, StationCreate, StationUpdate
+from app.schemas.station import Station
 from app.schemas.user import UserCreate, UserRead, UserUpdate
