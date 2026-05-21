@@ -35,6 +35,7 @@
 	let showUserMenu = $state(false);
 	let showAuthModal = $state(false);
 	let map: Map | null = null;
+	let tileLayer: ReturnType<L['tileLayer']> | null = null;
 	let userLocationMarker: Marker | null = null;
 	let userLayerGroup: LayerGroup | null = null;
 	let nearbyLayerGroup: LayerGroup | null = null;
@@ -62,7 +63,7 @@
 	}
 
 	function getStationIconUrl() {
-		return $themeStore.globalTheme === 'light-modern' ? gasStationIcon : gasStationDarkIcon;
+		return isDarkTheme() ? gasStationDarkIcon : gasStationIcon;
 	}
 
 	function refreshAllMarkers() {
@@ -149,6 +150,23 @@
 		if (map) map.zoomOut();
 	}
 
+	function getTileUrl(isDark: boolean) {
+		return isDark
+			? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+			: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+	}
+
+	function swapTileLayer(isDark: boolean) {
+		if (!map || !tileLayer || !L) return;
+		map.removeLayer(tileLayer);
+		const url = getTileUrl(isDark);
+		tileLayer = L.tileLayer(url, {
+			maxZoom: 19,
+			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+			errorTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+		}).addTo(map);
+	}
+
 	let themeInitialized = false;
 	$effect(() => {
 		void $themeStore.globalTheme;
@@ -156,7 +174,21 @@
 			themeInitialized = true;
 			return;
 		}
+		swapTileLayer(isDarkTheme());
 		refreshAllMarkers();
+	});
+
+	$effect(() => {
+		if (typeof window === 'undefined') return;
+		if ($themeStore.globalTheme === 'auto') {
+			const mq = window.matchMedia('(prefers-color-scheme: dark)');
+			const handler = () => {
+				swapTileLayer(isDarkTheme());
+				refreshAllMarkers();
+			};
+			mq.addEventListener('change', handler);
+			return () => mq.removeEventListener('change', handler);
+		}
 	});
 
 	let localeInitialized = false;
@@ -356,11 +388,9 @@
 		userLayerGroup = L.layerGroup().addTo(map);
 		nearbyLayerGroup = L.layerGroup().addTo(map);
 
-		const isDarkTheme = $themeStore.globalTheme === 'dark-modern';
-		const tileUrl = isDarkTheme ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 		const fallbackUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-		L.tileLayer(tileUrl, {
+		tileLayer = L.tileLayer(getTileUrl(isDarkTheme()), {
 			maxZoom: 19,
 			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 			errorTileUrl: fallbackUrl
