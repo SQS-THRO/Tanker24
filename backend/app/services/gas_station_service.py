@@ -111,7 +111,7 @@ class TankerkoenigGasStationService(GasStationService):
 			response = httpx.get(self.BASE_URL + endpoint_url, params=params, timeout=10.0)  # type: ignore[arg-type]
 			response.raise_for_status()
 		except httpx.HTTPStatusError as e:
-			logger.error(
+			logger.exception(
 				"Tankerkoenig API returned HTTP error for list request: lat=%.4f lon=%.4f (status=%d)",
 				latitude,
 				longitude,
