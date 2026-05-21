@@ -1,5 +1,4 @@
 import logging
-import re
 
 from app.logging_config import ApikeyFilter, setup_logging
 
@@ -14,9 +13,13 @@ class TestApikeyFilter:
 	def test_filter_redacts_apikey_in_url(self):
 		filter_obj = ApikeyFilter()
 		record = logging.LogRecord(
-			"test", logging.INFO, "", 0,
+			"test",
+			logging.INFO,
+			"",
+			0,
 			"list.php?lat=52.5&apikey=secret123&type=all",
-			(), None,
+			(),
+			None,
 		)
 		assert filter_obj.filter(record)
 		assert "apikey=***" in str(record.msg)
@@ -25,9 +28,13 @@ class TestApikeyFilter:
 	def test_filter_redacts_apikey_case_insensitive(self):
 		filter_obj = ApikeyFilter()
 		record = logging.LogRecord(
-			"test", logging.INFO, "", 0,
+			"test",
+			logging.INFO,
+			"",
+			0,
 			"list.php?lat=52.5&APIKEY=secret456",
-			(), None,
+			(),
+			None,
 		)
 		assert filter_obj.filter(record)
 		assert "secret456" not in str(record.msg)
@@ -35,9 +42,13 @@ class TestApikeyFilter:
 	def test_filter_redacts_apikey_with_special_chars(self):
 		filter_obj = ApikeyFilter()
 		record = logging.LogRecord(
-			"test", logging.INFO, "", 0,
+			"test",
+			logging.INFO,
+			"",
+			0,
 			"list.php?apikey=abc-def_ghi&lat=52.5",
-			(), None,
+			(),
+			None,
 		)
 		assert filter_obj.filter(record)
 		assert "apikey=***" in str(record.msg)
