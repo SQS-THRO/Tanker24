@@ -23,7 +23,7 @@ export interface ThemePalette {
 const STORAGE_KEY = 'theme-settings';
 
 const DEFAULT_SETTINGS = {
-	globalTheme: 'dark-modern' as GlobalTheme,
+	globalTheme: 'auto' as GlobalTheme,
 	colorBlindOverride: 'none' as ColorBlindOverride
 };
 
