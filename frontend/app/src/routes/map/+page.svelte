@@ -10,7 +10,7 @@
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import AuthRequiredModal from '$lib/components/AuthRequiredModal.svelte';
 	import { t, locale } from '$lib/stores/locale';
-	import { themeStore } from '$lib/stores/theme';
+	import { themeStore, type GlobalTheme } from '$lib/stores/theme';
 	import { fuelType, fuelTypeLabel, type FuelType } from '$lib/stores/fuelType';
 	import type { Map, LayerGroup, Marker } from 'leaflet';
 	import gasStationIcon from '$lib/assets/gasstation-icons/gasstation.svg?url';
@@ -36,6 +36,7 @@
 	let showUserMenu = $state(false);
 	let showAuthModal = $state(false);
 	let map: Map | null = null;
+	let tileLayer: ReturnType<L['tileLayer']> | null = null;
 	let userLocationMarker: Marker | null = null;
 	let userLayerGroup: LayerGroup | null = null;
 	let nearbyLayerGroup: LayerGroup | null = null;
@@ -53,8 +54,17 @@
 		}, ms);
 	}
 
+	function isDarkTheme(): boolean {
+		const theme = $themeStore.globalTheme;
+		if (theme === 'auto') {
+			if (typeof window === 'undefined') return true;
+			return window.matchMedia('(prefers-color-scheme: dark)').matches;
+		}
+		return theme === 'dark-modern';
+	}
+
 	function getStationIconUrl() {
-		return $themeStore.globalTheme === 'light-modern' ? gasStationIcon : gasStationDarkIcon;
+		return isDarkTheme() ? gasStationDarkIcon : gasStationIcon;
 	}
 
 	function refreshAllMarkers() {
@@ -141,6 +151,21 @@
 		if (map) map.zoomOut();
 	}
 
+	function getTileUrl(isDark: boolean) {
+		return isDark ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+	}
+
+	function swapTileLayer(isDark: boolean) {
+		if (!map || !tileLayer || !L) return;
+		map.removeLayer(tileLayer);
+		const url = getTileUrl(isDark);
+		tileLayer = L.tileLayer(url, {
+			maxZoom: 19,
+			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+			errorTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+		}).addTo(map);
+	}
+
 	let themeInitialized = false;
 	$effect(() => {
 		void $themeStore.globalTheme;
@@ -148,7 +173,21 @@
 			themeInitialized = true;
 			return;
 		}
+		swapTileLayer(isDarkTheme());
 		refreshAllMarkers();
+	});
+
+	$effect(() => {
+		if (typeof window === 'undefined') return;
+		if ($themeStore.globalTheme === 'auto') {
+			const mq = window.matchMedia('(prefers-color-scheme: dark)');
+			const handler = () => {
+				swapTileLayer(isDarkTheme());
+				refreshAllMarkers();
+			};
+			mq.addEventListener('change', handler);
+			return () => mq.removeEventListener('change', handler);
+		}
 	});
 
 	let localeInitialized = false;
@@ -347,11 +386,9 @@
 		userLayerGroup = L.layerGroup().addTo(map);
 		nearbyLayerGroup = L.layerGroup().addTo(map);
 
-		const isDarkTheme = $themeStore.globalTheme === 'dark-modern';
-		const tileUrl = isDarkTheme ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 		const fallbackUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-		L.tileLayer(tileUrl, {
+		tileLayer = L.tileLayer(getTileUrl(isDarkTheme()), {
 			maxZoom: 19,
 			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 			errorTileUrl: fallbackUrl
@@ -418,6 +455,14 @@
 			map.remove();
 		}
 	});
+
+	const cycleOrder: GlobalTheme[] = ['dark-modern', 'light-modern', 'auto'];
+
+	function cycleTheme() {
+		const current = $themeStore.globalTheme;
+		const nextIndex = (cycleOrder.indexOf(current) + 1) % cycleOrder.length;
+		themeStore.setGlobalTheme(cycleOrder[nextIndex]);
+	}
 </script>
 
 <main>
@@ -488,6 +533,31 @@
 
 		<div class="header-actions">
 			<LanguageSwitcher />
+			<button class="theme-toggle" onclick={cycleTheme} aria-label="Toggle theme">
+				{#if $themeStore.globalTheme === 'dark-modern'}
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+					</svg>
+				{:else if $themeStore.globalTheme === 'light-modern'}
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<circle cx="12" cy="12" r="5" />
+						<line x1="12" y1="1" x2="12" y2="3" />
+						<line x1="12" y1="21" x2="12" y2="23" />
+						<line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+						<line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+						<line x1="1" y1="12" x2="3" y2="12" />
+						<line x1="21" y1="12" x2="23" y2="12" />
+						<line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+						<line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+					</svg>
+				{:else}
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="12" cy="12" r="9" />
+						<path d="M8 17l4-10 4 10" />
+						<path d="M10 13h4" />
+					</svg>
+				{/if}
+			</button>
 			{#if user}
 				<div class="profile-wrapper">
 					<button class="user-btn" onclick={() => (showUserMenu = !showUserMenu)}>
