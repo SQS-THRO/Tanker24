@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 
 export type ColorBlindOverride = 'none' | 'protanopia' | 'deuteranopia' | 'tritanopia';
-export type GlobalTheme = 'dark-modern' | 'light-modern';
+export type GlobalTheme = 'dark-modern' | 'light-modern' | 'auto';
 
 export interface ThemePalette {
 	bgPrimary: string;
@@ -163,7 +163,8 @@ export const THEME_PALETTES: Record<GlobalTheme, ThemePalette> = {
 
 export const GLOBAL_THEMES: { id: GlobalTheme; name: string }[] = [
 	{ id: 'dark-modern', name: 'Dark Modern' },
-	{ id: 'light-modern', name: 'Light Modern' }
+	{ id: 'light-modern', name: 'Light Modern' },
+	{ id: 'auto', name: 'Auto' }
 ];
 
 export const COLOR_BLIND_OPTIONS: { id: ColorBlindOverride; name: string; description: string }[] = [

@@ -2037,6 +2037,29 @@
 	color: var(--text-primary);
 }
 
+.theme-toggle {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.5rem;
+	border-radius: var(--radius-full);
+	font-size: 0.875rem;
+	font-weight: 500;
+	border: 1px solid var(--border-light);
+	background: var(--bg-card);
+	color: var(--text-secondary);
+	cursor: pointer;
+	transition: all var(--transition-base);
+	font-family: inherit;
+	line-height: 1;
+}
+
+.theme-toggle:hover {
+	background: var(--bg-card-hover);
+	color: var(--text-primary);
+	border-color: var(--accent-primary);
+}
+
 .lang-code {
 	min-width: 20px;
 	text-align: center;
