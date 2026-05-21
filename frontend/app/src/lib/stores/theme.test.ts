@@ -201,9 +201,9 @@ describe('GLOBAL_THEMES', () => {
 		expect(GLOBAL_THEMES).toContainEqual({ id: 'light-modern', name: 'Light Modern' });
 	});
 
-	test('contains exactly two themes', async () => {
+	test('contains exactly three themes', async () => {
 		const { GLOBAL_THEMES } = await import('$lib/stores/theme');
-		expect(GLOBAL_THEMES).toHaveLength(2);
+		expect(GLOBAL_THEMES).toHaveLength(3);
 	});
 });
 
