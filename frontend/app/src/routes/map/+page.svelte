@@ -57,6 +57,7 @@
 	let isNearbyLoading = $state(false);
 	let showFuelDropdown = $state(false);
 	let sidebarOpen = $state(false);
+	let manuallyClosed = false;
 	let nearbyMarkersMap = new Map<string, Marker>();
 
 	const fuelTypes: FuelType[] = ['diesel', 'e5', 'e10'];
@@ -180,6 +181,16 @@
 			errorTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
 		}).addTo(map);
 	}
+	
+	function closeSidebar() {
+		manuallyClosed = true;
+		sidebarOpen = false;
+	}
+
+	function openSidebar() {
+		manuallyClosed = false;
+		sidebarOpen = true;
+	}
 
 	let themeInitialized = false;
 	$effect(() => {
@@ -222,6 +233,12 @@
 		minSelectedFuelPrice = prices.length > 0 ? Math.min(...prices) : null;
 		if (nearbyLayerGroup && nearbyStations.length > 0) {
 			updateNearbyMarkers();
+		}
+	});
+
+	$effect(() => {
+		if (nearbyStations.length >= 1 && manuallyClosed === false) {
+			sidebarOpen = true;
 		}
 	});
 
@@ -498,7 +515,7 @@
 <main>
 	<AuthRequiredModal show={showAuthModal} />
 	<div class="map-header glass">
-		<button class="sidebar-toggle glass" onclick={() => (sidebarOpen = !sidebarOpen)} aria-label="Toggle station list">
+		<button class="sidebar-toggle glass" onclick={() => openSidebar()} aria-label="Toggle station list">
 			<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 				<line x1="3" y1="6" x2="21" y2="6" />
 				<line x1="3" y1="12" x2="21" y2="12" />
@@ -660,7 +677,7 @@
 	<div class="station-sidebar" class:open={sidebarOpen}>
 		<div class="sidebar-header">
 			<h3>{$t.map.nearby} <span class="station-count-badge">{nearbyStations.length}</span></h3>
-			<button class="sidebar-close" onclick={() => (sidebarOpen = false)} aria-label="Close sidebar">
+			<button class="sidebar-close" onclick={() => closeSidebar()} aria-label="Close sidebar">
 				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 					<line x1="18" y1="6" x2="6" y2="18" />
 					<line x1="6" y1="6" x2="18" y2="18" />
