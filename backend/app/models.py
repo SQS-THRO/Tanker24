@@ -100,6 +100,3 @@ class HistoryRecord(Base):
 
 	car: Mapped[Car] = relationship(back_populates="history_records", lazy="selectin")
 	fuel_type: Mapped[FuelType] = relationship(back_populates="history_records", lazy="selectin")
-
-
-

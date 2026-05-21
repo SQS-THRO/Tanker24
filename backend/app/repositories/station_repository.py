@@ -56,9 +56,7 @@ class StationRepository:
 			await self.db.execute(delete(Station).where(Station.tankerkoenig_id.in_(ids)))
 
 	async def find_by_tankerkoenig_id(self, tankerkoenig_id: str) -> Station | None:
-		result = await self.db.execute(
-			select(Station).where(Station.tankerkoenig_id == tankerkoenig_id)
-		)
+		result = await self.db.execute(select(Station).where(Station.tankerkoenig_id == tankerkoenig_id))
 		return result.scalar_one_or_none()
 
 	async def upsert_stations(
