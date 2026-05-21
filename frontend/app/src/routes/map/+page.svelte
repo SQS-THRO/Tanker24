@@ -23,12 +23,11 @@
 	const fuelTypes: FuelType[] = ['diesel', 'e5', 'e10'];
 	const cycleOrder: GlobalTheme[] = ['dark-modern', 'light-modern', 'auto'];
 
-
 	let L: typeof import('leaflet').default;
 	let mapContainer: HTMLDivElement;
 	let nearbyStations: TankerkoenigStation[] = $state([]);
 	let sortedNearbyStations: TankerkoenigStation[] = $state([]);
-	let minSelectedFuelPrice: number | null = $state(null);	
+	let minSelectedFuelPrice: number | null = $state(null);
 	let knownStations = new Map<string, TankerkoenigStation>();
 	let nearbyFetchError = $state('');
 	let searchQuery = $state('');
@@ -40,7 +39,6 @@
 	let map: Map | null = $state(null);
 	let tileLayer: ReturnType<L['tileLayer']> | null = null;
 	let userLocationMarker: Marker | null = null;
-	let userLayerGroup: LayerGroup | null = null;
 	let nearbyLayerGroup: LayerGroup | null = null;
 	let moveDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 	let isNearbyLoading = $state(false);
@@ -146,7 +144,6 @@
 			const center = map.getCenter();
 			fetchNearbyStations(center.lat, center.lng);
 		}
-
 	}
 
 	function refreshPopups() {
@@ -374,7 +371,6 @@
 
 		map = L.map(mapContainer, { zoomControl: false }).setView([lat, lng], DEFAULT_ZOOM);
 
-		userLayerGroup = L.layerGroup().addTo(map);
 		nearbyLayerGroup = L.layerGroup().addTo(map);
 
 		const fallbackUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -631,13 +627,16 @@
 
 	<div class="map-controls glass">
 		<div class="station-count">
-			<svg height="18" width="18" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-				viewBox="0 0 512 512"  xml:space="preserve">
+			<svg height="18" width="18" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
 				<style type="text/css">
-					.st0{fill:var(--text-secondary)}
+					.st0 {
+						fill: var(--text-secondary);
+					}
 				</style>
 				<g>
-					<path class="st0" d="M485.395,158.609c-7.296-8.514-12.122-13.426-20.826-22.348c-27.93-28.573-53.191-53.843-53.218-53.869
+					<path
+						class="st0"
+						d="M485.395,158.609c-7.296-8.514-12.122-13.426-20.826-22.348c-27.93-28.573-53.191-53.843-53.218-53.869
 						l-12.591-12.6l-17.435,17.026l36.061,54.731l0.374,0.765c0.191,0.591,0.374,1.566,0.374,2.826c0.052,2.704-0.974,6.609-2.479,9.313
 						l-3.165,5.826c-3.661,6.756-5.713,21.113-5.705,28.574c-0.008,7.182,1.696,14.4,5.114,20.982l6.235,12.026
 						c7.295,14.07,21.347,23.148,36.991,24.348l3,0.939c0,39.574,0,88.904,0,126.835c-0.052,11.043-3.296,17.617-6.888,21.635
@@ -651,7 +650,8 @@
 						C493.743,171.409,492.074,166.4,485.395,158.609z M284.491,227.061H120.656V71.235h163.834V227.061z M458.126,212.009
 						c0,2.808-1.609,4.122-3.896,4.078c-4.304-0.07-11.009-1-13.913-5.722c-5.191-8.435-12.183-24.87-4.609-37.756
 						c0.808-1.374,2.574-3.583,5.722-1.478l10.13,9.304c4.182,3.826,6.565,9.226,6.565,14.895
-						C458.126,195.33,458.126,209.2,458.126,212.009z"/>
+						C458.126,195.33,458.126,209.2,458.126,212.009z"
+					/>
 				</g>
 			</svg>
 			{#if nearbyStations.length > 0}
