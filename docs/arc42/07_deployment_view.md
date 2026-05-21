@@ -174,32 +174,35 @@ A template file `.env.example` is provided for new deployments.
 
 ## 7.6 Network Topology
 
-```
-                    Internet
-                        │
-                        ▼
-              ┌─────────────────┐
-              │  Nginx (TLS)    │
-              │  Port 443       │
-              └───┬─────────┬───┘
-                  │         │
-       /          ▼         ▼     /api
-    ┌──────────┐       ┌──────────┐
-    │ Frontend │       │ Backend  │
-    │  :3000   │──────▶│  :8000   │
-    └──────────┘       └────┬─────┘
-                            │
-      ┌─────────────────────┤
-      │                     │
-      ▼                     ▼
-┌──────────┐         ┌──────────────┐
-│PostgreSQL│         │ Tankerkönig  │
-│  :5432   │         │  API (ext)   │
-└──────────┘         └──────────────┘
+```puml
+@startuml
+!define RECTANGLE class
+skinparam backgroundColor #transparent
+skinparam rectangle {
+  BorderColor #black
+}
 
-┌─────────────┐
-│ Uptime Kuma │  ← Internal monitoring (port 3001)
-└─────────────┘
+rectangle Internet
+
+rectangle "Nginx (TLS)\nPort 443" as nginx
+
+rectangle "Frontend\n:3000" as frontend
+rectangle "Backend\n:8000" as backend
+
+rectangle "PostgreSQL\n:5432" as postgres
+rectangle "Tankerkönig\nAPI (ext)" as tankerkoenig
+
+rectangle "Uptime Kuma\nInternal monitoring\n(port 3001)" as uptime
+
+Internet --> nginx
+nginx --> frontend: /
+nginx --> backend: /api
+frontend --> backend
+backend --> postgres
+backend --> tankerkoenig
+uptime ..> frontend: polls
+uptime ..> backend: polls
+@enduml
 ```
 
 - Nginx handles TLS termination and reverse proxying.
