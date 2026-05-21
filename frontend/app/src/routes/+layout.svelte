@@ -6,6 +6,7 @@
 	import { privacyStore } from '$lib/stores/privacy';
 	import { onMount } from 'svelte';
 	import { dev } from '$app/environment';
+	import { onNavigate } from '$app/navigation';
 	import ConsentModal from '$lib/components/ConsentModal.svelte';
 
 	let { children } = $props();
@@ -29,6 +30,17 @@
 		if (initialized) {
 			showConsentModal = !dev && !$privacyStore.hidden && $privacyStore.analyticsAccepted !== true;
 		}
+	});
+
+	onNavigate((navigation) => {
+		if (!document.startViewTransition) return;
+
+		return new Promise<void>((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
 	});
 
 	function getEffectiveTheme(theme: GlobalTheme): 'dark-modern' | 'light-modern' {

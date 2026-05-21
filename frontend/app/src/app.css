@@ -665,6 +665,18 @@
 		font-size: 1.25rem;
 	}
 
+	.header-logo {
+		view-transition-name: header-logo;
+	}
+
+	.header-theme-toggle {
+		view-transition-name: header-theme-toggle;
+	}
+
+	.header-profile {
+		view-transition-name: header-profile;
+	}
+
 	.container {
 		flex: 1;
 		display: flex;
@@ -2244,6 +2256,7 @@
 
 .lang-switcher {
 	position: relative;
+	view-transition-name: header-lang-switcher;
 }
 
 .lang-btn {

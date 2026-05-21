@@ -58,14 +58,14 @@
 
 <nav class="navbar" class:scrolled>
 	<div class="navbar-inner">
-		<a href={resolve('/')} class="navbar-logo">
+		<a href={resolve('/')} class="navbar-logo header-logo">
 			<Logo size={32} />
 			<span>Tanker24</span>
 		</a>
 
 		<div class="nav-actions">
 			<LanguageSwitcher />
-			<button class="theme-toggle" onclick={cycleTheme} aria-label="Toggle theme">
+			<button class="theme-toggle header-theme-toggle" onclick={cycleTheme} aria-label="Toggle theme">
 				{#if $themeStore.globalTheme === 'dark-modern'}
 					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 						<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
@@ -101,7 +101,7 @@
 				</a>
 			{/if}
 			{#if $auth.user}
-				<div class="profile-wrapper">
+				<div class="profile-wrapper header-profile">
 					<button class="profile-btn" onclick={toggleDropdown}>
 						<span class="avatar">
 							{$auth.user.forename[0]}{$auth.user.surname?.[0] || ''}
