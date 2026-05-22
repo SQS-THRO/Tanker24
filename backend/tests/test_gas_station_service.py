@@ -1,3 +1,4 @@
+from unittest.mock import patch
 import pytest
 import httpx
 import respx
@@ -149,8 +150,41 @@ class TestGasStationService:
 
 		service = TankerkoenigGasStationService()
 
-		with pytest.raises(httpx.HTTPStatusError):
+		with pytest.raises(RuntimeError, match="Tankerkoenig API returned an HTTP error"):
 			service.get_gas_station_by_id("123")
+
+	@respx.mock
+	def test_get_gas_station_by_id_http_error_does_not_leak_api_key(self):
+		respx.get("https://creativecommons.tankerkoenig.de/json/detail.php").mock(
+			return_value=httpx.Response(500, json={}),
+		)
+
+		service = TankerkoenigGasStationService(api_key="super-secret-test-key-12345")
+
+		with pytest.raises(RuntimeError) as exc_info:
+			service.get_gas_station_by_id("123")
+
+		assert "super-secret-test-key-12345" not in str(exc_info.value)
+
+	@patch("app.services.gas_station_service.httpx.get")
+	def test_get_gas_station_by_id_connection_error(self, mock_get):
+		mock_get.side_effect = httpx.RequestError("Connection refused")
+
+		service = TankerkoenigGasStationService()
+
+		with pytest.raises(RuntimeError, match="Failed to connect to Tankerkoenig API"):
+			service.get_gas_station_by_id("123")
+
+	@patch("app.services.gas_station_service.httpx.get")
+	def test_get_gas_station_by_id_connection_error_does_not_leak_api_key(self, mock_get):
+		mock_get.side_effect = httpx.RequestError("Connection refused")
+
+		service = TankerkoenigGasStationService(api_key="super-secret-test-key-12345")
+
+		with pytest.raises(RuntimeError) as exc_info:
+			service.get_gas_station_by_id("123")
+
+		assert "super-secret-test-key-12345" not in str(exc_info.value)
 
 	# Check if all params are mapped through
 	@respx.mock
@@ -283,8 +317,41 @@ class TestGasStationService:
 
 		service = TankerkoenigGasStationService()
 
-		with pytest.raises(httpx.HTTPStatusError):
+		with pytest.raises(RuntimeError, match="Tankerkoenig API returned an HTTP error"):
 			service.get_gas_stations(52.52, 13.405, 5.0)
+
+	@respx.mock
+	def test_get_gas_stations_http_error_does_not_leak_api_key(self):
+		respx.get("https://creativecommons.tankerkoenig.de/json/list.php").mock(
+			return_value=httpx.Response(500, json={}),
+		)
+
+		service = TankerkoenigGasStationService(api_key="super-secret-test-key-12345")
+
+		with pytest.raises(RuntimeError) as exc_info:
+			service.get_gas_stations(52.52, 13.405, 5.0)
+
+		assert "super-secret-test-key-12345" not in str(exc_info.value)
+
+	@patch("app.services.gas_station_service.httpx.get")
+	def test_get_gas_stations_connection_error(self, mock_get):
+		mock_get.side_effect = httpx.RequestError("Connection refused")
+
+		service = TankerkoenigGasStationService()
+
+		with pytest.raises(RuntimeError, match="Failed to connect to Tankerkoenig API"):
+			service.get_gas_stations(52.52, 13.405, 5.0)
+
+	@patch("app.services.gas_station_service.httpx.get")
+	def test_get_gas_stations_connection_error_does_not_leak_api_key(self, mock_get):
+		mock_get.side_effect = httpx.RequestError("Connection refused")
+
+		service = TankerkoenigGasStationService(api_key="super-secret-test-key-12345")
+
+		with pytest.raises(RuntimeError) as exc_info:
+			service.get_gas_stations(52.52, 13.405, 5.0)
+
+		assert "super-secret-test-key-12345" not in str(exc_info.value)
 
 	# Check if the params are mapped correctly to the url query
 	@respx.mock
