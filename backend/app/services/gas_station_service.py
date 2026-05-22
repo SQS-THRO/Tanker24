@@ -41,7 +41,7 @@ class TankerkoenigGasStationService(GasStationService):
 			response = httpx.get(self.BASE_URL + endpoint_url, params=params, timeout=10.0)
 			response.raise_for_status()
 		except httpx.HTTPStatusError as e:
-			logger.error("Tankerkoenig API returned HTTP error for station id=%s: %s", id, e.response.status_code)
+			logger.exception("Tankerkoenig API returned HTTP error for station id=%s: %s", id, e.response.status_code)
 			raise RuntimeError("Tankerkoenig API returned an HTTP error.") from e
 		except httpx.RequestError as e:
 			logger.error("Failed to connect to Tankerkoenig API for station id=%s", id)
