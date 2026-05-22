@@ -8,7 +8,6 @@ from sqlalchemy import (
 	ForeignKey,
 	Integer,
 	String,
-	Text,
 	UniqueConstraint,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
@@ -44,19 +43,6 @@ class User(SQLAlchemyBaseUserTable[int], Base):
 
 class Station(Base):
 	__tablename__ = "stations"
-
-	id: Mapped[int] = mapped_column(primary_key=True)
-	name: Mapped[str] = mapped_column(String(100))
-	description: Mapped[str | None] = mapped_column(Text, default=None)
-	latitude: Mapped[float | None] = mapped_column(Float, default=None)
-	longitude: Mapped[float | None] = mapped_column(Float, default=None)
-	owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-
-	owner: Mapped[User] = relationship(back_populates="stations", lazy="selectin")
-
-
-class TankerkoenigStation(Base):
-	__tablename__ = "tankerkoenig_stations"
 	__table_args__ = (UniqueConstraint("tankerkoenig_id", name="uix_tankerkoenig_id"),)
 
 	id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -114,6 +100,3 @@ class HistoryRecord(Base):
 
 	car: Mapped[Car] = relationship(back_populates="history_records", lazy="selectin")
 	fuel_type: Mapped[FuelType] = relationship(back_populates="history_records", lazy="selectin")
-
-
-User.stations = relationship("Station", back_populates="owner", lazy="selectin")

@@ -1,33 +1,8 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 
 class StationBase(BaseModel):
-	name: str = Field(min_length=1)
-	description: str | None = None
-	latitude: float | None = None
-	longitude: float | None = None
-
-
-class StationCreate(StationBase):
-	pass
-
-
-class StationUpdate(BaseModel):
-	name: str | None = None
-	description: str | None = None
-	latitude: float | None = None
-	longitude: float | None = None
-
-
-class Station(StationBase):
-	id: int
-	owner_id: int
-
-	model_config = ConfigDict(from_attributes=True)
-
-
-class TankerkoenigStationBase(BaseModel):
 	tankerkoenig_id: str
 	name: str
 	brand: str
@@ -44,7 +19,7 @@ class TankerkoenigStationBase(BaseModel):
 	is_open: bool = True
 
 
-class TankerkoenigStation(TankerkoenigStationBase):
+class Station(StationBase):
 	id: int
 	cached_at: datetime
 	cache_lat: float | None = None

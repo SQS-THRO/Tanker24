@@ -4,39 +4,41 @@
 
 Building on the quality goals defined in [Section 1.2](01_intro_goals.md#12-quality-goals), the following quality tree structures the quality requirements into a hierarchy:
 
-```
-Quality
-├── Functional Stability
-│   ├── All main use cases implemented
-│   └── Bug-free core functionality
-├── Reliability
-│   ├── Graceful recovery from Tankerkönig API outages
-│   ├── Cache-based fallback for station data
-│   └── Zero data loss on failure
-├── Security
-│   ├── Authenticated access to user data
-│   ├── Strong password policy enforcement
-│   ├── JWT token-based session management
-│   └── Invitation-only registration
-├── Transferability
-│   ├── JSON export of user data
-│   └── CSV (semicolon-separated) export
-├── Maintainability
-│   ├── Clean architecture (layered)
-│   ├── Automated code quality checks
-│   └── Comprehensive documentation (arc42 + ADRs)
-├── Performance Efficiency
-│   ├── Fast API response times
-│   ├── Cached station data (reduced external calls)
-│   └── Minimal frontend bundle size (Svelte compiler)
-├── Operability
-│   ├── Single-command deployment (docker compose up -d)
-│   ├── Structured logging to stdout
-│   └── Health check endpoint
-└── Compatibility
-    ├── Modern browser support (Chromium-based)
-    ├── Responsive design (mobile + desktop)
-    └── PostgreSQL + SQLite database backends
+```puml
+@startmindmap
+* Quality
+** Functional Stability
+*** All main use cases implemented
+*** Bug-free core functionality
+** Reliability
+*** Graceful recovery from Tankerkönig API outages
+*** Cache-based fallback for station data
+*** Zero data loss on failure
+** Security
+*** Authenticated access to user data
+*** Strong password policy enforcement
+*** JWT token-based session management
+*** Invitation-only registration
+** Transferability
+*** JSON export of user data
+*** CSV (semicolon-separated) export
+** Maintainability
+*** Clean architecture (layered)
+*** Automated code quality checks
+*** Comprehensive documentation (arc42 + ADRs)
+** Performance Efficiency
+*** Fast API response times
+*** Cached station data (reduced external calls)
+*** Minimal frontend bundle size (Svelte compiler)
+** Operability
+*** Single-command deployment (docker compose up -d)
+*** Structured logging to stdout
+*** Health check endpoint
+** Compatibility
+*** Modern browser support (Chromium-based)
+*** Responsive design (mobile + desktop)
+*** PostgreSQL + SQLite database backends
+@endmindmap
 ```
 
 ## 10.2 Quality Scenarios
@@ -108,11 +110,18 @@ Quality scenarios describe concrete, measurable quality requirements using the s
 
 Every code change must pass the following pipeline before merging:
 
-```
-┌─────────────┐     ┌──────────┐     ┌──────────┐     ┌──────────────┐
-│  Developer   │────▶│ Pre-commit│────▶│ CI Pipeline│────▶│ SonarCloud   │
-│  writes code │     │ (local)  │     │ (GitHub)  │     │ Quality Gate │
-└─────────────┘     └──────────┘     └──────────┘     └──────────────┘
+```puml
+@startuml
+skinparam backgroundColor #transparent
+left to right direction
+rectangle "Developer\nwrites code" as dev
+rectangle "Pre-commit\n(local)" as precommit
+rectangle "CI Pipeline\n(GitHub)" as ci
+rectangle "SonarCloud\nQuality Gate" as sonar
+dev --> precommit
+precommit --> ci
+ci --> sonar
+@enduml
 ```
 
 | Stage | Checks | Tool |
