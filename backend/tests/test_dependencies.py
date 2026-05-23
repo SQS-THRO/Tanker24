@@ -3,12 +3,14 @@ from unittest.mock import Mock
 from app.dependencies import (
 	get_flat_export_data_service,
 	get_nested_export_data_service,
+	get_fillings_service
 )
 from app.services.export_data_service import (
 	ExportDataService,
 	FlatExportDataService,
 	NestedExportDataService,
 )
+from app.services.fillings_service import FillingsService
 
 
 class TestDependencies:
@@ -29,3 +31,8 @@ class TestDependencies:
 		assert isinstance(service, FlatExportDataService)
 		assert isinstance(service, ExportDataService)
 		assert service.db is db
+
+	def test_get_fillings_service_returns_fillings_Service(self):
+		db = Mock()
+		service = get_fillings_service(db)
+		assert isinstance(service, FillingsService)
