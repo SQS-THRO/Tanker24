@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import HistoryRecord
-from app.schemas import HistoryRecordCreate
+from app.schemas.history_record import HistoryRecordCreate
 
 
 class HistoryRecordRepository:

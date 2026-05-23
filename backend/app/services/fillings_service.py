@@ -3,8 +3,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.dtos.filling_dto import FillingDTO
 from app.repositories.car_repository import CarRepository
 from app.repositories.history_record_repository import HistoryRecordRepository
-from app.schemas import UserRead, CarCreate, HistoryRecord, HistoryRecordCreate
-
+from app.schemas.car import CarCreate
+from app.schemas.user import UserRead
+from app.schemas.history_record import HistoryRecordCreate
 
 class FillingsService:
     def __init__(self, db: AsyncSession):

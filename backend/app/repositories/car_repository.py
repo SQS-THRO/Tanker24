@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Car
-from app.schemas import CarCreate
+from app.schemas.car import CarCreate
 
 
 class CarRepository:

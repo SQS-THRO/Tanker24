@@ -24,7 +24,6 @@ async def post_filling_data(
 	service: Annotated[FillingsService, Depends(get_fillings_service)],
 ) -> JSONResponse:
 	filling.license_plate_number = filling.license_plate_number.strip().upper()
-	filling.type = filling.type.strip()
 
 	await service.save_history_record(filling=filling, user=user)
 
