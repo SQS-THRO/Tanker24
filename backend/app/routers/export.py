@@ -4,6 +4,7 @@ import csv
 
 
 from fastapi import APIRouter, Depends, status
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 from typing import Annotated
@@ -32,7 +33,7 @@ async def get_user_data_as_json(
 ) -> JSONResponse:
 	logger.info("Endpoint get_user_data_as_json called!")
 	result = await service.get_user_data(user.id)
-	return JSONResponse(content=result, headers={"Content-Disposition": "attachment; filename=user_data.json"})
+	return JSONResponse(content=jsonable_encoder(result), headers={"Content-Disposition": "attachment; filename=user_data.json"})
 
 
 # Returns a csv file containing the user data. As csv files can't contain nested data the car_id is part of each row
