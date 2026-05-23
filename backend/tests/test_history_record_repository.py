@@ -99,9 +99,12 @@ class TestHistoryRecordRepository:
         db.commit.assert_awaited_once()
 
     @pytest.mark.asyncio
-    async def test_delete_by_id_for_user_returns_false_when_not_deleted(self, db) -> None:
+    async def test_delete_by_id_for_user_returns_false_when_not_deleted(
+            self,
+            db,
+    ) -> None:
         execute_result = Mock()
-        execute_result.rowcount = 0
+        execute_result.scalar_one_or_none.return_value = None
         db.execute.return_value = execute_result
 
         repository = HistoryRecordRepository(db)
@@ -112,5 +115,7 @@ class TestHistoryRecordRepository:
         )
 
         assert result is False
+
         db.execute.assert_awaited_once()
+        execute_result.scalar_one_or_none.assert_called_once()
         db.commit.assert_awaited_once()
