@@ -1,10 +1,7 @@
-from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette import status
 
 from app.dtos.filling_dto import FillingDTO
 from app.exceptions.exceptions import FillingNotFoundException
-from app.models import FuelType
 from app.repositories.car_repository import CarRepository
 from app.repositories.fuel_type_repository import FuelTypeRepository
 from app.repositories.history_record_repository import HistoryRecordRepository
@@ -55,5 +52,4 @@ class FillingsService:
 		)
 
 		if not deleted:
-			if not deleted:
-				raise FillingNotFoundException(history_record_id)
+			raise FillingNotFoundException(history_record_id)
