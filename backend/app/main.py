@@ -17,7 +17,7 @@ from app.database import async_session_maker, init_db
 from app.invitation_keys import sync_invitation_keys
 from app.limiter import limiter
 from app.logging_config import setup_logging
-from app.routers import auth, health, stations, export
+from app.routers import auth, health, stations, export, fillings
 
 logger = logging.getLogger("app")
 
@@ -83,6 +83,7 @@ api_router.include_router(auth.register_router, prefix="/auth", tags=["auth"])
 api_router.include_router(auth.users_router, prefix="/users", tags=["users"])
 api_router.include_router(stations.router)
 api_router.include_router(export.router)
+api_router.include_router(fillings.router)
 
 app.include_router(health.router)
 app.include_router(api_router)
