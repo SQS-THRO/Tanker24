@@ -30,6 +30,7 @@ class TestHistoryRecordRepository:
             litres=42.5,
             car_id=10,
             fuel_type_id=2,
+            tankerkoenig_station_id="ABC12356468"
         )
 
     @pytest.mark.asyncio

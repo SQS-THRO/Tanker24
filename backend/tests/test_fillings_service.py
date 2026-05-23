@@ -8,6 +8,7 @@ import pytest
 from app.dtos.filling_dto import FillingDTO
 from app.dtos.gas_station_dtos import FuelType
 from app.exceptions.exceptions import FillingNotFoundException
+from app.schemas import HistoryRecord
 from app.schemas.car import Car
 from app.schemas.user import UserRead
 from app.services.fillings_service import FillingsService
@@ -212,38 +213,62 @@ class TestFillingsService:
     ) -> None:
         service = FillingsService(db=AsyncMock())
 
-        car_1 = Mock(id=10)
-        car_2 = Mock(id=20)
+        car1 = Car(
+            id=50,
+            owner_id=user.id,
+            type="SUV",
+            license_plate_number="REH-AU-12",
+        )
+        car2 = Car(
+            id=51,
+            owner_id=user.id,
+            type="Schräghecklimousine",
+            license_plate_number="REH-AU-13",
+        )
 
-        history_records_car_1 = [Mock(id=1), Mock(id=2)]
-        history_records_car_2 = [Mock(id=3)]
+        record1 = HistoryRecord(
+            id=401,
+            car_id=50,
+            timestamp="2026-03-01T10:00:00",
+            mileage=15000,
+            price_per_litre=1.9,
+            litres=35,
+            fuel_type_id=1,
+            tankerkoenig_station_id="ABC123454789",
+        )
+        record2 = HistoryRecord(
+            id=402,
+            car_id=51,
+            timestamp="2026-03-02T11:00:00",
+            mileage=22000,
+            price_per_litre=1.6,
+            litres=50,
+            fuel_type_id=2,
+            tankerkoenig_station_id="ABC123454789",
+        )
 
         service.car_repo = Mock()
-        service.car_repo.get_cars_by_owner = AsyncMock(
-            return_value=[car_1, car_2]
-        )
+        service.car_repo.get_cars_by_owner = AsyncMock(return_value=[car1, car2])
 
         service.history_repo = Mock()
         service.history_repo.get_history_records_by_car = AsyncMock(
             side_effect=[
-                history_records_car_1,
-                history_records_car_2,
+                [record1],
+                [record2],
             ]
         )
 
         result = await service.get_history_records_for_user(user=user)
 
-        assert result == [
-            history_records_car_1,
-            history_records_car_2,
-        ]
+        assert len(result) == 2
+        assert result[0].id == record1.id
+        assert result[1].id == record2.id
+        assert result[0].car_id == record1.car_id
+        assert result[1].car_id == record2.car_id
 
         service.car_repo.get_cars_by_owner.assert_awaited_once_with(user.id)
 
-        service.history_repo.get_history_records_by_car.assert_any_await(10)
-        service.history_repo.get_history_records_by_car.assert_any_await(20)
+        service.history_repo.get_history_records_by_car.assert_any_await(50)
+        service.history_repo.get_history_records_by_car.assert_any_await(51)
 
-        assert (
-                service.history_repo.get_history_records_by_car.await_count
-                == 2
-        )
+        assert service.history_repo.get_history_records_by_car.await_count == 2
