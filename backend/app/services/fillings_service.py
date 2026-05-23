@@ -39,6 +39,7 @@ class FillingsService:
 			litres=filling.litres,
 			car_id=saved_car.id,
 			fuel_type_id=db_fuel_type.id,
+			tankerkoenig_station_id=filling.tankerkoenig_station_id,
 		)
 
 		await self.history_repo.insert_history_record(history_record_create)
@@ -63,6 +64,10 @@ class FillingsService:
 
 		for car in cars:
 			history_records = await self.history_repo.get_history_records_by_car(car.id)
-			result.append(history_records)
+
+			for record in history_records:
+				result.append(
+					HistoryRecord.model_validate(record)
+				)
 
 		return result

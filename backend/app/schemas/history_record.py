@@ -19,6 +19,7 @@ class HistoryRecordBase(BaseModel):
 	litres: float
 	car_id: int
 	fuel_type_id: int
+	tankerkoenig_station_id: str
 
 
 class HistoryRecordCreate(HistoryRecordBase):
@@ -32,6 +33,7 @@ class HistoryRecordUpdate(BaseModel):
 	litres: float | None = None
 	car_id: int | None = None
 	fuel_type_id: int | None = None
+	tankerkoenig_station_id: str | None = None
 
 
 class HistoryRecord(HistoryRecordBase):
