@@ -1,5 +1,3 @@
-import pytest
-
 from app.exceptions.exceptions import FillingNotFoundException
 
 

@@ -9,7 +9,6 @@ from sqlalchemy import (
 	Integer,
 	String,
 	UniqueConstraint,
-	true,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 

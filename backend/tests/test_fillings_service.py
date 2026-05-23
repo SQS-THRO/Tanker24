@@ -1,6 +1,4 @@
 # tests/services/test_fillings_service.py
-
-from datetime import UTC, datetime
 from unittest.mock import AsyncMock, Mock
 
 import pytest
