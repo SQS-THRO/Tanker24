@@ -39,4 +39,5 @@ class HistoryRecordRepository:
 		result = await self.db.execute(stmt)
 		await self.db.commit()
 
+		# make sure that something actually changed
 		return result.rowcount > 0
