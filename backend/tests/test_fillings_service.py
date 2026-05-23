@@ -25,24 +25,31 @@ class TestFillingsService:
 
         return service
 
+    TEST_PASSWORD = "test-password"  # NO SONAR
+
     @pytest.fixture
-    def user(self):
+    def user(self) -> UserRead:
         return UserRead(
             id=123,
-            email="test@test.com",
-            username="testuser",
+            email="max@Tanker24.eu",
+            forename="Max",
+            surname="Musterfrau",
             is_active=True,
+            is_superuser=False,
+            is_verified=True,
+            hashed_password=self.TEST_PASSWORD,
         )
 
     @pytest.fixture
     def filling(self):
         return FillingDTO(
-            car_type="BMW",
+            car_type="Limousine",
             license_plate_number="RO-AB-123",
-            timestamp=datetime.now(UTC),
+            timestamp="2026-05-23T10:25:31.482193+00:00",
             mileage=12345.6,
             price_per_litre=1.89,
             litres=42.5,
+            station_id= "213215465123153465123135131",
             fuel_type=FuelType.e5,
         )
 
@@ -51,7 +58,7 @@ class TestFillingsService:
         return Car(
             id=10,
             owner_id=123,
-            type="BMW",
+            type="Limousine",
             license_plate_number="RO-AB-123",
         )
 
