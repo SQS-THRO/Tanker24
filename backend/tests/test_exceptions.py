@@ -2,7 +2,6 @@ import pytest
 
 from app.exceptions.exceptions import FillingNotFoundException
 
-@pytest.mark.asyncio
 class TestFillingNotFoundException:
     def test_filling_not_found_exception_stores_filling_id(self) -> None:
         exception = FillingNotFoundException(42)
