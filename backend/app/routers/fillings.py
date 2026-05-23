@@ -2,6 +2,7 @@ import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, status, HTTPException, Query
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 from app.auth import get_current_active_user
@@ -76,4 +77,25 @@ async def delete_filling_data(
 	return JSONResponse(
 		status_code=status.HTTP_200_OK,
 		content={"message": "Filling deleted successfully"},
+	)
+
+@router.get(
+	path="",
+    status_code=status.HTTP_200_OK,
+    summary="Returns the history records for the authenticated user.",
+    description="Returns the history records for the authenticated user.",
+    responses={503: {"description": "Database temporarily unavailable."}},
+)
+async def get_filling_data_from_user(
+    user: Annotated[UserRead, Depends(get_current_active_user)],
+    service: Annotated[FillingsService, Depends(get_fillings_service)],
+) -> JSONResponse:
+
+	result = await service.get_history_records_for_user(
+		user=user,
+	)
+
+	return JSONResponse(
+		status_code=status.HTTP_200_OK,
+		content=jsonable_encoder(result),
 	)

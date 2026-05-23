@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dtos.filling_dto import FillingDTO
@@ -7,7 +9,7 @@ from app.repositories.fuel_type_repository import FuelTypeRepository
 from app.repositories.history_record_repository import HistoryRecordRepository
 from app.schemas.car import CarCreate
 from app.schemas.user import UserRead
-from app.schemas.history_record import HistoryRecordCreate
+from app.schemas.history_record import HistoryRecordCreate, HistoryRecord
 
 
 class FillingsService:
@@ -53,3 +55,14 @@ class FillingsService:
 
 		if not deleted:
 			raise FillingNotFoundException(history_record_id)
+
+	async def get_history_records_for_user(self, user: UserRead)->List[HistoryRecord]:
+		cars = await self.car_repo.get_cars_by_owner(user.id)
+
+		result = []
+
+		for car in cars:
+			history_records = await self.history_repo.get_history_records_by_car(car.id)
+			result.append(history_records)
+
+		return result
