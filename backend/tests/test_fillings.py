@@ -16,14 +16,18 @@ from app.schemas.user import UserRead
 
 
 class TestFillings:
-
+    TEST_PASSWORD = "test-password" #NO SONAR
     @pytest.fixture
     def user(self) -> UserRead:
         return UserRead(
             id=123,
-            email="test@test.com",
-            username="testuser",
+            email="max@Tanker24.eu",
+            forename="Max",
+            surname="Musterfrau",
             is_active=True,
+            is_superuser=False,
+            is_verified=True,
+			hashed_password=self.TEST_PASSWORD,
         )
 
     @pytest.fixture
@@ -56,13 +60,14 @@ class TestFillings:
         user: UserRead,
     ) -> None:
         payload = {
-            "car_type": "BMW",
-            "license_plate_number": " ro-ab-123 ",
-            "timestamp": datetime.now(UTC).isoformat(),
-            "mileage": 12345.6,
-            "price_per_litre": 1.89,
-            "litres": 42.5,
-            "fuel_type": FuelType.e5.value,
+            "license_plate_number": "RO-AB-123",
+            "car_type": "Schräghecklimousine",
+            "mileage": 666,
+            "timestamp": "2026-05-23T10:25:31.482193+00:00",
+            "price_per_litre": 2.03,
+            "litres": 17.6,
+            "station_id": "213215465123153465123135131",
+            "fuel_type": "e5"
         }
 
         response = client.post("/fillings/create", json=payload)
@@ -77,27 +82,36 @@ class TestFillings:
         assert kwargs["filling"].license_plate_number == "RO-AB-123"
         assert kwargs["filling"].fuel_type == FuelType.e5.value
 
-    def test_post_filling_data_returns_404_for_unknown_fuel_type(
+    def test_post_filling_data_returns_422_for_unknown_fuel_type(
         self,
         client: TestClient,
         service,
     ) -> None:
-        payload = {
-            "car_type": "BMW",
+        payload2= {
             "license_plate_number": "RO-AB-123",
-            "timestamp": datetime.now(UTC).isoformat(),
+            "car_type": "Schräghecklimousine",
+            "mileage": 666,
+            "timestamp": "2026-05-23T10:25:31.482193+00:00",
+            "price_per_litre": 2.03,
+            "litres": 17.6,
+            "station_id": "213215465123153465123135131",
+            "fuel_type": "e5"
+        }
+        payload = {
+            "car_type": "Limousine",
+            "license_plate_number": "RO-AB-123",
+            "timestamp":  "2026-05-23T10:25:31.482193+00:00",
             "mileage": 12345.6,
             "price_per_litre": 1.89,
             "litres": 42.5,
+            "station_id": "213215465123153465123135131",
             "fuel_type": "invalid",
         }
 
         response = client.post("/fillings/create", json=payload)
 
-        assert response.status_code == 404
-        assert response.json() == {
-            "detail": "Fuel type 'invalid' not found"
-        }
+        assert response.status_code == 422
+        assert response.json()["detail"][0]["loc"] == ["body", "fuel_type"]
 
         service.save_history_record.assert_not_awaited()
 
