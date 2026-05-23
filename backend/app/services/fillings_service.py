@@ -31,7 +31,7 @@ class FillingsService:
 			price_per_litre=filling.price_per_litre,
 			litres=filling.litres,
 			car_id=saved_car.id,
-			fuel_type_id=filling.fuel_type,
+			fuel_type_id=filling.fuel_type.id,
 		)
 
 		await self.history_repo.insert_history_record(history_record_create)

@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from app.auth import get_current_active_user
 from app.dependencies import get_fillings_service
 from app.dtos.filling_dto import FillingDTO
-from app.schemas import UserRead
+from app.schemas.user import UserRead
 from app.services.fillings_service import FillingsService
 
 router = APIRouter(prefix="/fillings", tags=["fillings"])
