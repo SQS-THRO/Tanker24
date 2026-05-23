@@ -11,5 +11,5 @@ class FillingDTO(BaseModel):
 	timestamp: datetime
 	price_per_litre: float
 	litres: float
-	station_id: str
+	tankerkoenig_station_id: str
 	fuel_type: FuelType
