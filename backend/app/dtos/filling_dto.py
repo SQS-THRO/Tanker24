@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from datetime import datetime
-from app.schemas.fuel_type import FuelType
 
 from pydantic import BaseModel
+
+from app.dtos.gas_station_dtos import FuelType
 
 @dataclass
 class FillingDTO(BaseModel):
