@@ -34,10 +34,13 @@ class HistoryRecordRepository:
 				HistoryRecord.id == history_record_id,
 				HistoryRecord.car.has(owner_id=user_id),
 			)
+        	.returning(HistoryRecord.id)
 		)
 
 		result = await self.db.execute(stmt)
+		deleted_id = result.scalar_one_or_none()
+
 		await self.db.commit()
 
 		# make sure that something actually changed
-		return result.rowcount > 0
+		return deleted_id is not None
