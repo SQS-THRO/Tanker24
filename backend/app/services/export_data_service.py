@@ -48,7 +48,7 @@ class NestedExportDataService(ExportDataService):
 								"litres": record.litres,
 								"total_price": record.price_per_litre * record.litres,
 								"fuel_type": record.fuel_type.name,
-								"station_id": record.tankerkoenig_station_id,
+								"tankerkoenig_station_id": record.tankerkoenig_station_id,
 							}
 						)
 				result.append(
@@ -97,6 +97,7 @@ class FlatExportDataService(ExportDataService):
 								"litres": record.litres,
 								"total_price": record.price_per_litre * record.litres,
 								"fuel_type": record.fuel_type.name,
+								"tankerkoenig_station_id": record.tankerkoenig_station_id,
 							}
 						)
 

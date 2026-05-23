@@ -67,6 +67,7 @@ async def get_user_data_as_csv(
 			"litres",
 			"total_price",
 			"fuel_type",
+			"tankerkoenig_station_id",
 		],
 	)
 	writer.writeheader()

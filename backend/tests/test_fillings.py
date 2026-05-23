@@ -1,18 +1,19 @@
 # tests/routers/test_fillings.py
-
+import json
 from datetime import UTC, datetime
 from unittest.mock import AsyncMock, Mock
 
 import pytest
 from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
+from starlette.responses import JSONResponse
 
 from app.auth import get_current_active_user
 from app.dependencies import get_fillings_service
 from app.dtos.filling_dto import FillingDTO
 from app.dtos.gas_station_dtos import FuelType
 from app.exceptions.exceptions import FillingNotFoundException
-from app.routers.fillings import router, post_filling_data, delete_filling_data
+from app.routers.fillings import router, post_filling_data, delete_filling_data, get_filling_data_from_user
 from app.schemas.user import UserRead
 from app.services.fillings_service import FillingsService
 
@@ -44,7 +45,7 @@ class TestFillingsConnectivity:
         app = FastAPI()
         app.include_router(router)
 
-        async def override_current_user():
+        def override_current_user():
             return user
 
         def override_fillings_service():
@@ -68,7 +69,7 @@ class TestFillingsConnectivity:
             "timestamp": "2026-05-23T10:25:31.482193+00:00",
             "price_per_litre": 2.03,
             "litres": 17.6,
-            "station_id": "213215465123153465123135131",
+            "tankerkoenig_station_id": "213215465123153465123135131",
             "fuel_type": "e5"
         }
 
@@ -96,7 +97,7 @@ class TestFillingsConnectivity:
             "mileage": 12345.6,
             "price_per_litre": 1.89,
             "litres": 42.5,
-            "station_id": "213215465123153465123135131",
+            "tankerkoenig_station_id": "213215465123153465123135131",
             "fuel_type": "invalid",
         }
 
@@ -180,7 +181,7 @@ class TestFillingsFunctionality:
         )
 
     @pytest.fixture
-    def service(self) -> FillingsService:
+    def service(self) -> Mock(spec=FillingsService):
         service = Mock(spec=FillingsService)
         service.save_history_record = AsyncMock()
         service.delete_history_record = AsyncMock()
@@ -212,7 +213,7 @@ class TestFillingsFunctionality:
                                                   service: FillingsService) -> None:
         filling_dto.fuel_type = "invalid"
         try:
-            response = await post_filling_data(
+            await post_filling_data(
                 filling=filling_dto,
                 service=service,
                 user=user,
@@ -227,7 +228,7 @@ class TestFillingsFunctionality:
                                                     service: FillingsService) -> None:
         service.delete_history_record.side_effect = FillingNotFoundException(91)
         try:
-            response = await delete_filling_data(filling_id=91, user=user,service=service)
+            await delete_filling_data(filling_id=91, user=user,service=service)
         except Exception as e:
             assert isinstance(e, HTTPException)
             assert e.status_code == 404
@@ -254,5 +255,59 @@ class TestFillingsFunctionality:
 
         service.delete_history_record.assert_awaited_once_with(
             history_record_id=1,
+            user=user,
+        )
+
+    @pytest.mark.asyncio
+    async def test_get_filling_data_from_user_successfully(
+            self,
+            user: UserRead,
+            service: FillingsService,
+    ) -> None:
+        payload = [
+            {
+                "id": 1,
+                "mileage": 12345.6,
+                "price_per_litre": 1.89,
+                "litres": 42.5,
+                "car_id": 10,
+                "fuel_type_id": 2,
+                "timestamp": "2026-05-23T10:25:31.482193+00:00",
+                "tankerkoenig_station_id": "ABC123456789"
+            }
+        ]
+        service.get_history_records_for_user.return_value = payload
+
+        response = await get_filling_data_from_user(
+            user=user,
+            service=service,
+        )
+
+        assert isinstance(response, JSONResponse)
+        assert response.status_code == 200
+
+        service.get_history_records_for_user.assert_awaited_once_with(
+            user=user,
+        )
+
+        assert json.loads(response.body) == payload
+
+    @pytest.mark.asyncio
+    async def test_get_filling_data_from_user_returns_empty_list(
+            self,
+            user: UserRead,
+            service: FillingsService,
+    ) -> None:
+        service.get_history_records_for_user.return_value = []
+
+        response = await get_filling_data_from_user(
+            user=user,
+            service=service,
+        )
+
+        assert response.status_code == 200
+        assert response.body == b"[]"
+
+        service.get_history_records_for_user.assert_awaited_once_with(
             user=user,
         )

@@ -1,7 +1,7 @@
 # tests/services/test_fillings_service.py
 
 from datetime import UTC, datetime
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, Mock
 
 import pytest
 
@@ -203,4 +203,47 @@ class TestFillingsService:
         assert (
             str(exc_info.value)
             == "Filling with ID 99 not found"
+        )
+
+    @pytest.mark.asyncio
+    async def test_get_history_records_for_user_returns_records_for_all_user_cars(
+            self,
+            user: UserRead,
+    ) -> None:
+        service = FillingsService(db=AsyncMock())
+
+        car_1 = Mock(id=10)
+        car_2 = Mock(id=20)
+
+        history_records_car_1 = [Mock(id=1), Mock(id=2)]
+        history_records_car_2 = [Mock(id=3)]
+
+        service.car_repo = Mock()
+        service.car_repo.get_cars_by_owner = AsyncMock(
+            return_value=[car_1, car_2]
+        )
+
+        service.history_repo = Mock()
+        service.history_repo.get_history_records_by_car = AsyncMock(
+            side_effect=[
+                history_records_car_1,
+                history_records_car_2,
+            ]
+        )
+
+        result = await service.get_history_records_for_user(user=user)
+
+        assert result == [
+            history_records_car_1,
+            history_records_car_2,
+        ]
+
+        service.car_repo.get_cars_by_owner.assert_awaited_once_with(user.id)
+
+        service.history_repo.get_history_records_by_car.assert_any_await(10)
+        service.history_repo.get_history_records_by_car.assert_any_await(20)
+
+        assert (
+                service.history_repo.get_history_records_by_car.await_count
+                == 2
         )
