@@ -8,7 +8,7 @@ from sqlalchemy import (
 	ForeignKey,
 	Integer,
 	String,
-	UniqueConstraint,
+	UniqueConstraint, true,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -91,7 +91,7 @@ class HistoryRecord(Base):
 	__tablename__ = "history_records"
 
 	id: Mapped[int] = mapped_column(primary_key=True)
-	timestamp: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+	timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
 	mileage: Mapped[float] = mapped_column(Float)
 	price_per_litre: Mapped[float] = mapped_column(Float)
 	litres: Mapped[float] = mapped_column(Float)
