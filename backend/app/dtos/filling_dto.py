@@ -3,9 +3,6 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from build.lib.app.models import FuelType
-
-
 @dataclass
 class FillingDTO(BaseModel):
 	license_plate_number: str
@@ -15,4 +12,4 @@ class FillingDTO(BaseModel):
 	price_per_litre: float
 	litres: float
 	station_id: str
-	fuel_type: FuelType
+	fuel_type_id: int
