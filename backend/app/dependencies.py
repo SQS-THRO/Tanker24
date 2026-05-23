@@ -21,10 +21,12 @@ def get_flat_export_data_service(
 ) -> ExportDataService:
 	return FlatExportDataService(db)
 
+
 def get_fillings_service(
-		db: Annotated[AsyncSession, Depends(get_db)],
-)-> FillingsService:
+	db: Annotated[AsyncSession, Depends(get_db)],
+) -> FillingsService:
 	return FillingsService(db)
+
 
 def get_current_user_with_request_state(
 	request: Request,

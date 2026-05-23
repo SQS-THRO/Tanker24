@@ -14,9 +14,7 @@ class HistoryRecordRepository:
 		return list(result.scalars().all())
 
 	async def insert_history_record(self, history_record: HistoryRecordCreate) -> None:
-		db_history_record = HistoryRecord(
-			**history_record.model_dump()
-		)
+		db_history_record = HistoryRecord(**history_record.model_dump())
 
 		self.db.add(db_history_record)
 		await self.db.commit()
