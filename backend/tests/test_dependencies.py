@@ -32,7 +32,8 @@ class TestDependencies:
 		assert isinstance(service, ExportDataService)
 		assert service.db is db
 
-	def test_get_fillings_service_returns_fillings_Service(self):
+	def test_get_fillings_service_returns_fillings_service(self):
 		db = Mock()
 		service = get_fillings_service(db)
 		assert isinstance(service, FillingsService)
+		assert service.db is db
