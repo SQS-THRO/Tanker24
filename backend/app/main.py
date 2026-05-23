@@ -24,23 +24,22 @@ from app.routers import auth, health, stations, export, fillings
 
 logger = logging.getLogger("app")
 
+
 async def seed_fuel_types() -> None:
-    async with async_session_maker() as db:
-        for fuel_type in FuelType:
+	async with async_session_maker() as db:
+		for fuel_type in FuelType:
 			# Skip the generic one
-            if fuel_type.value == "all":
-                continue
+			if fuel_type.value == "all":
+				continue
 
-            result = await db.execute(
-                select(FuelTypeModel).where(FuelTypeModel.name == fuel_type.value)
-            )
+			result = await db.execute(select(FuelTypeModel).where(FuelTypeModel.name == fuel_type.value))
 
-            existing = result.scalar_one_or_none()
+			existing = result.scalar_one_or_none()
 
-            if existing is None:
-                db.add(FuelTypeModel(name=fuel_type.value))
+			if existing is None:
+				db.add(FuelTypeModel(name=fuel_type.value))
 
-        await db.commit()
+		await db.commit()
 
 
 @asynccontextmanager

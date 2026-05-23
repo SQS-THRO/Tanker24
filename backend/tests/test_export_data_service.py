@@ -52,7 +52,7 @@ class TestExportDataService:
 			price_per_litre=1.80,
 			litres=40,
 			fuel_type=FuelType(name="Diesel"),
-			tankerkoenig_station_id = "ABC123454789"
+			tankerkoenig_station_id="ABC123454789",
 		)
 		record2 = HistoryRecord(
 			id=101,
@@ -62,7 +62,7 @@ class TestExportDataService:
 			price_per_litre=1.90,
 			litres=35,
 			fuel_type=FuelType(name="Diesel"),
-			tankerkoenig_station_id = "ABC123454789"
+			tankerkoenig_station_id="ABC123454789",
 		)
 		record3 = HistoryRecord(
 			id=102,
@@ -72,7 +72,7 @@ class TestExportDataService:
 			price_per_litre=1.85,
 			litres=30,
 			fuel_type=FuelType(name="E5"),
-			tankerkoenig_station_id = "ABC123454789"
+			tankerkoenig_station_id="ABC123454789",
 		)
 
 		db = AsyncMock()
@@ -109,7 +109,7 @@ class TestExportDataService:
 			"litres": 40,
 			"total_price": 72.0,
 			"fuel_type": "Diesel",
-			"tankerkoenig_station_id": "ABC123454789"
+			"tankerkoenig_station_id": "ABC123454789",
 		}
 
 		assert pytest.approx(result[0]["history"][1]["total_price"]) == pytest.approx(66.5)
@@ -224,7 +224,7 @@ class TestExportDataService:
 			price_per_litre=1.8,
 			litres=40,
 			fuel_type=FuelType(name="Diesel"),
-			tankerkoenig_station_id = "ABC123454789"
+			tankerkoenig_station_id="ABC123454789",
 		)
 
 		db = AsyncMock()
@@ -310,7 +310,7 @@ class TestExportDataService:
 			price_per_litre=1.7,
 			litres=20,
 			fuel_type=FuelType(name="Diesel"),
-			tankerkoenig_station_id = "ABC123454789"
+			tankerkoenig_station_id="ABC123454789",
 		)
 
 		record2 = HistoryRecord(
@@ -321,7 +321,7 @@ class TestExportDataService:
 			price_per_litre=1.8,
 			litres=25,
 			fuel_type=FuelType(name="Diesel"),
-			tankerkoenig_station_id = "ABC123454789"
+			tankerkoenig_station_id="ABC123454789",
 		)
 
 		db = AsyncMock()
@@ -376,7 +376,7 @@ class TestExportDataService:
 			price_per_litre=1.9,
 			litres=35,
 			fuel_type=FuelType(name="E10"),
-			tankerkoenig_station_id = "ABC123454789"
+			tankerkoenig_station_id="ABC123454789",
 		)
 		record2 = HistoryRecord(
 			id=402,
@@ -386,7 +386,7 @@ class TestExportDataService:
 			price_per_litre=1.6,
 			litres=50,
 			fuel_type=FuelType(name="Diesel"),
-			tankerkoenig_station_id = "ABC123454789"
+			tankerkoenig_station_id="ABC123454789",
 		)
 
 		db = AsyncMock()
@@ -428,7 +428,7 @@ class TestExportDataService:
 			price_per_litre=1.234,
 			litres=12.5,
 			fuel_type=FuelType(name="Diesel"),
-			tankerkoenig_station_id = "ABC123454789"
+			tankerkoenig_station_id="ABC123454789",
 		)
 
 		db = AsyncMock()

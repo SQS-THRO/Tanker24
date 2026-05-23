@@ -31,7 +31,7 @@ async def post_filling_data(
 	service: Annotated[FillingsService, Depends(get_fillings_service)],
 ) -> JSONResponse:
 
-	#Input sanitization
+	# Input sanitization
 	filling.license_plate_number = filling.license_plate_number.strip().upper()
 
 	fuel_type = filling.fuel_type.lower()
@@ -51,17 +51,18 @@ async def post_filling_data(
 		content={"message": "Filling stored successfully"},
 	)
 
+
 @router.delete(
-    "/delete",
-    status_code=status.HTTP_200_OK,
-    summary="Deletes filling data by ID for authenticated users.",
-    description="Deletes filling data by ID for authenticated users.",
-    responses={503: {"description": "Database temporarily unavailable."}},
+	"/delete",
+	status_code=status.HTTP_200_OK,
+	summary="Deletes filling data by ID for authenticated users.",
+	description="Deletes filling data by ID for authenticated users.",
+	responses={503: {"description": "Database temporarily unavailable."}},
 )
 async def delete_filling_data(
-    filling_id: Annotated[int, Query(gt=0)],
-    user: Annotated[UserRead, Depends(get_current_active_user)],
-    service: Annotated[FillingsService, Depends(get_fillings_service)],
+	filling_id: Annotated[int, Query(gt=0)],
+	user: Annotated[UserRead, Depends(get_current_active_user)],
+	service: Annotated[FillingsService, Depends(get_fillings_service)],
 ) -> JSONResponse:
 	try:
 		await service.delete_history_record(
@@ -79,16 +80,17 @@ async def delete_filling_data(
 		content={"message": "Filling deleted successfully"},
 	)
 
+
 @router.get(
 	path="",
-    status_code=status.HTTP_200_OK,
-    summary="Returns the history records for the authenticated user.",
-    description="Returns the history records for the authenticated user.",
-    responses={503: {"description": "Database temporarily unavailable."}},
+	status_code=status.HTTP_200_OK,
+	summary="Returns the history records for the authenticated user.",
+	description="Returns the history records for the authenticated user.",
+	responses={503: {"description": "Database temporarily unavailable."}},
 )
 async def get_filling_data_from_user(
-    user: Annotated[UserRead, Depends(get_current_active_user)],
-    service: Annotated[FillingsService, Depends(get_fillings_service)],
+	user: Annotated[UserRead, Depends(get_current_active_user)],
+	service: Annotated[FillingsService, Depends(get_fillings_service)],
 ) -> JSONResponse:
 
 	result = await service.get_history_records_for_user(

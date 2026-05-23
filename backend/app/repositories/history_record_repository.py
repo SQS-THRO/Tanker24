@@ -34,7 +34,7 @@ class HistoryRecordRepository:
 				HistoryRecord.id == history_record_id,
 				HistoryRecord.car.has(owner_id=user_id),
 			)
-        	.returning(HistoryRecord.id)
+			.returning(HistoryRecord.id)
 		)
 
 		result = await self.db.execute(stmt)

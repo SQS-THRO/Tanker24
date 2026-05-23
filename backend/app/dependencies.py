@@ -27,6 +27,7 @@ def get_fillings_service(
 ) -> FillingsService:
 	return FillingsService(db)
 
+
 def get_current_user_with_request_state(
 	request: Request,
 	user: Annotated[object, Depends(get_current_active_user)],

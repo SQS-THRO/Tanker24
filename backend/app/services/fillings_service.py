@@ -45,9 +45,9 @@ class FillingsService:
 		await self.history_repo.insert_history_record(history_record_create)
 
 	async def delete_history_record(
-			self,
-			history_record_id: int,
-			user: UserRead,
+		self,
+		history_record_id: int,
+		user: UserRead,
 	) -> None:
 		deleted = await self.history_repo.delete_by_id_for_user(
 			history_record_id=history_record_id,
@@ -57,7 +57,7 @@ class FillingsService:
 		if not deleted:
 			raise FillingNotFoundException(history_record_id)
 
-	async def get_history_records_for_user(self, user: UserRead)->List[HistoryRecord]:
+	async def get_history_records_for_user(self, user: UserRead) -> List[HistoryRecord]:
 		cars = await self.car_repo.get_cars_by_owner(user.id)
 
 		result = []
@@ -66,8 +66,6 @@ class FillingsService:
 			history_records = await self.history_repo.get_history_records_by_car(car.id)
 
 			for record in history_records:
-				result.append(
-					HistoryRecord.model_validate(record)
-				)
+				result.append(HistoryRecord.model_validate(record))
 
 		return result

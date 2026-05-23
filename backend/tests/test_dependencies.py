@@ -1,10 +1,6 @@
 from unittest.mock import Mock
 
-from app.dependencies import (
-	get_flat_export_data_service,
-	get_nested_export_data_service,
-	get_fillings_service
-)
+from app.dependencies import get_flat_export_data_service, get_nested_export_data_service, get_fillings_service
 from app.services.export_data_service import (
 	ExportDataService,
 	FlatExportDataService,
