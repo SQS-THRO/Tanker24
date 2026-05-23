@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+from app.schemas.fuel_type import FuelType
 
 from pydantic import BaseModel
 
@@ -12,4 +13,4 @@ class FillingDTO(BaseModel):
 	price_per_litre: float
 	litres: float
 	station_id: str
-	fuel_type_id: int
+	fuel_type: FuelType
