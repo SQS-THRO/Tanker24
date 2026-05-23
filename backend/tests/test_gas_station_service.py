@@ -159,7 +159,7 @@ class TestGasStationService:
 			return_value=httpx.Response(500, json={}),
 		)
 
-		service = TankerkoenigGasStationService(api_key="super-secret-test-key-12345") #NOSONAR
+		service = TankerkoenigGasStationService(api_key="super-secret-test-key-12345")  # NOSONAR
 
 		with pytest.raises(RuntimeError) as exc_info:
 			service.get_gas_station_by_id("123")
@@ -179,7 +179,7 @@ class TestGasStationService:
 	def test_get_gas_station_by_id_connection_error_does_not_leak_api_key(self, mock_get):
 		mock_get.side_effect = httpx.RequestError("Connection refused")
 
-		service = TankerkoenigGasStationService(api_key="super-secret-test-key-12345") #NOSONAR
+		service = TankerkoenigGasStationService(api_key="super-secret-test-key-12345")  # NOSONAR
 
 		with pytest.raises(RuntimeError) as exc_info:
 			service.get_gas_station_by_id("123")
@@ -326,7 +326,7 @@ class TestGasStationService:
 			return_value=httpx.Response(500, json={}),
 		)
 
-		service = TankerkoenigGasStationService(api_key="super-secret-test-key-12345") #NOSONAR
+		service = TankerkoenigGasStationService(api_key="super-secret-test-key-12345")  # NOSONAR
 
 		with pytest.raises(RuntimeError) as exc_info:
 			service.get_gas_stations(52.52, 13.405, 5.0)
@@ -346,7 +346,7 @@ class TestGasStationService:
 	def test_get_gas_stations_connection_error_does_not_leak_api_key(self, mock_get):
 		mock_get.side_effect = httpx.RequestError("Connection refused")
 
-		service = TankerkoenigGasStationService(api_key="super-secret-test-key-12345") #NOSONAR
+		service = TankerkoenigGasStationService(api_key="super-secret-test-key-12345")  # NOSONAR
 
 		with pytest.raises(RuntimeError) as exc_info:
 			service.get_gas_stations(52.52, 13.405, 5.0)
