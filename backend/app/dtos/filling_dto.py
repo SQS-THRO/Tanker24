@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from app.dtos.gas_station_dtos import FuelType
 from app.models import HistoryRecord
 
-GERMAN_LICENSE_PLATE_REGEX = r"^[A-ZÄÖÜ]{1,3}\s*-\s*[A-ZÄÖÜ]{1,2}\s*-\s*\d{1,4}$"
+GERMAN_LICENSE_PLATE_REGEX = r"^[A-ZÄÖÜ]{1,3}-[A-ZÄÖÜ]{1,2}-\d{1,4}[E|H]{0,1}$"
 
 
 class FillingDTO(BaseModel):
