@@ -35,5 +35,5 @@ class FillingDTO(BaseModel):
 			price_per_litre=history_record.price_per_litre,
 			litres=history_record.litres,
 			tankerkoenig_station_id=history_record.tankerkoenig_station_id,
-			fuel_type=history_record.fuel_type,
+			fuel_type=FuelType(history_record.fuel_type.name),
 		)

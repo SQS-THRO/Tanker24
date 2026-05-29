@@ -6,7 +6,9 @@ import pytest
 from app.dtos.filling_dto import FillingDTO
 from app.dtos.gas_station_dtos import FuelType
 from app.exceptions.exceptions import FillingNotFoundException
-from app.schemas import HistoryRecord
+from app.models import HistoryRecord as HistoryRecordModel
+from app.models import Car as CarModel
+from app.models import FuelType as FuelTypeModel
 from app.schemas.car import Car
 from app.schemas.user import UserRead
 from app.services.fillings_service import FillingsService
@@ -189,37 +191,51 @@ class TestFillingsService:
 	) -> None:
 		service = FillingsService(db=AsyncMock())
 
-		car1 = Car(
+		fuel_type2= FuelTypeModel(
+			id = 2,
+			name = "e10"
+		)
+
+		fuel_type1 = FuelTypeModel(
+			id=1,
+			name="e5"
+		)
+
+		car1 = CarModel(
 			id=50,
 			owner_id=user.id,
 			type="SUV",
 			license_plate_number="REH-AU-12",
 		)
-		car2 = Car(
+		car2 = CarModel(
 			id=51,
 			owner_id=user.id,
 			type="Schräghecklimousine",
 			license_plate_number="REH-AU-13",
 		)
 
-		record1 = HistoryRecord(
+		record1 = HistoryRecordModel(
 			id=401,
-			car_id=50,
+			car = car1,
+			car_id = 50,
 			timestamp="2026-03-01T10:00:00",
 			mileage=15000,
 			price_per_litre=1.9,
 			litres=35,
 			fuel_type_id=1,
+			fuel_type= fuel_type1,
 			tankerkoenig_station_id="ABC123454789",
 		)
-		record2 = HistoryRecord(
+		record2 = HistoryRecordModel(
 			id=402,
-			car_id=51,
+			car= car2,
+			car_id = 51,
 			timestamp="2026-03-02T11:00:00",
 			mileage=22000,
 			price_per_litre=1.6,
 			litres=50,
 			fuel_type_id=2,
+			fuel_type= fuel_type2,
 			tankerkoenig_station_id="ABC123454789",
 		)
 
@@ -239,8 +255,8 @@ class TestFillingsService:
 		assert len(result) == 2
 		assert result[0].id == record1.id
 		assert result[1].id == record2.id
-		assert result[0].car_id == record1.car_id
-		assert result[1].car_id == record2.car_id
+		assert result[0].license_plate_number == record1.car.license_plate_number
+		assert result[1].license_plate_number == record2.car.license_plate_number
 
 		service.car_repo.get_cars_by_owner.assert_awaited_once_with(user.id)
 

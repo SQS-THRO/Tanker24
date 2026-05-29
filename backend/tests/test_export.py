@@ -22,6 +22,7 @@ from app.routers.export import get_user_data_as_json, get_user_data_as_csv
 
 class FakeUser:
 	id = 1
+	email = "max@tanker24.eu"
 
 
 # Helper class for the db mock

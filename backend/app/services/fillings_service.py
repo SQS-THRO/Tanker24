@@ -9,7 +9,7 @@ from app.repositories.fuel_type_repository import FuelTypeRepository
 from app.repositories.history_record_repository import HistoryRecordRepository
 from app.schemas.car import CarCreate
 from app.schemas.user import UserRead
-from app.schemas.history_record import HistoryRecordCreate, HistoryRecord
+from app.schemas.history_record import HistoryRecordCreate
 
 
 class FillingsService:

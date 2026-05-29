@@ -1,10 +1,10 @@
 from datetime import datetime
-from types import SimpleNamespace
 
 from app.dtos.filling_dto import FillingDTO
 from app.dtos.gas_station_dtos import FuelType
 from app.models import HistoryRecord, Car, FuelType as FuelTypeModel
 
+import pytest
 
 class TestFillingDTO:
 	def test_from_history_record_maps_all_fields_correctly(self):
@@ -23,7 +23,7 @@ class TestFillingDTO:
 			tankerkoenig_station_id="station-123",
 			fuel_type=FuelTypeModel(
             id = 1,
-            name=FuelType.diesel.name,
+            name=FuelType.diesel.value,
             ),
 		)
 
@@ -32,9 +32,9 @@ class TestFillingDTO:
 		assert dto.id == 1
 		assert dto.license_plate_number == "RO-AB-123"
 		assert dto.car_type == "SUV"
-		assert dto.mileage == 12345.6
+		assert pytest.approx(dto.mileage) == pytest.approx(12345.6)
 		assert dto.timestamp == timestamp
-		assert dto.price_per_litre == 1.799
-		assert dto.litres == 45.2
+		assert pytest.approx(dto.price_per_litre) == pytest.approx(1.799)
+		assert pytest.approx(dto.litres) == pytest.approx(45.2)
 		assert dto.tankerkoenig_station_id == "station-123"
 		assert dto.fuel_type == FuelType.diesel
