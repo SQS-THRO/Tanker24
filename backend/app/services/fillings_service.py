@@ -57,7 +57,7 @@ class FillingsService:
 		if not deleted:
 			raise FillingNotFoundException(history_record_id)
 
-	async def get_history_records_for_user(self, user: UserRead) -> List[HistoryRecord]:
+	async def get_filling_dto_for_user(self, user: UserRead) -> List[FillingDTO]:
 		cars = await self.car_repo.get_cars_by_owner(user.id)
 
 		result = []
@@ -66,6 +66,6 @@ class FillingsService:
 			history_records = await self.history_repo.get_history_records_by_car(car.id)
 
 			for record in history_records:
-				result.append(HistoryRecord.model_validate(record))
+				result.append(FillingDTO.from_history_record(record))
 
 		return result

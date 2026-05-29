@@ -1,4 +1,3 @@
-# tests/routers/test_fillings.py
 import json
 from unittest.mock import AsyncMock, Mock
 
@@ -273,7 +272,7 @@ class TestFillingsFunctionality:
 				"tankerkoenig_station_id": "ABC123456789",
 			}
 		]
-		service.get_history_records_for_user.return_value = payload
+		service.get_filling_dto_for_user.return_value = payload
 
 		response = await get_filling_data_from_user(
 			user=user,
@@ -283,7 +282,7 @@ class TestFillingsFunctionality:
 		assert isinstance(response, JSONResponse)
 		assert response.status_code == 200
 
-		service.get_history_records_for_user.assert_awaited_once_with(
+		service.get_filling_dto_for_user.assert_awaited_once_with(
 			user=user,
 		)
 
@@ -295,7 +294,7 @@ class TestFillingsFunctionality:
 		user: UserRead,
 		service: FillingsService,
 	) -> None:
-		service.get_history_records_for_user.return_value = []
+		service.get_filling_dto_for_user.return_value = []
 
 		response = await get_filling_data_from_user(
 			user=user,
@@ -305,6 +304,6 @@ class TestFillingsFunctionality:
 		assert response.status_code == 200
 		assert response.body == b"[]"
 
-		service.get_history_records_for_user.assert_awaited_once_with(
+		service.get_filling_dto_for_user.assert_awaited_once_with(
 			user=user,
 		)

@@ -234,7 +234,7 @@ class TestFillingsService:
 			]
 		)
 
-		result = await service.get_history_records_for_user(user=user)
+		result = await service.get_filling_dto_for_user(user=user)
 
 		assert len(result) == 2
 		assert result[0].id == record1.id

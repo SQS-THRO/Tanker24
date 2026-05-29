@@ -94,7 +94,7 @@ async def get_filling_data_from_user(
 	service: Annotated[FillingsService, Depends(get_fillings_service)],
 ) -> JSONResponse:
 
-	result = await service.get_history_records_for_user(
+	result = await service.get_filling_dto_for_user(
 		user=user,
 	)
 
