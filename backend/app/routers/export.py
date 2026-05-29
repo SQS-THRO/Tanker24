@@ -16,7 +16,7 @@ from app.schemas.user import UserRead
 from app.services.export_data_service import ExportDataService
 from app.dependencies import get_flat_export_data_service, get_nested_export_data_service
 
-logger = logging.getLogger("app.invitation_keys")
+logger = logging.getLogger("app.routers.export")
 router = APIRouter(prefix="/export", tags=["export"])
 
 
@@ -31,8 +31,8 @@ async def get_user_data_as_json(
 	user: Annotated[UserRead, Depends(get_current_active_user)],
 	service: Annotated[ExportDataService, Depends(get_nested_export_data_service)],
 ) -> JSONResponse:
-	logger.info("Endpoint get_user_data_as_json called!")
 	result = await service.get_user_data(user.id)
+	logger.info(f"Exporting data as json for {user.email}.")
 	return JSONResponse(
 		content=jsonable_encoder(result), headers={"Content-Disposition": "attachment; filename=user_data.json"}
 	)
@@ -50,7 +50,7 @@ async def get_user_data_as_csv(
 	user: Annotated[UserRead, Depends(get_current_active_user)],
 	service: Annotated[ExportDataService, Depends(get_flat_export_data_service)],
 ) -> StreamingResponse:
-	logger.info("Endpoint get_user_data_as_csv called!")
+	logger.info(f"Exporting data as csv for {user.email}.")
 	result = await service.get_user_data(user.id)
 
 	# Fill an StringIO pseudo file with the data

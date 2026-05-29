@@ -13,7 +13,7 @@ from app.exceptions.exceptions import FillingNotFoundException
 from app.schemas.user import UserRead
 from app.services.fillings_service import FillingsService
 
-logger = logging.getLogger("app.invitation_keys")
+logger = logging.getLogger("app.routers.fillings")
 
 router = APIRouter(prefix="/fillings", tags=["fillings"])
 
@@ -45,7 +45,7 @@ async def post_filling_data(
 
 	await service.save_history_record(filling=filling, user=user)
 
-	logging.info("Endpoint post_filling_data called successfully!")
+	logger.info(f"Created filling for user {user.email}")
 	return JSONResponse(
 		status_code=status.HTTP_200_OK,
 		content={"message": "Filling stored successfully"},
@@ -69,6 +69,7 @@ async def delete_filling_data(
 			history_record_id=filling_id,
 			user=user,
 		)
+		logger.info(f"Deleted filling {filling_id} for user {user.email}")
 	except FillingNotFoundException as exc:
 		raise HTTPException(
 			status_code=status.HTTP_404_NOT_FOUND,
