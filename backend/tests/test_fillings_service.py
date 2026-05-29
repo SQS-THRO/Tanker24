@@ -191,15 +191,9 @@ class TestFillingsService:
 	) -> None:
 		service = FillingsService(db=AsyncMock())
 
-		fuel_type2= FuelTypeModel(
-			id=2,
-			name = "e10"
-		)
+		fuel_type2 = FuelTypeModel(id=2, name="e10")
 
-		fuel_type1 = FuelTypeModel(
-			id=1,
-			name="e5"
-		)
+		fuel_type1 = FuelTypeModel(id=1, name="e5")
 
 		car1 = CarModel(
 			id=50,

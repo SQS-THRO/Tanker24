@@ -6,6 +6,7 @@ from app.models import HistoryRecord, Car, FuelType as FuelTypeModel
 
 import pytest
 
+
 class TestFillingDTO:
 	def test_from_history_record_maps_all_fields_correctly(self):
 		timestamp = datetime(2026, 5, 29, 12, 30)
@@ -22,9 +23,9 @@ class TestFillingDTO:
 			litres=45.2,
 			tankerkoenig_station_id="station-123",
 			fuel_type=FuelTypeModel(
-            id=1,
-            name=FuelType.diesel.value,
-            ),
+				id=1,
+				name=FuelType.diesel.value,
+			),
 		)
 
 		dto = FillingDTO.from_history_record(history_record)
