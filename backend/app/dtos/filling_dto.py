@@ -1,14 +1,17 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.dtos.gas_station_dtos import FuelType
 from app.models import HistoryRecord
 
+GERMAN_LICENSE_PLATE_REGEX = (
+    r"^[A-ZÄÖÜ]{1,3}\s*-\s*[A-ZÄÖÜ]{1,2}\s*-\s*\d{1,4}$"
+)
 
 class FillingDTO(BaseModel):
-	license_plate_number: str
+	license_plate_number: str = Field(pattern=GERMAN_LICENSE_PLATE_REGEX)
 	car_type: str
 	mileage: float
 	timestamp: datetime
@@ -16,7 +19,7 @@ class FillingDTO(BaseModel):
 	litres: float
 	tankerkoenig_station_id: str
 	fuel_type: FuelType
-	id: Optional[int]
+	id: Optional[int] = None
 
 	@classmethod
 	def from_history_record(
