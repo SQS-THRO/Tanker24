@@ -22,7 +22,7 @@ class TestFillingDTO:
 			litres=45.2,
 			tankerkoenig_station_id="station-123",
 			fuel_type=FuelTypeModel(
-            id = 1,
+            id=1,
             name=FuelType.diesel.value,
             ),
 		)

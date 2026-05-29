@@ -192,7 +192,7 @@ class TestFillingsService:
 		service = FillingsService(db=AsyncMock())
 
 		fuel_type2= FuelTypeModel(
-			id = 2,
+			id=2,
 			name = "e10"
 		)
 
@@ -216,26 +216,26 @@ class TestFillingsService:
 
 		record1 = HistoryRecordModel(
 			id=401,
-			car = car1,
-			car_id = 50,
+			car=car1,
+			car_id=50,
 			timestamp="2026-03-01T10:00:00",
 			mileage=15000,
 			price_per_litre=1.9,
 			litres=35,
 			fuel_type_id=1,
-			fuel_type= fuel_type1,
+			fuel_type=fuel_type1,
 			tankerkoenig_station_id="ABC123454789",
 		)
 		record2 = HistoryRecordModel(
 			id=402,
-			car= car2,
-			car_id = 51,
+			car=car2,
+			car_id=51,
 			timestamp="2026-03-02T11:00:00",
 			mileage=22000,
 			price_per_litre=1.6,
 			litres=50,
 			fuel_type_id=2,
-			fuel_type= fuel_type2,
+			fuel_type=fuel_type2,
 			tankerkoenig_station_id="ABC123454789",
 		)
 
