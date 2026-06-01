@@ -9,6 +9,7 @@
 	import Logo from '$lib/components/Logo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import AuthRequiredModal from '$lib/components/AuthRequiredModal.svelte';
+	import FillingModal from '$lib/components/FillingModal.svelte';
 	import { t, locale } from '$lib/stores/locale';
 	import { themeStore, type GlobalTheme } from '$lib/stores/theme';
 	import { fuelType, fuelTypeLabel, type FuelType } from '$lib/stores/fuelType';
@@ -36,6 +37,8 @@
 	let user = $state<{ forename: string; surname?: string } | null>(null);
 	let showUserMenu = $state(false);
 	let showAuthModal = $state(false);
+	let showFillingModal = $state(false);
+	let fillingStationId = $state('');
 	let map: Map | null = $state(null);
 	let tileLayer: ReturnType<L['tileLayer']> | null = null;
 	let userLocationMarker: Marker | null = null;
@@ -44,6 +47,7 @@
 	let isNearbyLoading = $state(false);
 	let showFuelDropdown = $state(false);
 	let sidebarOpen = $state(false);
+	let apiToken = '';
 	let manuallyClosed = false;
 	let nearbyMarkersMap = new Map<string, Marker>();
 	let themeInitialized = false;
@@ -281,6 +285,9 @@
 					</div>`
 							: ''
 					}
+					<button class="popup-record-btn" onclick="window.dispatchEvent(new CustomEvent('open-filling-modal', {detail: {stationId: '${station.tankerkoenig_id}'}}))">
+						${$t.fillingModal.record}
+					</button>
 				</div>
 			`;
 
@@ -351,6 +358,14 @@
 		await goto(resolve('/'));
 	}
 
+	function handleOpenFillingModal(e: Event) {
+		const detail = (e as CustomEvent).detail;
+		if (detail?.stationId) {
+			fillingStationId = detail.stationId;
+			showFillingModal = true;
+		}
+	}
+
 	onMount(async () => {
 		if (!browser) return;
 
@@ -362,6 +377,7 @@
 			showAuthModal = true;
 			return;
 		}
+		apiToken = token;
 
 		await loadUser();
 
@@ -408,6 +424,11 @@
 		});
 	});
 
+	onMount(() => {
+		window.addEventListener('open-filling-modal', handleOpenFillingModal);
+		return () => window.removeEventListener('open-filling-modal', handleOpenFillingModal);
+	});
+
 	onDestroy(() => {
 		if (moveDebounceTimer) clearTimeout(moveDebounceTimer);
 		if (map) {
@@ -419,6 +440,17 @@
 
 <main>
 	<AuthRequiredModal show={showAuthModal} />
+	<FillingModal
+		show={showFillingModal}
+		onClose={() => {
+			showFillingModal = false;
+			fillingStationId = '';
+		}}
+		stations={nearbyStations}
+		initialFuelType={$fuelType}
+		token={apiToken}
+		prefillStationId={fillingStationId}
+	/>
 	<div class="map-header glass">
 		<button class="sidebar-toggle glass" onclick={() => openSidebar()} aria-label="Toggle station list">
 			<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
