@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { getFillings, deleteFilling, type FillingRecord } from '$lib/services/fillings_api';
+import { getFillings, deleteFilling, createFilling, type FillingRecord, type CreateFillingPayload } from '$lib/services/fillings_api';
 
 interface FillingsState {
 	data: FillingRecord[];
@@ -39,6 +39,10 @@ function createFillingsStore() {
 				const message = e instanceof Error ? e.message : 'Failed to delete filling';
 				throw new Error(message);
 			}
+		},
+
+		async createFilling(token: string, payload: CreateFillingPayload): Promise<void> {
+			await createFilling(token, payload);
 		}
 	};
 }

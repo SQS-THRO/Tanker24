@@ -47,7 +47,7 @@
 	let isNearbyLoading = $state(false);
 	let showFuelDropdown = $state(false);
 	let sidebarOpen = $state(false);
-	let apiToken = '';
+	let apiToken = $state('');
 	let manuallyClosed = false;
 	let nearbyMarkersMap = new Map<string, Marker>();
 	let themeInitialized = false;

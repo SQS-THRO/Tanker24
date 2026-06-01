@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { t } from '$lib/stores/locale';
-	import { createFilling, type CreateFillingPayload } from '$lib/services/fillings_api';
+	import { fillings, type CreateFillingPayload } from '$lib/stores/fillings';
 	import type { TankerkoenigStation } from '$lib/services/stations_api';
 
 	const {
@@ -124,7 +124,7 @@
 				fuel_type: fuelType as 'diesel' | 'e5' | 'e10'
 			};
 
-			await createFilling(token, payload);
+			await fillings.createFilling(token, payload);
 			success = $t.fillingModal.success;
 			setTimeout(() => {
 				onClose();
