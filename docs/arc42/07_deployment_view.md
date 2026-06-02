@@ -9,6 +9,9 @@ Tanker24 is deployed as a set of Docker containers orchestrated via Docker Compo
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
 
 Deployment_Node(vm, "tanker24.eu", "Virtual Machine (Linux)") {
+    Deployment_Node(docker_runtime, "Docker Engine", "Docker Container Runtime") {
+        Container(analytics_ctr, "Analytics", "umami")
+    }
     Deployment_Node(docker, "Docker Engine", "Docker Compose Runtime") {
 
         Container(nginx, "Reverse Proxy", "Nginx", "Terminates TLS, routes requests to frontend and backend.")
@@ -29,11 +32,12 @@ Deployment_Node(gh_actions, "GitHub Actions", "CI/CD") {
 }
 
 Rel(gh_actions, ghcr, "Pushes container images")
-Rel(nginx, frontend_ctr, "Proxies / to frontend:3000")
-Rel(nginx, backend_ctr, "Proxies /api to backend:8000")
+Rel(nginx, frontend_ctr, "Proxies www. to frontend:3000")
+Rel(nginx, backend_ctr, "Proxies api. to backend:8000")
 Rel(backend_ctr, postgres_ctr, "SQL on port 5432")
 Rel(backend_ctr, ghcr_backend, "Pulled from")
 Rel(frontend_ctr, ghcr_frontend, "Pulled from")
+Rel(frontend_ctr, analytics_ctr, "Pushes analytics events")
 @enduml
 ```
 
@@ -195,8 +199,9 @@ rectangle "Tankerkönig\nAPI (ext)" as tankerkoenig
 rectangle "Uptime Kuma\nInternal monitoring\n(port 3001)" as uptime
 
 Internet --> nginx
-nginx --> frontend: /
-nginx --> backend: /api
+nginx --> frontend: www.
+nginx --> backend: api.
+nginx --> uptime: status.
 frontend --> backend
 backend --> postgres
 backend --> tankerkoenig
