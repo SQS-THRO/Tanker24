@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repositories.car_repository import CarRepository
 from app.repositories.history_record_repository import HistoryRecordRepository
+from app.repositories.station_repository import StationRepository
 
 logger = logging.getLogger("app.export_data_service")
 
@@ -23,6 +24,7 @@ class NestedExportDataService(ExportDataService):
 	def __init__(self, db: AsyncSession):
 		self.car_repo = CarRepository(db)
 		self.history_repo = HistoryRecordRepository(db)
+		self.station_repo = StationRepository(db)
 		self.db = db
 
 	async def get_user_data(self, user_id: int) -> list[dict[str, Any]]:
@@ -46,6 +48,7 @@ class NestedExportDataService(ExportDataService):
 								"litres": record.litres,
 								"total_price": record.price_per_litre * record.litres,
 								"fuel_type": record.fuel_type.name,
+								"tankerkoenig_station_id": record.tankerkoenig_station_id,
 							}
 						)
 				result.append(
@@ -94,6 +97,7 @@ class FlatExportDataService(ExportDataService):
 								"litres": record.litres,
 								"total_price": record.price_per_litre * record.litres,
 								"fuel_type": record.fuel_type.name,
+								"tankerkoenig_station_id": record.tankerkoenig_station_id,
 							}
 						)
 

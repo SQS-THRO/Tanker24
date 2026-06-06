@@ -91,12 +91,13 @@ class HistoryRecord(Base):
 	__tablename__ = "history_records"
 
 	id: Mapped[int] = mapped_column(primary_key=True)
-	timestamp: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+	timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
 	mileage: Mapped[float] = mapped_column(Float)
 	price_per_litre: Mapped[float] = mapped_column(Float)
 	litres: Mapped[float] = mapped_column(Float)
 	car_id: Mapped[int] = mapped_column(ForeignKey("cars.id"))
 	fuel_type_id: Mapped[int] = mapped_column(ForeignKey("fuel_types.id"))
+	tankerkoenig_station_id: Mapped[str] = mapped_column(String)
 
 	car: Mapped[Car] = relationship(back_populates="history_records", lazy="selectin")
 	fuel_type: Mapped[FuelType] = relationship(back_populates="history_records", lazy="selectin")

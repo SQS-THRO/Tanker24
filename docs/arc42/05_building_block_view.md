@@ -93,6 +93,7 @@ The router layer specifies all outward facing interfaces. They specify secured (
 | `auth.py` | `/api/v0/auth/jwt`, `/api/v0/users` | Login/JWT token, registration, user profile management. Powered by fastapi-users. |
 | `stations.py` | `/api/v0/stations` | List cached stations and nearby station search with caching. Most endpoints require authentication. |
 | `export.py` | `/api/v0/export` | JSON and CSV export of user's car and fueling history data. Requires authentication. |
+|`fillings.py`|`/api/v0/fillings`|REST endpoint for inserting and deleting filling data. Requires authentication.|
 
 ### 5.2.2 Service Layer
 
@@ -105,6 +106,7 @@ The service layer provides an abstraction layer for the business logic of the ap
 | `NearbyStationsService` | Orchestrates station search with caching: checks the database cache first; on miss, calls the API, applies rate limiting, and updates the cache. |
 | `ExportDataService` (abstract) | Interface for data export. Implemented by `NestedExportDataService` (JSON) and `FlatExportDataService` (CSV). |
 | `RateLimiter` | Token-bucket-based rate limiter for Tankerkönig API calls. Configured at 100 requests per minute. |
+|`FillingsDataService`|Handles the logic required for inserting, getting and deleting fillings with the repository layer. Transforms data where necessary.|
 
 ### 5.2.3 Repository Layer
 
@@ -113,9 +115,10 @@ The repository layer provides an abstraction for querying information from the d
 | Repository | Entity | Key Operations |
 |---|---|---|
 | `StationRepository` | `Station` | Cache lookup with spatial tolerance, upsert with stale record cleanup, list all cached stations |
-| `CarRepository` | `Car` | Query cars by owner |
-| `HistoryRecordRepository` | `HistoryRecord` | Query history records by car |
+| `CarRepository` | `Car` | Create and read cars by owner |
+| `HistoryRecordRepository` | `HistoryRecord` | Create and read history records by car |
 | `InvitationKeyRepository` | `InvitationKey` | CRUD for invitation keys, lookup users by key |
+|`FuelTypeRepository`|`FuelType`|Read the fuel types by name from the database.|
 
 ### 5.2.4 Data Model (ORM)
 
