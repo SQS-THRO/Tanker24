@@ -9,17 +9,37 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRouter
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
+from sqlalchemy import select
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 
 from app.config import settings
 from app.database import async_session_maker, init_db
+from app.dtos.gas_station_dtos import FuelType
 from app.invitation_keys import sync_invitation_keys
 from app.limiter import limiter
 from app.logging_config import setup_logging
-from app.routers import auth, health, stations, export
+from app.models import FuelType as FuelTypeModel
+from app.routers import auth, health, stations, export, fillings
 
 logger = logging.getLogger("app")
+
+
+async def seed_fuel_types() -> None:
+	async with async_session_maker() as db:
+		for fuel_type in FuelType:
+			# Skip the generic one
+			if fuel_type.value == "all":
+				continue
+
+			result = await db.execute(select(FuelTypeModel).where(FuelTypeModel.name == fuel_type.value))
+
+			existing = result.scalar_one_or_none()
+
+			if existing is None:
+				db.add(FuelTypeModel(name=fuel_type.value))
+
+		await db.commit()
 
 
 @asynccontextmanager
@@ -28,6 +48,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 	logger.info("Starting %s v%s", settings.app_name, settings.app_version)
 	logger.info("Database: %s", settings.db_type)
 	await init_db()
+	logger.info("Seeding the database")
+	await seed_fuel_types()
 	async with async_session_maker() as session:
 		await sync_invitation_keys(session)
 	logger.info("Application startup complete")
@@ -83,6 +105,7 @@ api_router.include_router(auth.register_router, prefix="/auth", tags=["auth"])
 api_router.include_router(auth.users_router, prefix="/users", tags=["users"])
 api_router.include_router(stations.router)
 api_router.include_router(export.router)
+api_router.include_router(fillings.router)
 
 app.include_router(health.router)
 app.include_router(api_router)

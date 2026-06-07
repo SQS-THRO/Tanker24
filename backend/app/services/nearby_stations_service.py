@@ -4,8 +4,8 @@ import asyncio
 
 from app.config import settings
 from app.dtos.gas_station_dtos import GasStation
-from app.schemas.station import TankerkoenigStation as TankerkoenigStationSchema
-from app.repositories.tankerkoenig_station_repository import TankerkoenigStationRepository
+from app.schemas.station import Station as StationSchema
+from app.repositories.station_repository import StationRepository
 from app.services.gas_station_service import TankerkoenigGasStationService
 from app.services.rate_limiter import global_rate_limiter
 
@@ -13,11 +13,11 @@ logger = logging.getLogger("app.nearby_stations_service")
 
 
 class NearbyStationsService:
-	def __init__(self, repository: TankerkoenigStationRepository):
+	def __init__(self, repository: StationRepository):
 		self.repository = repository
 		self.gas_station_service = TankerkoenigGasStationService(api_key=settings.tankerkoenig_api_key)
 
-	async def get_nearby_stations(self, latitude: float, longitude: float) -> list[TankerkoenigStationSchema]:
+	async def get_nearby_stations(self, latitude: float, longitude: float) -> list[StationSchema]:
 		if not (-90 <= latitude <= 90):
 			raise ValueError("Latitude must be between -90 and 90")
 		if not (-180 <= longitude <= 180):
@@ -67,11 +67,11 @@ class NearbyStationsService:
 		longitude: float,
 		radius: float,
 		min_cached_at: datetime,
-	) -> list[TankerkoenigStationSchema] | None:
+	) -> list[StationSchema] | None:
 		tolerance = settings.station_cache_tolerance_km
 		stations = await self.repository.get_cached_stations(latitude, longitude, radius, min_cached_at, tolerance)
 		if stations:
-			return [TankerkoenigStationSchema.model_validate(s) for s in stations]
+			return [StationSchema.model_validate(s) for s in stations]
 		return None
 
 	async def _save_stations_to_cache(

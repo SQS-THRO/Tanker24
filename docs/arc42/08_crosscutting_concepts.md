@@ -8,7 +8,7 @@ The domain model reflects the core entities of the application:
 - **Car**: A vehicle associated with a user, identified by license plate.
 - **FuelType**: Enumeration of fuel types (Diesel, E5, E10).
 - **HistoryRecord**: A single fueling event with timestamp, mileage, price, liters, and fuel type.
-- **TankerkoenigStation**: Cached gas station data from the external Tankerkönig API with spatial metadata.
+- **Station**: Cached gas station data from the external Tankerkönig API with spatial metadata.
 
 The complete data model is documented in the [Entity-Relationship Model](../er-model.md) and in [Section 5.2.4](05_building_block_view.md#524-data-model-orm).
 
@@ -28,7 +28,7 @@ Tanker24 uses the **fastapi-users** library with JWT-based bearer token authenti
 | Level | Access |
 |---|---|
 | **Unauthenticated** | Health check (`/health`, `/`), Login, Register |
-| **Authenticated (active)** | CRUD stations, nearby search, data export, user profile |
+| **Authenticated (active)** | Station search (list + nearby), data export, user profile |
 | **Superuser** | User management (via fastapi-users built-in routes) |
 
 ### 8.2.3 Invitation Key System
@@ -62,7 +62,7 @@ Table creation is handled at application startup via `Base.metadata.create_all()
 
 ### 8.4.1 Gas Station Data Cache
 
-To minimize calls to the external Tankerkönig API, station data is cached in the `tankerkoenig_stations` database table:
+To minimize calls to the external Tankerkönig API, station data is cached in the `stations` database table:
 
 | Cache Parameter | Value | Config Key |
 |---|---|---|
@@ -135,7 +135,7 @@ A custom `RequestLoggingMiddleware` logs each incoming request with method, path
 |---|---|---|
 | Validation error (Pydantic) | 422 | FastAPI/Pydantic auto-generates detail messages |
 | Authentication failure | 401 | Returned by fastapi-users JWT validation |
-| Authorization failure (ownership) | 404 | Station not owned by user returned as "not found" |
+| Station not found | 404 | Station not found in cache |
 | Rate limit exceeded | 429 | Custom handler for `RateLimitExceeded` exception |
 | Tankerkönig API failure | 200 (empty list) | Exception logged, empty list returned (graceful degradation) |
 | Database error (export) | 503 | Transaction rolled back, generic error returned |

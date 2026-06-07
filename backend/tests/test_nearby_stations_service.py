@@ -4,38 +4,38 @@ from unittest.mock import patch
 
 from sqlalchemy import select
 
-from app.models import TankerkoenigStation
+from app.models import Station
 from app.config import settings
 from app.services.nearby_stations_service import NearbyStationsService
-from app.repositories.tankerkoenig_station_repository import TankerkoenigStationRepository
+from app.repositories.station_repository import StationRepository
 from app.dtos.gas_station_dtos import GasStation
 
 
 class TestNearbyStationsServiceValidation:
 	@pytest.mark.asyncio
 	async def test_latitude_lower_bound(self, test_db_session):
-		service = NearbyStationsService(TankerkoenigStationRepository(test_db_session))
+		service = NearbyStationsService(StationRepository(test_db_session))
 
 		with pytest.raises(ValueError):
 			await service.get_nearby_stations(-91.0, 0.0)
 
 	@pytest.mark.asyncio
 	async def test_latitude_upper_bound(self, test_db_session):
-		service = NearbyStationsService(TankerkoenigStationRepository(test_db_session))
+		service = NearbyStationsService(StationRepository(test_db_session))
 
 		with pytest.raises(ValueError):
 			await service.get_nearby_stations(91.0, 0.0)
 
 	@pytest.mark.asyncio
 	async def test_longitude_lower_bound(self, test_db_session):
-		service = NearbyStationsService(TankerkoenigStationRepository(test_db_session))
+		service = NearbyStationsService(StationRepository(test_db_session))
 
 		with pytest.raises(ValueError):
 			await service.get_nearby_stations(0.0, -181.0)
 
 	@pytest.mark.asyncio
 	async def test_longitude_upper_bound(self, test_db_session):
-		service = NearbyStationsService(TankerkoenigStationRepository(test_db_session))
+		service = NearbyStationsService(StationRepository(test_db_session))
 
 		with pytest.raises(ValueError):
 			await service.get_nearby_stations(0.0, 181.0)
@@ -46,7 +46,7 @@ class TestNearbyStationsServiceValidation:
 			return []
 
 		with patch("app.services.nearby_stations_service.asyncio.to_thread", new=mock_to_thread):
-			service = NearbyStationsService(TankerkoenigStationRepository(test_db_session))
+			service = NearbyStationsService(StationRepository(test_db_session))
 
 			result = await service.get_nearby_stations(52.52, 13.405)
 
@@ -57,7 +57,7 @@ class TestNearbyStationsServiceCache:
 	@pytest.mark.asyncio
 	async def test_get_nearby_stations_returns_cached_if_available(self, test_db_session):
 		now = datetime.now(UTC)
-		cached_station = TankerkoenigStation(
+		cached_station = Station(
 			tankerkoenig_id="cached-1",
 			name="Cached Station",
 			brand="Shell",
@@ -74,7 +74,7 @@ class TestNearbyStationsServiceCache:
 		original_cache_expiry = settings.station_cache_expiry_minutes
 		settings.station_cache_expiry_minutes = 60
 
-		service = NearbyStationsService(TankerkoenigStationRepository(test_db_session))
+		service = NearbyStationsService(StationRepository(test_db_session))
 
 		result = await service.get_nearby_stations(52.52, 13.405)
 
@@ -94,7 +94,7 @@ class TestNearbyStationsServiceApi:
 
 			mock_thread.side_effect = raise_error
 
-			service = NearbyStationsService(TankerkoenigStationRepository(test_db_session))
+			service = NearbyStationsService(StationRepository(test_db_session))
 
 			result = await service.get_nearby_stations(52.0, 13.0)
 
@@ -106,7 +106,7 @@ class TestNearbyStationsServiceApi:
 			return []
 
 		with patch("app.services.nearby_stations_service.asyncio.to_thread", new=mock_to_thread):
-			service = NearbyStationsService(TankerkoenigStationRepository(test_db_session))
+			service = NearbyStationsService(StationRepository(test_db_session))
 
 			result = await service.get_nearby_stations(52.0, 13.0)
 
@@ -151,10 +151,10 @@ class TestSaveStationsToCache:
 			),
 		]
 
-		service = NearbyStationsService(TankerkoenigStationRepository(test_db_session))
+		service = NearbyStationsService(StationRepository(test_db_session))
 		await service._save_stations_to_cache(api_stations, 52.52, 13.405, 5.0)
 
-		result = await test_db_session.execute(select(TankerkoenigStation))
+		result = await test_db_session.execute(select(Station))
 		stations = result.scalars().all()
 
 		assert len(stations) == 2
@@ -165,7 +165,7 @@ class TestSaveStationsToCache:
 	@pytest.mark.asyncio
 	async def test_save_stations_to_cache_updates_existing_stations(self, test_db_session):
 		now = datetime.now(UTC)
-		existing_station = TankerkoenigStation(
+		existing_station = Station(
 			tankerkoenig_id="station-1",
 			name="Old Name",
 			brand="Shell",
@@ -198,10 +198,10 @@ class TestSaveStationsToCache:
 			),
 		]
 
-		service = NearbyStationsService(TankerkoenigStationRepository(test_db_session))
+		service = NearbyStationsService(StationRepository(test_db_session))
 		await service._save_stations_to_cache(api_stations, 52.52, 13.405, 5.0)
 
-		result = await test_db_session.execute(select(TankerkoenigStation))
+		result = await test_db_session.execute(select(Station))
 		stations = result.scalars().all()
 
 		assert len(stations) == 1

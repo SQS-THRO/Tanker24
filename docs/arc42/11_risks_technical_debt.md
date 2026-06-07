@@ -130,7 +130,7 @@ This page lists all identified risks and technical debts, ordered by priority. F
 
 ### TD5: ER Model Documentation Outdated
 
-**Description:** The ER model diagram in `docs/er-model.md` does not reflect the full database schema including `TankerkoenigStation`, `Station`, and `InvitationKey` tables.
+**Description:** The ER model diagram in `docs/er-model.md` does not reflect the full database schema including `Station` and `InvitationKey` tables. The old user-owned `Station` table has been removed and `TankerkoenigStation` was renamed to `Station`.
 
 **Severity:** LOW
 

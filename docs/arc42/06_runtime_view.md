@@ -22,7 +22,7 @@ BE -> BE: Validates JWT token via fastapi-users
 BE -> BE: Checks rate limit (10/min per user)
 note right: SlowAPI/memory rate limiter
 
-BE -> DB: SELECT * FROM tankerkoenig_stations\nWHERE cache_lat ≈ X AND cache_lon ≈ Y\nAND cache_radius = radius\nAND cached_at > now - 30 min
+BE -> DB: SELECT * FROM stations\nWHERE cache_lat ≈ X AND cache_lon ≈ Y\nAND cache_radius = radius\nAND cached_at > now - 30 min
 DB --> BE: Cached stations (or empty)
 
 alt Cache hit (fresh data)
@@ -46,7 +46,7 @@ FE --> User: Map is displayed with station markers
 2. The user selects a location (via geolocation or map click).  
 3. Frontend sends `GET /api/v0/stations/nearby?latitude=X&longitude=Y` with the JWT token in the `Authorization` header.  
 4. Backend validates the JWT and checks the user-based rate limit (10 requests per minute).  
-5. Backend queries the `tankerkoenig_stations` cache table for matching entries within the configured tolerance (0.01 km) and expiry (30 minutes).  
+5. Backend queries the `stations` cache table for matching entries within the configured tolerance (0.01 km) and expiry (30 minutes).  
 6. **If cache hit:** cached stations are returned directly.  
 7. **If cache miss:** the backend acquires a token from the global Tankerkönig rate limiter (100 requests/minute), then calls the Tankerkönig `list.php` API. Results are upserted into the cache with metadata (search coordinates, radius, timestamp). Stale entries from previous searches are cleaned up.  
 8. Backend returns the station list as JSON with fuel prices and distances.  
@@ -172,7 +172,7 @@ DC -> BE: docker compose up -d\n(startup)
 
 BE -> BE: setup_logging()\nStructured logging to stdout\nSQLAlchemy: WARNING (INFO in debug)
 BE -> BE: init_db()\nSQLAlchemy: Base.metadata.create_all\n(Creates tables if not existing)
-BE -> DB: CREATE TABLE IF NOT EXISTS\n(users, cars, history_records,\nstations, tankerkoenig_stations,\ninvitation_keys, fuel_types)
+BE -> DB: CREATE TABLE IF NOT EXISTS\n(users, cars, history_records,\nstations, invitation_keys, fuel_types)
 
 BE -> BE: sync_invitation_keys()\nReads INVITATION_KEYS from env
 BE -> DB: SELECT * FROM invitation_keys

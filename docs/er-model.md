@@ -9,7 +9,6 @@ left to right direction
 
 entity "User" as User {
   *id
-  *invitation_key_id
   --
   email
   hashed_password
@@ -18,6 +17,7 @@ entity "User" as User {
   is_verified
   forename
   surname
+  invitation_key_id
 }
 
 entity "Cars" as Car {
@@ -45,7 +45,7 @@ entity "History Records" as HistoryRecord {
   litres
 }
 
-entity "Tankerkoenig Stations" as TankerkoenigStation {
+entity "Stations" as Station {
   *id
   --
   tankerkoenig_id
@@ -68,27 +68,18 @@ entity "Tankerkoenig Stations" as TankerkoenigStation {
   cache_radius
 }
 
-entity "Stations" as Stations {
-  *id
-  *owner_id
-  --
-  name
-  description
-  latitude
-  longitude
-}
-
 entity "Invitation Keys" as InvitationKeys{
   *id
   --
   key
 }
 
-User }o--o| InvitationKeys: uses
+InvitationKeys |o--o{ User : used by
 User ||--o{ Car : owns
-User ||--o{ Stations : owns
 Car ||--o{ HistoryRecord : has
 FuelType ||--o{ HistoryRecord : has
+
+note "Unique constraints:\n- User.email\n- Car.license_plate_number\n- FuelType.name\n- Station.tankerkoenig_id" as N1
 
 @enduml
 ```

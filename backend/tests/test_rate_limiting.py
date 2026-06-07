@@ -121,7 +121,7 @@ async def test_nearby_stations_rate_limit(auth_headers, clear_rate_limit_storage
 		# Make requests up to the limit
 		# The default rate limit is 10/minute, so we make 11 requests
 		responses = []
-		for i in range(11):
+		for _ in range(11):
 			response = await client.get(
 				"/api/v0/stations/nearby?latitude=48.1&longitude=11.5",
 				headers=auth_headers,
