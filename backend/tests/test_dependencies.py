@@ -1,7 +1,8 @@
 from unittest.mock import Mock, MagicMock
 
 from app.dependencies import (
-  get_flat_export_data_service,
+	get_fillings_service,
+	get_flat_export_data_service,
 	get_current_user_with_request_state,
 	get_flat_export_data_service,
 	get_nested_export_data_service,
@@ -42,6 +43,7 @@ class TestDependencies:
 
 		assert request.state.user is user
 		assert result is user
+
 	def test_get_fillings_service_returns_fillings_service(self):
 		db = Mock()
 		service = get_fillings_service(db)
