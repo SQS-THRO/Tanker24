@@ -64,17 +64,11 @@ async def auth_headers(test_db_session):
 @pytest.fixture
 def clear_rate_limit_storage():
 	"""Clear the rate limit storage before and after tests."""
-	# Clear storage before test
-	# Access the internal storage dict directly since MemoryStorage.clear()
-	# now requires a key argument in newer versions of limits library
-	storage = limiter._storage
-	if hasattr(storage, "_storage") and isinstance(storage._storage, dict):
-		storage._storage.clear()
+	limiter._storage.storage.clear()
+	limiter._storage.expirations.clear()
 	yield
-	# Clear storage after test
-	storage = limiter._storage
-	if hasattr(storage, "_storage") and isinstance(storage._storage, dict):
-		storage._storage.clear()
+	limiter._storage.storage.clear()
+	limiter._storage.expirations.clear()
 
 
 @pytest.mark.asyncio

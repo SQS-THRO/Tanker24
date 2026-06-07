@@ -108,3 +108,69 @@ class TestAuthEndpoints:
 		assert isinstance(user_db, SQLAlchemyUserDatabase)
 		assert user_db.session is test_db_session
 		assert user_db.user_table is User
+
+
+class TestCreateUser:
+	VALID_PASSWORD = "Test1234!"
+
+	@pytest.fixture
+	def mock_user_db(self):
+		return AsyncMock()
+
+	@pytest.fixture
+	def user_manager(self, mock_user_db):
+		return CustomUserManager(mock_user_db)
+
+	@pytest.fixture
+	def user_create(self):
+		from app.schemas.user import UserCreate
+
+		return UserCreate(
+			email="existing@example.com",
+			password=self.VALID_PASSWORD,
+			forename="Existing",
+			surname="User",
+		)
+
+	@pytest.mark.asyncio
+	async def test_create_raises_user_already_exists(self, user_manager, user_create):
+		from fastapi_users.exceptions import UserAlreadyExists
+
+		with pytest.raises(UserAlreadyExists):
+			await user_manager.create(user_create)
+
+
+class TestGetCurrentUser:
+	def test_get_current_user_returns_user_read(self, test_db_session, test_user):
+		from app.auth import get_current_user
+
+		result = get_current_user(test_user)
+
+		assert isinstance(result, UserRead)
+		assert result.id == test_user.id
+		assert result.email == test_user.email
+		assert result.forename == test_user.forename
+		assert result.surname == test_user.surname
+		assert result.is_active == test_user.is_active
+		assert result.is_superuser == test_user.is_superuser
+		assert result.is_verified == test_user.is_verified
+
+	def test_get_current_active_user_returns_user_read(self, test_db_session, test_user):
+		from app.auth import get_current_active_user
+
+		result = get_current_active_user(test_user)
+
+		assert isinstance(result, UserRead)
+		assert result.id == test_user.id
+		assert result.email == test_user.email
+
+	def test_get_current_superuser_returns_user_read(self, test_db_session, second_user):
+		from app.auth import get_current_superuser
+
+		second_user.is_superuser = True
+		result = get_current_superuser(second_user)
+
+		assert isinstance(result, UserRead)
+		assert result.id == second_user.id
+		assert result.email == second_user.email
+		assert result.is_superuser is True

@@ -206,3 +206,49 @@ class TestSaveStationsToCache:
 
 		assert len(stations) == 1
 		assert stations[0].name == "Updated Name"
+
+	@pytest.mark.asyncio
+	async def test_save_stations_to_cache_removes_stale_stations(self, test_db_session):
+		now = datetime.now(UTC).replace(tzinfo=None)
+		stale_station = Station(
+			tankerkoenig_id="stale-id",
+			name="Stale Station",
+			brand="Old Brand",
+			latitude=52.52,
+			longitude=13.405,
+			cached_at=now,
+			cache_lat=52.52,
+			cache_lon=13.405,
+			cache_radius=5.0,
+		)
+		test_db_session.add(stale_station)
+		await test_db_session.commit()
+
+		api_stations = [
+			GasStation(
+				id="fresh-id",
+				name="Fresh Station",
+				brand="New Brand",
+				street="New St",
+				house_number="1",
+				post_code=10115,
+				place="Berlin",
+				latitude=52.52,
+				longitude=13.405,
+				distance=0.5,
+				diesel=1.65,
+				e5=1.75,
+				e10=1.70,
+				is_open=True,
+			),
+		]
+
+		service = NearbyStationsService(StationRepository(test_db_session))
+		await service._save_stations_to_cache(api_stations, 52.52, 13.405, 5.0)
+
+		result = await test_db_session.execute(select(Station))
+		stations = result.scalars().all()
+
+		assert len(stations) == 1
+		assert stations[0].name == "Fresh Station"
+		assert stations[0].tankerkoenig_id == "fresh-id"
