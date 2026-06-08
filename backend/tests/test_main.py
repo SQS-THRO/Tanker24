@@ -16,6 +16,7 @@ class TestLifespan:
 			patch("app.main.init_db", AsyncMock()) as mock_init_db,
 			patch("app.main.async_session_maker", return_value=mock_session),
 			patch("app.main.sync_invitation_keys", AsyncMock()) as mock_sync_keys,
+			patch("app.main.seed_fuel_types", AsyncMock()),
 			patch("app.main.logger"),
 		):
 			async with lifespan(MagicMock()):
@@ -32,6 +33,7 @@ class TestLifespan:
 			patch("app.main.init_db", AsyncMock()) as mock_init_db,
 			patch("app.main.async_session_maker", return_value=mock_session),
 			patch("app.main.sync_invitation_keys", AsyncMock()),
+			patch("app.main.seed_fuel_types", AsyncMock()),
 			patch("app.main.logger"),
 		):
 			async with lifespan(MagicMock()):
@@ -48,6 +50,7 @@ class TestLifespan:
 			patch("app.main.init_db", AsyncMock()),
 			patch("app.main.async_session_maker", return_value=mock_session),
 			patch("app.main.sync_invitation_keys", AsyncMock()) as mock_sync_keys,
+			patch("app.main.seed_fuel_types", AsyncMock()),
 			patch("app.main.logger"),
 		):
 			async with lifespan(MagicMock()):
@@ -64,6 +67,7 @@ class TestLifespan:
 			patch("app.main.init_db", AsyncMock()),
 			patch("app.main.async_session_maker", return_value=mock_session),
 			patch("app.main.sync_invitation_keys", AsyncMock()),
+			patch("app.main.seed_fuel_types", AsyncMock()),
 			patch("app.main.logger") as mock_logger,
 			patch("app.main.settings.app_name", "TestApp"),
 			patch("app.main.settings.app_version", "2.0.0"),
@@ -85,6 +89,7 @@ class TestLifespan:
 			patch("app.main.init_db", AsyncMock()),
 			patch("app.main.async_session_maker", return_value=mock_session),
 			patch("app.main.sync_invitation_keys", AsyncMock()),
+			patch("app.main.seed_fuel_types", AsyncMock()),
 			patch("app.main.logger") as mock_logger,
 		):
 			async with lifespan(MagicMock()):
@@ -103,6 +108,7 @@ class TestLifespan:
 			patch("app.main.init_db", AsyncMock()),
 			patch("app.main.async_session_maker", return_value=mock_session),
 			patch("app.main.sync_invitation_keys", AsyncMock()),
+			patch("app.main.seed_fuel_types", AsyncMock()),
 			patch("app.main.logger"),
 		):
 			async with lifespan(MagicMock()):
@@ -130,6 +136,7 @@ class TestLifespan:
 			patch("app.main.init_db", side_effect=track_init_db),
 			patch("app.main.async_session_maker", return_value=mock_session),
 			patch("app.main.sync_invitation_keys", side_effect=track_sync_keys),
+			patch("app.main.seed_fuel_types", AsyncMock()),
 			patch("app.main.logger"),
 		):
 			async with lifespan(MagicMock()):
