@@ -231,6 +231,8 @@ class GasStationService(ABC):
 
 The current implementation, `TankerkoenigGasStationService`, communicates with the Tankerkönig REST API. This abstraction allows swapping to a different data provider (e.g., a self-hosted database replica) without changing the consuming services.
 
+This enables the application to further increase it's robustness by adding a second alternative provider. The application is ready to implement a provider switch from Tankerkönig to any different one if the Tankerkönig REST api is unavailable. The application detects the unavailability via timeouts which prevent the application from freezing indefinitely. As Tankerkönig provides its API as best as they can the response times can vary. 
+
 ### 8.12.2 Data Export
 
 The `ExportDataService` abstract base class defines the interface for data export:
