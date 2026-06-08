@@ -6,7 +6,7 @@ workspace "Tanker24 - System Context" "System context diagram for the Tanker24 a
         user = person "User" "Car drivers"
         
         tanker24 = softwareSystem "Tanker24" "Web system for checking gas prices in the user's area."{
-            webApp = container "User Interface" "VueJS" "Provides the web interface for searching gas prices and storing filling data."
+            webApp = container "User Interface" "SvelteKit" "Provides the web interface for searching gas prices and storing filling data."
             postgre = container "Data Store & Cache" "PostgreSQL" "Stores user data and caches gas price data."{
                 tags "Database"
             }
