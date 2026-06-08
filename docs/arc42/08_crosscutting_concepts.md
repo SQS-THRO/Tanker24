@@ -166,6 +166,8 @@ The frontend supports light and dark themes:
 
 Tanker24 follows the test automation pyramid:
 
+![The 3-tier test automation pyramid](../assets/images/TestPyramid.png)
+
 ### 8.10.1 Backend Tests (pytest)
 
 | Test Type | Tool | Scope |
