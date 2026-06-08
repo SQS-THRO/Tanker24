@@ -174,7 +174,7 @@ Tanker24 follows the test automation pyramid:
 |---|---|---|
 | **Unit tests** | pytest, pytest-asyncio | Individual functions, services, models |
 | **Integration tests** | pytest + SQLite test DB | Database repositories, API endpoints via TestClient |
-| **Architecture tests** | pytest | Enforces architectural rules (layer dependencies, imports) |
+| **Architecture tests** | pytestarch | Enforces architectural rules (layer dependencies, imports) |
 | **Code coverage** | pytest-cov | Target: ≥80% |
 
 Backend tests use SQLite as the test database (faster, no external dependencies) and are configured in `pytest.ini` with `asyncio_mode = auto`.
