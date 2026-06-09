@@ -47,14 +47,7 @@ class Settings(BaseSettings):
 	# Rate limiting for nearby stations endpoint
 	nearby_stations_rate_limit: str = "10/minute"
 
-	cors_origins: list[str] = [
-		"http://localhost:5173",
-		"http://localhost:3000",
-		"http://127.0.0.1:5173",
-		"http://127.0.0.1:3000",
-		"https://tanker24.eu",
-		"https://www.tanker24.eu",
-	]
+	_cors_origins: list[str] = []
 
 	_invitation_keys: list[str] = []
 
@@ -66,6 +59,7 @@ class Settings(BaseSettings):
 			raise ValueError("Database type DB_TYPE must be set to start the application!")
 
 		self._parse_invitation_keys()
+		self._parse_cors_origins()
 
 	@property
 	def invitation_keys(self) -> list[str]:
@@ -79,6 +73,20 @@ class Settings(BaseSettings):
 				if not re.match(r"^[a-fA-F0-9]{32}$", key):
 					raise ValueError(
 						f"Invalid invitation key format: {key}. Must be a 128-bit hex string (32 characters)."
+					)
+
+	@property
+	def cors_origins(self) -> list[str]:
+		return self._cors_origins
+
+	def _parse_cors_origins(self) -> None:
+		origins_str = os.environ.get("CORS_ORIGINS", "")
+		if origins_str:
+			self._cors_origins = [o.strip() for o in origins_str.split(",") if o.strip()]
+			for origin in self._cors_origins:
+				if not re.match(r"^https?://[^\s]+$", origin):
+					raise ValueError(
+						f"Invalid CORS origin format: {origin}. Must be a valid URL starting with http:// or https://."
 					)
 
 	# Helper function for building the dynamic database connection string
