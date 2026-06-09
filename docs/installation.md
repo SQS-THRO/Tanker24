@@ -40,6 +40,9 @@ To use the ``demo`` version of Tanker24 use the following command:
 docker compose -f compose.yaml -f compose.demo.yaml up --build -d
 ```
 
+Demo credentials: max@tanker24.eu / Tanker24.eu
+
+
 # Demo setup
 
 Creating a new database dump should be done with this command:
