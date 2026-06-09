@@ -127,7 +127,21 @@ export const translations = {
 			exportAsJson: 'Export as JSON',
 			exportAsCsv: 'Export as CSV',
 			exporting: 'Exporting...',
-			exportFailed: 'Export failed'
+			exportFailed: 'Export failed',
+			tankingHistory: 'Tanking History',
+			tableLicensePlate: 'License Plate',
+			tableDate: 'Date',
+			tableMileage: 'Mileage',
+			tableLiters: 'Liters',
+			tablePricePerLiter: 'Price/L',
+			tableTotal: 'Total',
+			tableFuelType: 'Fuel',
+			noFillings: 'No fillings recorded yet',
+			fillingsLoadFailed: 'Failed to load tanking history',
+			tableDelete: 'Delete',
+			deleteConfirm: 'Delete this filling? This cannot be undone.',
+			deleteFailed: 'Failed to delete filling',
+			cancel: 'Cancel'
 		},
 		map: {
 			priceDevider: '.',
@@ -221,6 +235,25 @@ export const translations = {
 			description: 'We use analytics to improve our service. Do you agree to the usage of your data?',
 			accept: 'Accept',
 			decline: 'Decline'
+		},
+		fillingModal: {
+			title: 'Record Filling',
+			record: 'Record',
+			station: 'Station',
+			stationPlaceholder: 'Select a station...',
+			fuelType: 'Fuel Type',
+			pricePerLitre: 'Price per Litre (€)',
+			timestamp: 'Date & Time',
+			licensePlate: 'License Plate',
+			carType: 'Car Type',
+			mileage: 'Mileage (km)',
+			litres: 'Litres',
+			submit: 'Save',
+			submitting: 'Saving...',
+			success: 'Filling recorded!',
+			error: 'Failed to save filling',
+			cancel: 'Cancel',
+			fillRequired: 'Please fill in all fields'
 		}
 	},
 	de: {
@@ -351,7 +384,21 @@ export const translations = {
 			exportAsJson: 'Als JSON exportieren',
 			exportAsCsv: 'Als CSV exportieren',
 			exporting: 'Exportieren...',
-			exportFailed: 'Export fehlgeschlagen'
+			exportFailed: 'Export fehlgeschlagen',
+			tankingHistory: 'Tankverlauf',
+			tableLicensePlate: 'Kennzeichen',
+			tableDate: 'Datum',
+			tableMileage: 'gefahrene\nKilometer',
+			tableLiters: 'Liter',
+			tablePricePerLiter: 'Preis/L',
+			tableTotal: 'Gesamt',
+			tableFuelType: 'Kraftstoff',
+			noFillings: 'Noch keine Tankvorgänge',
+			fillingsLoadFailed: 'Tankverlauf konnte nicht geladen werden',
+			tableDelete: 'Löschen',
+			deleteConfirm: 'Diesen Tankvorgang löschen? Dies kann nicht rückgängig gemacht werden.',
+			deleteFailed: 'Tankvorgang konnte nicht gelöscht werden',
+			cancel: 'Abbrechen'
 		},
 		map: {
 			priceDevider: ',',
@@ -446,6 +493,25 @@ export const translations = {
 			description: 'Wir nutzen Analysen um unseren Service zu verbessern. Stimmen Sie der Nutzung Ihrer Daten zu?',
 			accept: 'Akzeptieren',
 			decline: 'Ablehnen'
+		},
+		fillingModal: {
+			title: 'Tankvorgang erfassen',
+			record: 'Erfassen',
+			station: 'Tankstelle',
+			stationPlaceholder: 'Tankstelle auswählen...',
+			fuelType: 'Kraftstoff',
+			pricePerLitre: 'Preis pro Liter (€)',
+			timestamp: 'Datum & Uhrzeit',
+			licensePlate: 'Kennzeichen',
+			carType: 'Fahrzeugtyp',
+			mileage: 'Kilometer gefahren (km)',
+			litres: 'Liter',
+			submit: 'Speichern',
+			submitting: 'Speichern...',
+			success: 'Tankvorgang gespeichert!',
+			error: 'Tankvorgang konnte nicht gespeichert werden',
+			cancel: 'Abbrechen',
+			fillRequired: 'Bitte fülle alle Felder aus'
 		}
 	}
 };

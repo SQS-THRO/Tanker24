@@ -4,9 +4,11 @@
 	import { auth } from '$lib/stores/auth';
 	import { authService } from '$lib/services/auth_api';
 	import { exportAsJson, exportAsCsv, downloadBlob } from '$lib/services/export_api';
+	import { fillings } from '$lib/stores/fillings';
 	import { goto } from '$app/navigation';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import ConfirmModal from '$lib/components/ConfirmModal.svelte';
 	import { t } from '$lib/stores/locale';
 	import { themeStore, GLOBAL_THEMES, COLOR_BLIND_OPTIONS, CVD_PALETTES, type ThemePalette, type GlobalTheme } from '$lib/stores/theme';
 
@@ -18,6 +20,8 @@
 	let loading = $state(true);
 	let error = $state('');
 	let exporting = $state<'json' | 'csv' | null>(null);
+	let showDeleteModal = $state(false);
+	let pendingDeleteId = $state<number | null>(null);
 
 	function getPreviewColors(): ThemePalette {
 		const override = $themeStore.colorBlindOverride;
@@ -41,6 +45,8 @@
 		};
 	}
 
+	let fillingsToken: string | null = null;
+
 	onMount(async () => {
 		const token = localStorage.getItem('token');
 		if (!token) {
@@ -48,8 +54,11 @@
 			return;
 		}
 
+		fillingsToken = token;
+
 		try {
 			user = await authService.getCurrentUser(token);
+			fillings.fetchFillings(token);
 		} catch {
 			error = $t.account.loadUserFailed;
 			localStorage.removeItem('token');
@@ -58,6 +67,28 @@
 			loading = false;
 		}
 	});
+
+	function handleDelete(fillingId: number) {
+		pendingDeleteId = fillingId;
+		showDeleteModal = true;
+	}
+
+	async function handleConfirmDelete() {
+		if (pendingDeleteId === null || !fillingsToken) return;
+		const id = pendingDeleteId;
+		pendingDeleteId = null;
+		showDeleteModal = false;
+		try {
+			await fillings.removeFilling(fillingsToken, id);
+		} catch {
+			alert($t.account.deleteFailed);
+		}
+	}
+
+	function handleCancelDelete() {
+		pendingDeleteId = null;
+		showDeleteModal = false;
+	}
 
 	async function handleLogout() {
 		await auth.logout();
@@ -200,6 +231,59 @@
 				</div>
 			</div>
 
+			<div class="tanking-section page-card">
+				<h2>{$t.account.tankingHistory}</h2>
+				{#if $fillings.loading}
+					<div class="fillings-loading">
+						<div class="spinner"></div>
+						<p>{$t.account.loading}</p>
+					</div>
+				{:else if $fillings.error}
+					<div class="fillings-error">
+						<p>{$t.account.fillingsLoadFailed}</p>
+					</div>
+				{:else if $fillings.data.length === 0}
+					<p class="fillings-empty">{$t.account.noFillings}</p>
+				{:else}
+					<div class="fillings-table-wrapper">
+						<table class="fillings-table">
+							<thead>
+								<tr>
+									<th>{$t.account.tableLicensePlate}</th>
+									<th>{$t.account.tableDate}</th>
+									<th>{$t.account.tableMileage}</th>
+									<th>{$t.account.tableLiters}</th>
+									<th>{$t.account.tablePricePerLiter}</th>
+									<th>{$t.account.tableTotal}</th>
+									<th>{$t.account.tableFuelType}</th>
+									<th>{$t.account.tableDelete}</th>
+								</tr>
+							</thead>
+							<tbody>
+								{#each [...$fillings.data].reverse() as filling (filling.id)}
+									<tr>
+										<td>{filling.license_plate_number}</td>
+										<td>{new Date(filling.timestamp).toLocaleDateString()}</td>
+										<td>{filling.mileage.toLocaleString()}</td>
+										<td>{filling.litres.toFixed(2)}</td>
+										<td>{filling.price_per_litre.toFixed(3)} €</td>
+										<td>{(filling.price_per_litre * filling.litres).toFixed(2)} €</td>
+										<td>{filling.fuel_type.charAt(0).toUpperCase() + filling.fuel_type.slice(1)}</td>
+										<td>
+											<button class="delete-btn" onclick={() => handleDelete(filling.id!)} aria-label="Delete">
+												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+													<path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+												</svg>
+											</button>
+										</td>
+									</tr>
+								{/each}
+							</tbody>
+						</table>
+					</div>
+				{/if}
+			</div>
+
 			<div class="export-section page-card">
 				<h2>{$t.account.exportSection}</h2>
 				<p class="export-description">{$t.account.exportDescription}</p>
@@ -267,3 +351,79 @@
 	</div>
 </main>
 <Footer />
+
+<ConfirmModal
+	show={showDeleteModal}
+	title={$t.account.deleteConfirm}
+	message=""
+	confirmLabel={$t.account.tableDelete}
+	cancelLabel={$t.account.cancel}
+	onConfirm={handleConfirmDelete}
+	onCancel={handleCancelDelete}
+/>
+
+<style>
+	.fillings-table {
+		width: 100%;
+		border-collapse: collapse;
+		margin-top: 1rem;
+	}
+	.fillings-table th {
+		text-align: left;
+		padding: 0.5rem 0.4rem;
+		border-bottom: 1px solid var(--border-subtle);
+		color: var(--text-secondary);
+		font-size: 0.8rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		overflow-wrap: break-word;
+		white-space: pre-line;
+	}
+	.fillings-table td {
+		padding: 0.5rem 0.4rem;
+		border-bottom: 1px solid var(--border-subtle);
+		color: var(--text-primary);
+		font-size: 0.9rem;
+	}
+	.delete-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 32px;
+		height: 32px;
+		padding: 0;
+		border: none;
+		background: none;
+		color: var(--text-muted);
+		cursor: pointer;
+		border-radius: var(--radius-sm);
+		transition: all var(--transition-fast);
+	}
+	.delete-btn:hover {
+		background: rgba(239, 68, 68, 0.15);
+		color: var(--error);
+	}
+	.fillings-table tbody tr:hover {
+		background: var(--bg-card-hover);
+	}
+	.fillings-loading,
+	.fillings-empty,
+	.fillings-error {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 2rem;
+		color: var(--text-secondary);
+	}
+	.fillings-error p {
+		color: var(--error);
+	}
+	.tanking-section h2 {
+		font-size: 1rem;
+		font-weight: 600;
+		color: var(--text-secondary);
+		margin-bottom: 1rem;
+		text-align: center;
+	}
+</style>
