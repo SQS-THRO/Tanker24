@@ -104,17 +104,17 @@ participant "Backend\n(FastAPI)" as BE
 database "PostgreSQL" as DB
 
 User -> FE: Opens account page, selects a car,\nfills form (litres, price/litre, mileage, fuel type)
-FE -> BE: POST /api/v0/cars/{car_id}/history\n{mileage, price_per_litre, litres, fuel_type_id}\n(Authorization: Bearer <JWT>)
+FE -> BE: POST /api/v0/fillings/create\n(Authorization: Bearer <JWT>)
 
 BE -> BE: Validates JWT, extracts user ID
-BE -> DB: SELECT * FROM cars WHERE id = car_id AND owner_id = user_id
+BE -> DB: Check if the car already exists or create a new one
 DB --> BE: Car record (or 404)
 
-BE -> DB: SELECT * FROM fuel_types WHERE id = fuel_type_id
+BE -> DB: Get FuelTypes from database for foreign key
 DB --> BE: FuelType (diesel/e5/e10)
 
-BE -> DB: INSERT INTO history_records\n(timestamp, mileage, price_per_litre, litres, car_id, fuel_type_id)
-BE --> FE: 201 Created {id, timestamp, mileage, price_per_litre, litres, car_id, fuel_type_id}
+BE -> DB: Create history record with reference to car and fuel type
+BE --> FE: 200 OK 
 
 FE -> FE: Updates history list on account page
 FE --> User: "Filling recorded. Total: €XX.XX"
