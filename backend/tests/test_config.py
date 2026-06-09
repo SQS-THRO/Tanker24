@@ -1,3 +1,6 @@
+import os
+from unittest.mock import patch
+
 import pytest
 
 from app.config import Settings
@@ -105,3 +108,160 @@ def test_unsupported_db_type_raises_value_error() -> None:
 
 	with pytest.raises(ValueError, match="Unsupported DB_TYPE: mysql"):
 		_ = settings.database_url
+
+
+class TestCorsOrigins:
+	def test_multiple_valid_origins(self) -> None:
+		with patch.dict(
+			os.environ,
+			{
+				"SECRET": "test-secret",
+				"CORS_ORIGINS": "https://app.example.com,http://localhost:3000",
+			},
+		):
+			settings = Settings()
+			assert settings.cors_origins == [
+				"https://app.example.com",
+				"http://localhost:3000",
+			]
+
+	def test_single_valid_origin(self) -> None:
+		with patch.dict(
+			os.environ,
+			{"SECRET": "test-secret", "CORS_ORIGINS": "https://myapp.com"},
+		):
+			settings = Settings()
+			assert settings.cors_origins == ["https://myapp.com"]
+
+	def test_empty_string_returns_empty_list(self) -> None:
+		with patch.dict(
+			os.environ,
+			{"SECRET": "test-secret", "CORS_ORIGINS": ""},
+		):
+			settings = Settings()
+			assert settings.cors_origins == []
+
+	def test_missing_env_var_returns_empty_list(self) -> None:
+		with patch.dict(
+			os.environ,
+			{"SECRET": "test-secret"},
+			clear=True,
+		):
+			settings = Settings()
+			assert settings.cors_origins == []
+
+	def test_https_origin_accepted(self) -> None:
+		with patch.dict(
+			os.environ,
+			{"SECRET": "test-secret", "CORS_ORIGINS": "https://secure.example.com"},
+		):
+			settings = Settings()
+			assert settings.cors_origins == ["https://secure.example.com"]
+
+	def test_http_origin_accepted(self) -> None:
+		with patch.dict(
+			os.environ,
+			{"SECRET": "test-secret", "CORS_ORIGINS": "http://localhost:8080"},
+		):
+			settings = Settings()
+			assert settings.cors_origins == ["http://localhost:8080"]
+
+	def test_whitespace_around_origins_is_stripped(self) -> None:
+		with patch.dict(
+			os.environ,
+			{
+				"SECRET": "test-secret",
+				"CORS_ORIGINS": "  https://example.com  ,  http://localhost:3000  ",
+			},
+		):
+			settings = Settings()
+			assert settings.cors_origins == [
+				"https://example.com",
+				"http://localhost:3000",
+			]
+
+	def test_trailing_comma_handled(self) -> None:
+		with patch.dict(
+			os.environ,
+			{
+				"SECRET": "test-secret",
+				"CORS_ORIGINS": "https://example.com,",
+			},
+		):
+			settings = Settings()
+			assert settings.cors_origins == ["https://example.com"]
+
+	def test_origin_with_path_accepted(self) -> None:
+		with patch.dict(
+			os.environ,
+			{
+				"SECRET": "test-secret",
+				"CORS_ORIGINS": "https://example.com/subpath",
+			},
+		):
+			settings = Settings()
+			assert settings.cors_origins == ["https://example.com/subpath"]
+
+	def test_origin_with_port_accepted(self) -> None:
+		with patch.dict(
+			os.environ,
+			{
+				"SECRET": "test-secret",
+				"CORS_ORIGINS": "http://localhost:3000",
+			},
+		):
+			settings = Settings()
+			assert settings.cors_origins == ["http://localhost:3000"]
+
+	def test_missing_protocol_raises_value_error(self) -> None:
+		with patch.dict(
+			os.environ,
+			{
+				"SECRET": "test-secret",
+				"CORS_ORIGINS": "example.com",
+			},
+		):
+			with pytest.raises(
+				ValueError,
+				match=r"Invalid CORS origin format: example\.com. Must be a valid URL starting with http:// or https://.",
+			):
+				Settings()
+
+	def test_ftp_protocol_raises_value_error(self) -> None:
+		with patch.dict(
+			os.environ,
+			{
+				"SECRET": "test-secret",
+				"CORS_ORIGINS": "ftp://example.com",
+			},
+		):
+			with pytest.raises(
+				ValueError,
+				match=r"Invalid CORS origin format: ftp://example\.com. Must be a valid URL starting with http:// or https://.",
+			):
+				Settings()
+
+	def test_empty_origin_after_strip_raises_value_error(self) -> None:
+		with patch.dict(
+			os.environ,
+			{
+				"SECRET": "test-secret",
+				"CORS_ORIGINS": "https://valid.com, ,",
+			},
+		):
+			settings = Settings()
+			assert settings.cors_origins == ["https://valid.com"]
+
+	def test_invalid_among_valid_raises_value_error(self) -> None:
+		with patch.dict(
+			os.environ,
+			{
+				"SECRET": "test-secret",
+				"CORS_ORIGINS": "https://valid.com,not-a-url",
+			},
+		):
+			with pytest.raises(
+				ValueError,
+				match=r"Invalid CORS origin format: not-a-url.",
+			):
+				Settings()
