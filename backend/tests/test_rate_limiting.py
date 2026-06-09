@@ -2,13 +2,45 @@
 Tests for rate limiting on the nearby stations endpoint.
 """
 
+from unittest.mock import MagicMock, patch
+
 import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 
+from app.limiter import get_rate_limit_key, limiter
 from app.main import app
-from app.limiter import limiter
 from app.database import get_db
+
+
+class TestGetRateLimitKey:
+	def test_returns_user_based_key_when_user_in_state(self):
+		request = MagicMock()
+		request.state.user.id = 42
+
+		key = get_rate_limit_key(request)
+
+		assert key == "user:42"
+
+	def test_falls_back_to_remote_address_when_no_user_in_state(self):
+		request = MagicMock()
+		del request.state.user
+
+		with patch("app.limiter.get_remote_address", return_value="1.2.3.4") as mock_get_remote:
+			key = get_rate_limit_key(request)
+
+		assert key == "1.2.3.4"
+		mock_get_remote.assert_called_once_with(request)
+
+	def test_falls_back_to_remote_address_when_user_has_no_id(self):
+		request = MagicMock()
+		request.state.user = MagicMock(spec=[])
+
+		with patch("app.limiter.get_remote_address", return_value="5.6.7.8") as mock_get_remote:
+			key = get_rate_limit_key(request)
+
+		assert key == "5.6.7.8"
+		mock_get_remote.assert_called_once_with(request)
 
 
 @pytest.fixture
@@ -89,7 +121,7 @@ async def test_nearby_stations_rate_limit(auth_headers, clear_rate_limit_storage
 		# Make requests up to the limit
 		# The default rate limit is 10/minute, so we make 11 requests
 		responses = []
-		for i in range(11):
+		for _ in range(11):
 			response = await client.get(
 				"/api/v0/stations/nearby?latitude=48.1&longitude=11.5",
 				headers=auth_headers,

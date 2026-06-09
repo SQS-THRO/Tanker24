@@ -54,7 +54,7 @@ Container_Boundary(backend, "Backend (FastAPI / Python)") {
 
     Component(repositories, "Repositories", "Data Access Layer", "Encapsulates all database queries via SQLAlchemy async sessions.")
 
-    Component(models_orm, "ORM Models", "SQLAlchemy Models", "Defines the database schema: User, Car, HistoryRecord, TankerkoenigStation, InvitationKey.")
+    Component(models_orm, "ORM Models", "SQLAlchemy Models", "Defines the database schema: User, Car, HistoryRecord, Station, InvitationKey.")
 
     Component(schemas, "Schemas", "Pydantic Models", "Defines API request/response schemas for validation and serialization.")
 
@@ -91,8 +91,9 @@ The router layer specifies all outward facing interfaces. They specify secured (
 |---|---|---|
 | `health.py` | `/` | Health check (`/health`) and root welcome endpoint (`/`). Unauthenticated. |
 | `auth.py` | `/api/v0/auth/jwt`, `/api/v0/users` | Login/JWT token, registration, user profile management. Powered by fastapi-users. |
-| `stations.py` | `/api/v0/stations` | CRUD for user-owned stations, nearby station search with caching. Most endpoints require authentication. |
+| `stations.py` | `/api/v0/stations` | List cached stations and nearby station search with caching. Most endpoints require authentication. |
 | `export.py` | `/api/v0/export` | JSON and CSV export of user's car and fueling history data. Requires authentication. |
+|`fillings.py`|`/api/v0/fillings`|REST endpoint for inserting and deleting filling data. Requires authentication.|
 
 ### 5.2.2 Service Layer
 
@@ -103,9 +104,9 @@ The service layer provides an abstraction layer for the business logic of the ap
 | `GasStationService` (abstract) | Interface for gas station data providers. Currently implemented by `TankerkoenigGasStationService`. |
 | `TankerkoenigGasStationService` | Communicates with the Tankerkönig REST API (`creativecommons.tankerkoenig.de/json/`). Supports area search (`list.php`) and detail lookup (`detail.php`). |
 | `NearbyStationsService` | Orchestrates station search with caching: checks the database cache first; on miss, calls the API, applies rate limiting, and updates the cache. |
-| `StationService` | CRUD operations for user-created station records. |
 | `ExportDataService` (abstract) | Interface for data export. Implemented by `NestedExportDataService` (JSON) and `FlatExportDataService` (CSV). |
 | `RateLimiter` | Token-bucket-based rate limiter for Tankerkönig API calls. Configured at 100 requests per minute. |
+|`FillingsDataService`|Handles the logic required for inserting, getting and deleting fillings with the repository layer. Transforms data where necessary.|
 
 ### 5.2.3 Repository Layer
 
@@ -113,11 +114,11 @@ The repository layer provides an abstraction for querying information from the d
 
 | Repository | Entity | Key Operations |
 |---|---|---|
-| `StationRepository` | `Station` | CRUD scoped to owner |
-| `TankerkoenigStationRepository` | `TankerkoenigStation` | Cache lookup with spatial tolerance, upsert with stale record cleanup |
-| `CarRepository` | `Car` | Query cars by owner |
-| `HistoryRecordRepository` | `HistoryRecord` | Query history records by car |
+| `StationRepository` | `Station` | Cache lookup with spatial tolerance, upsert with stale record cleanup, list all cached stations |
+| `CarRepository` | `Car` | Create and read cars by owner |
+| `HistoryRecordRepository` | `HistoryRecord` | Create and read history records by car |
 | `InvitationKeyRepository` | `InvitationKey` | CRUD for invitation keys, lookup users by key |
+|`FuelTypeRepository`|`FuelType`|Read the fuel types by name from the database.|
 
 ### 5.2.4 Data Model (ORM)
 
@@ -172,16 +173,6 @@ entity "FuelType" as ft {
 entity "Station" as station {
     *id : int
     --
-    name : str
-    description : str (nullable)
-    latitude : float (nullable)
-    longitude : float (nullable)
-    owner_id : int (FK)
-}
-
-entity "TankerkoenigStation" as tk {
-    *id : int
-    --
     tankerkoenig_id : str (UNIQUE, UUID)
     name : str
     brand : str
@@ -204,7 +195,6 @@ entity "TankerkoenigStation" as tk {
 
 inv ||--o{ user : "activates"
 user ||--o{ car : "owns"
-user ||--o{ station : "owns"
 car ||--o{ hr : "has"
 ft ||--o{ hr : "categorizes"
 @enduml

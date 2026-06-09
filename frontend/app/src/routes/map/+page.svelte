@@ -2,14 +2,15 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 	import { resolve } from '$app/paths';
-	import { stationService, type Station, type TankerkoenigStation } from '$lib/services/stations_api';
+	import { stationService, type TankerkoenigStation } from '$lib/services/stations_api';
+	import { auth } from '$lib/stores/auth';
 	import { authService } from '$lib/services/auth_api';
 	import { goto } from '$app/navigation';
 	import Logo from '$lib/components/Logo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import AuthRequiredModal from '$lib/components/AuthRequiredModal.svelte';
 	import { t, locale } from '$lib/stores/locale';
-	import { themeStore } from '$lib/stores/theme';
+	import { themeStore, type GlobalTheme } from '$lib/stores/theme';
 	import { fuelType, fuelTypeLabel, type FuelType } from '$lib/stores/fuelType';
 	import type { Map, LayerGroup, Marker } from 'leaflet';
 	import gasStationIcon from '$lib/assets/gasstation-icons/gasstation.svg?url';
@@ -19,14 +20,15 @@
 	const DEFAULT_LNG = 12.1;
 	const DEFAULT_ZOOM = 11;
 	const NEARBY_DEBOUNCE_MS = 1500;
+	const fuelTypes: FuelType[] = ['diesel', 'e5', 'e10'];
+	const cycleOrder: GlobalTheme[] = ['dark-modern', 'light-modern', 'auto'];
 
 	let L: typeof import('leaflet').default;
-
 	let mapContainer: HTMLDivElement;
-	let stations: Station[] = $state([]);
 	let nearbyStations: TankerkoenigStation[] = $state([]);
+	let sortedNearbyStations: TankerkoenigStation[] = $state([]);
+	let minSelectedFuelPrice: number | null = $state(null);
 	let knownStations = new Map<string, TankerkoenigStation>();
-	let error = $state('');
 	let nearbyFetchError = $state('');
 	let searchQuery = $state('');
 	let userLat = $state<number | null>(null);
@@ -34,15 +36,83 @@
 	let user = $state<{ forename: string; surname?: string } | null>(null);
 	let showUserMenu = $state(false);
 	let showAuthModal = $state(false);
-	let map: Map | null = null;
+	let map: Map | null = $state(null);
+	let tileLayer: ReturnType<L['tileLayer']> | null = null;
 	let userLocationMarker: Marker | null = null;
-	let userLayerGroup: LayerGroup | null = null;
 	let nearbyLayerGroup: LayerGroup | null = null;
 	let moveDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 	let isNearbyLoading = $state(false);
 	let showFuelDropdown = $state(false);
+	let sidebarOpen = $state(false);
+	let manuallyClosed = false;
+	let nearbyMarkersMap = new Map<string, Marker>();
+	let themeInitialized = false;
+	let localeInitialized = false;
 
-	const fuelTypes: FuelType[] = ['diesel', 'e5', 'e10'];
+	$effect(() => {
+		void $themeStore.globalTheme;
+		if (!themeInitialized) {
+			themeInitialized = true;
+			return;
+		}
+		swapTileLayer(isDarkTheme());
+		refreshAllMarkers();
+	});
+
+	$effect(() => {
+		if (typeof window === 'undefined') return;
+		if ($themeStore.globalTheme === 'auto') {
+			const mq = window.matchMedia('(prefers-color-scheme: dark)');
+			const handler = () => {
+				swapTileLayer(isDarkTheme());
+				refreshAllMarkers();
+			};
+			mq.addEventListener('change', handler);
+			return () => mq.removeEventListener('change', handler);
+		}
+	});
+
+	$effect(() => {
+		void $locale;
+		if (!localeInitialized) {
+			localeInitialized = true;
+			return;
+		}
+		refreshPopups();
+	});
+
+	$effect(() => {
+		const fuel = $fuelType;
+		sortStations(fuel);
+		const prices = nearbyStations.map((s) => s[fuel]).filter((v): v is number => v !== null && v !== undefined);
+		minSelectedFuelPrice = prices.length > 0 ? Math.min(...prices) : null;
+		if (nearbyLayerGroup && nearbyStations.length > 0) {
+			updateNearbyMarkers();
+		}
+	});
+
+	$effect(() => {
+		if (nearbyStations.length >= 1 && manuallyClosed === false) {
+			sidebarOpen = true;
+		}
+	});
+
+	function cycleTheme() {
+		const current = $themeStore.globalTheme;
+		const nextIndex = (cycleOrder.indexOf(current) + 1) % cycleOrder.length;
+		themeStore.setGlobalTheme(cycleOrder[nextIndex]);
+	}
+
+	function sortStations(fuel: FuelType) {
+		sortedNearbyStations = [...nearbyStations].sort((a, b) => {
+			const pA = a[fuel];
+			const pB = b[fuel];
+			if (pA === null && pB === null) return 0;
+			if (pA === null) return 1;
+			if (pB === null) return -1;
+			return pA - pB;
+		});
+	}
 
 	function debounce(fn: () => void, ms: number) {
 		if (moveDebounceTimer) clearTimeout(moveDebounceTimer);
@@ -52,8 +122,17 @@
 		}, ms);
 	}
 
+	function isDarkTheme(): boolean {
+		const theme = $themeStore.globalTheme;
+		if (theme === 'auto') {
+			if (typeof window === 'undefined') return true;
+			return window.matchMedia('(prefers-color-scheme: dark)').matches;
+		}
+		return theme === 'dark-modern';
+	}
+
 	function getStationIconUrl() {
-		return $themeStore.globalTheme === 'light-modern' ? gasStationIcon : gasStationDarkIcon;
+		return isDarkTheme() ? gasStationDarkIcon : gasStationIcon;
 	}
 
 	function refreshAllMarkers() {
@@ -65,34 +144,6 @@
 			const center = map.getCenter();
 			fetchNearbyStations(center.lat, center.lng);
 		}
-
-		// Refresh user's saved stations
-		if (userLayerGroup && stations.length > 0) {
-			userLayerGroup.clearLayers();
-			const iconUrl = getStationIconUrl();
-			stations.forEach((station) => {
-				if (station.latitude !== null && station.longitude !== null) {
-					const stationIcon = L.divIcon({
-						className: 'station-marker',
-						html: `
-							<div class="station-marker-inner">
-								<img src="${iconUrl}" alt="Station" width="24" height="24" />
-							</div>
-						`,
-						iconSize: [40, 40],
-						iconAnchor: [20, 40],
-						popupAnchor: [0, -40]
-					});
-					const popupContent = `
-						<div class="popup station-popup">
-							<h4>${station.name}</h4>
-							${station.description ? `<p>${station.description}</p>` : ''}
-						</div>
-					`;
-					L.marker([station.latitude, station.longitude], { icon: stationIcon }).bindPopup(popupContent).addTo(userLayerGroup!);
-				}
-			});
-		}
 	}
 
 	function refreshPopups() {
@@ -100,33 +151,6 @@
 
 		if (userLocationMarker && userLat !== null && userLng !== null) {
 			userLocationMarker.setPopupContent(`<div class="popup user-popup"><strong>${$t.map.yourLocation}</strong></div>`);
-		}
-
-		if (userLayerGroup && stations.length > 0) {
-			userLayerGroup.clearLayers();
-			const iconUrl = getStationIconUrl();
-			stations.forEach((station) => {
-				if (station.latitude !== null && station.longitude !== null) {
-					const stationIcon = L.divIcon({
-						className: 'station-marker',
-						html: `
-							<div class="station-marker-inner">
-								<img src="${iconUrl}" alt="Station" width="24" height="24" />
-							</div>
-						`,
-						iconSize: [40, 40],
-						iconAnchor: [20, 40],
-						popupAnchor: [0, -40]
-					});
-					const popupContent = `
-						<div class="popup station-popup">
-							<h4>${station.name}</h4>
-							${station.description ? `<p>${station.description}</p>` : ''}
-						</div>
-					`;
-					L.marker([station.latitude, station.longitude], { icon: stationIcon }).bindPopup(popupContent).addTo(userLayerGroup!);
-				}
-			});
 		}
 
 		updateNearbyMarkers();
@@ -140,32 +164,30 @@
 		if (map) map.zoomOut();
 	}
 
-	let themeInitialized = false;
-	$effect(() => {
-		void $themeStore.globalTheme;
-		if (!themeInitialized) {
-			themeInitialized = true;
-			return;
-		}
-		refreshAllMarkers();
-	});
+	function getTileUrl(isDark: boolean) {
+		return isDark ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+	}
 
-	let localeInitialized = false;
-	$effect(() => {
-		void $locale;
-		if (!localeInitialized) {
-			localeInitialized = true;
-			return;
-		}
-		refreshPopups();
-	});
+	function swapTileLayer(isDark: boolean) {
+		if (!map || !tileLayer || !L) return;
+		map.removeLayer(tileLayer);
+		const url = getTileUrl(isDark);
+		tileLayer = L.tileLayer(url, {
+			maxZoom: 19,
+			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+			errorTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+		}).addTo(map);
+	}
 
-	$effect(() => {
-		void $fuelType;
-		if (nearbyLayerGroup && nearbyStations.length > 0) {
-			updateNearbyMarkers();
-		}
-	});
+	function closeSidebar() {
+		manuallyClosed = true;
+		sidebarOpen = false;
+	}
+
+	function openSidebar() {
+		manuallyClosed = false;
+		sidebarOpen = true;
+	}
 
 	function getUserLocation(): Promise<{ lat: number; lng: number }> {
 		return new Promise((resolve) => {
@@ -189,43 +211,20 @@
 		});
 	}
 
-	async function loadUser() {
-		const token = localStorage.getItem('token');
-		if (token) {
-			try {
-				user = await authService.getCurrentUser(token);
-			} catch {
-				user = null;
-			}
+	function focusStation(station: TankerkoenigStation) {
+		if (!map) return;
+		map.setView([station.latitude, station.longitude], 15, { animate: true });
+		const marker = nearbyMarkersMap.get(station.tankerkoenig_id);
+		if (marker) {
+			setTimeout(() => marker.openPopup(), 400);
 		}
-	}
-
-	async function fetchNearbyStations(lat: number, lng: number) {
-		const token = localStorage.getItem('token');
-		if (!token || !map) return;
-
-		isNearbyLoading = true;
-		nearbyFetchError = '';
-
-		try {
-			const fresh = await stationService.getNearbyStations(lat, lng, token);
-			for (const station of fresh) {
-				knownStations.set(station.tankerkoenig_id, station);
-			}
-			nearbyStations = Array.from(knownStations.values());
-		} catch {
-			nearbyFetchError = $t.map.nearbyFetchFailed;
-		} finally {
-			isNearbyLoading = false;
-		}
-
-		updateNearbyMarkers();
 	}
 
 	function updateNearbyMarkers() {
 		if (!nearbyLayerGroup || !map || !L) return;
 
 		nearbyLayerGroup.clearLayers();
+		nearbyMarkersMap.clear();
 
 		const selectedFuel = $fuelType;
 
@@ -300,8 +299,43 @@
 				popupAnchor: [0, -20]
 			});
 
-			L.marker([station.latitude, station.longitude], { icon: stationIcon }).bindPopup(popupContent).addTo(nearbyLayerGroup);
+			const marker = L.marker([station.latitude, station.longitude], { icon: stationIcon }).bindPopup(popupContent).addTo(nearbyLayerGroup);
+			nearbyMarkersMap.set(station.tankerkoenig_id, marker);
 		});
+	}
+
+	async function loadUser() {
+		const token = localStorage.getItem('token');
+		if (token) {
+			try {
+				user = await authService.getCurrentUser(token);
+			} catch {
+				user = null;
+			}
+		}
+	}
+
+	async function fetchNearbyStations(lat: number, lng: number) {
+		const token = localStorage.getItem('token');
+		if (!token || !map) return;
+
+		isNearbyLoading = true;
+		nearbyFetchError = '';
+
+		try {
+			const fresh = await stationService.getNearbyStations(lat, lng, token);
+			for (const station of fresh) {
+				knownStations.set(station.tankerkoenig_id, station);
+			}
+			nearbyStations = Array.from(knownStations.values());
+			sortStations($fuelType);
+		} catch {
+			nearbyFetchError = $t.map.nearbyFetchFailed;
+		} finally {
+			isNearbyLoading = false;
+		}
+
+		updateNearbyMarkers();
 	}
 
 	async function handleMapSearch() {
@@ -311,8 +345,7 @@
 	}
 
 	async function logout() {
-		await authService.logout();
-		localStorage.removeItem('token');
+		await auth.logout();
 		user = null;
 		showUserMenu = false;
 		await goto(resolve('/'));
@@ -332,26 +365,17 @@
 
 		await loadUser();
 
-		try {
-			stations = await stationService.getStations(token);
-		} catch {
-			error = $t.map.loginRequired;
-		}
-
 		const { lat, lng } = await getUserLocation();
 		userLat = lat;
 		userLng = lng;
 
 		map = L.map(mapContainer, { zoomControl: false }).setView([lat, lng], DEFAULT_ZOOM);
 
-		userLayerGroup = L.layerGroup().addTo(map);
 		nearbyLayerGroup = L.layerGroup().addTo(map);
 
-		const isDarkTheme = $themeStore.globalTheme === 'dark-modern';
-		const tileUrl = isDarkTheme ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 		const fallbackUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-		L.tileLayer(tileUrl, {
+		tileLayer = L.tileLayer(getTileUrl(isDarkTheme()), {
 			maxZoom: 19,
 			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 			errorTileUrl: fallbackUrl
@@ -371,33 +395,6 @@
 			});
 			userLocationMarker = L.marker([userLat, userLng], { icon: userIcon }).addTo(map);
 			userLocationMarker.bindPopup(`<div class="popup user-popup"><strong>${$t.map.yourLocation}</strong></div>`).openPopup();
-		}
-
-		// Create user's saved station markers
-		if (userLayerGroup && stations.length > 0) {
-			const iconUrl = getStationIconUrl();
-			stations.forEach((station) => {
-				if (station.latitude !== null && station.longitude !== null) {
-					const stationIcon = L.divIcon({
-						className: 'station-marker',
-						html: `
-							<div class="station-marker-inner">
-								<img src="${iconUrl}" alt="Station" width="24" height="24" />
-							</div>
-						`,
-						iconSize: [40, 40],
-						iconAnchor: [20, 40],
-						popupAnchor: [0, -40]
-					});
-					const popupContent = `
-						<div class="popup station-popup">
-							<h4>${station.name}</h4>
-							${station.description ? `<p>${station.description}</p>` : ''}
-						</div>
-					`;
-					L.marker([station.latitude, station.longitude], { icon: stationIcon }).bindPopup(popupContent).addTo(userLayerGroup!);
-				}
-			});
 		}
 
 		await fetchNearbyStations(lat, lng);
@@ -423,7 +420,14 @@
 <main>
 	<AuthRequiredModal show={showAuthModal} />
 	<div class="map-header glass">
-		<a href={resolve('/')} class="navbar-logo">
+		<button class="sidebar-toggle glass" onclick={() => openSidebar()} aria-label="Toggle station list">
+			<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+				<line x1="3" y1="6" x2="21" y2="6" />
+				<line x1="3" y1="12" x2="21" y2="12" />
+				<line x1="3" y1="18" x2="21" y2="18" />
+			</svg>
+		</button>
+		<a href={resolve('/')} class="navbar-logo header-logo">
 			<Logo size={28} />
 			<span>Tanker24</span>
 		</a>
@@ -488,8 +492,33 @@
 
 		<div class="header-actions">
 			<LanguageSwitcher />
+			<button class="theme-toggle header-theme-toggle" onclick={cycleTheme} aria-label="Toggle theme">
+				{#if $themeStore.globalTheme === 'dark-modern'}
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+					</svg>
+				{:else if $themeStore.globalTheme === 'light-modern'}
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<circle cx="12" cy="12" r="5" />
+						<line x1="12" y1="1" x2="12" y2="3" />
+						<line x1="12" y1="21" x2="12" y2="23" />
+						<line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+						<line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+						<line x1="1" y1="12" x2="3" y2="12" />
+						<line x1="21" y1="12" x2="23" y2="12" />
+						<line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+						<line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+					</svg>
+				{:else}
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="12" cy="12" r="9" />
+						<path d="M8 17l4-10 4 10" />
+						<path d="M10 13h4" />
+					</svg>
+				{/if}
+			</button>
 			{#if user}
-				<div class="profile-wrapper">
+				<div class="profile-wrapper header-profile">
 					<button class="user-btn" onclick={() => (showUserMenu = !showUserMenu)}>
 						<span class="user-avatar">
 							{user.forename[0]}{user.surname?.[0] || ''}
@@ -527,18 +556,6 @@
 		</div>
 	</div>
 
-	{#if error}
-		<div class="error-banner">
-			<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-				<circle cx="12" cy="12" r="10" />
-				<line x1="12" y1="8" x2="12" y2="12" />
-				<line x1="12" y1="16" x2="12.01" y2="16" />
-			</svg>
-			{error}
-			<a href={resolve('/login')} class="btn btn-sm">{$t.map.login}</a>
-		</div>
-	{/if}
-
 	{#if nearbyFetchError}
 		<div class="nearby-error-banner">
 			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -550,17 +567,94 @@
 		</div>
 	{/if}
 
+	<div class="station-sidebar" class:open={sidebarOpen}>
+		<div class="sidebar-header">
+			<h3>{$t.map.nearby} <span class="station-count-badge">{nearbyStations.length}</span></h3>
+			<button class="sidebar-close" onclick={() => closeSidebar()} aria-label="Close sidebar">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<line x1="18" y1="6" x2="6" y2="18" />
+					<line x1="6" y1="6" x2="18" y2="18" />
+				</svg>
+			</button>
+		</div>
+		<div class="sidebar-list">
+			{#if isNearbyLoading && nearbyStations.length === 0}
+				<div class="sidebar-loading">{$t.map.selectFuel}...</div>
+			{:else if nearbyStations.length === 0}
+				<div class="sidebar-empty">{$t.map.nearbyFetchFailed}</div>
+			{:else}
+				{#each sortedNearbyStations as station (station.tankerkoenig_id)}
+					{@const address = [station.street, station.house_number, station.post_code, station.place].filter(Boolean).join(', ')}
+					{@const price = station[$fuelType] as number | null}
+					{@const isCheapest = price !== null && minSelectedFuelPrice !== null && price === minSelectedFuelPrice}
+					<button class="station-card" onclick={() => focusStation(station)}>
+						<div class="station-card-header">
+							<h4>{station.name}</h4>
+							<span class="station-card-brand">{station.brand}</span>
+						</div>
+						{#if address}
+							<div class="station-card-address">{address}</div>
+						{/if}
+						<div class="station-card-meta">
+							<span class="open-badge {station.is_open ? 'open' : 'closed'}">
+								● {station.is_open ? $t.map.open : $t.map.closed}
+							</span>
+							{#if userLat !== null && userLng !== null && station.latitude !== null && station.longitude !== null}
+								<span class="station-card-distance">
+									<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+										<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+										<circle cx="12" cy="9" r="2.5" />
+									</svg>
+									{map ? (map.distance([station.latitude, station.longitude], [userLat, userLng]) / 1000).toFixed(1) : '?'}
+									{$t.map.kilometers}
+								</span>
+							{/if}
+						</div>
+						<div class="station-card-price" class:cheapest={isCheapest}>
+							{#if price !== null}
+								{Math.trunc(price)}{$t.map.priceDevider}{price.toFixed(3).split('.')[1]}€
+							{:else}
+								—
+							{/if}
+						</div>
+					</button>
+				{/each}
+			{/if}
+		</div>
+	</div>
+
 	<div class="map-container" bind:this={mapContainer}></div>
 
 	<div class="map-controls glass">
 		<div class="station-count">
-			<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-				<path d="M3 22V8l9-6 9 6v14H3z" />
-				<path d="M9 22V12h6v10" />
+			<svg height="18" width="18" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
+				<style type="text/css">
+					.st0 {
+						fill: var(--text-secondary);
+					}
+				</style>
+				<g>
+					<path
+						class="st0"
+						d="M485.395,158.609c-7.296-8.514-12.122-13.426-20.826-22.348c-27.93-28.573-53.191-53.843-53.218-53.869
+						l-12.591-12.6l-17.435,17.026l36.061,54.731l0.374,0.765c0.191,0.591,0.374,1.566,0.374,2.826c0.052,2.704-0.974,6.609-2.479,9.313
+						l-3.165,5.826c-3.661,6.756-5.713,21.113-5.705,28.574c-0.008,7.182,1.696,14.4,5.114,20.982l6.235,12.026
+						c7.295,14.07,21.347,23.148,36.991,24.348l3,0.939c0,39.574,0,88.904,0,126.835c-0.052,11.043-3.296,17.617-6.888,21.635
+						c-3.652,3.991-7.965,5.634-11.913,5.644c-3.826-0.07-7.217-1.348-10.417-4.948c-3.13-3.617-6.365-10.295-6.4-22.33
+						c0-35.618,0-44.522,0-66.783c-0.009-7.113-1.436-14.156-4.044-20.974c-3.93-10.191-10.601-20-20.348-27.582
+						c-9.678-7.583-22.678-12.592-37.226-12.539c-1.704,0-3.425,0.096-5.164,0.226V47.956C355.726,21.469,334.256,0,307.769,0H97.378
+						C70.891,0,49.422,21.469,49.422,47.956v406.166H18.256V512h368.634v-57.878h-31.165V282.174c1.843-0.27,3.6-0.452,5.164-0.452
+						c4.496,0.017,8.01,0.93,11.096,2.4c4.592,2.192,8.374,5.896,11.026,10.348c2.67,4.382,3.922,9.461,3.879,12.73
+						c0,22.261,0,31.165,0,66.783c-0.035,18.556,5.312,34.417,15.13,45.695c9.739,11.305,23.66,17.279,37.304,17.209
+						c14.183,0.008,28.174-6.165,38.296-17.339c10.174-11.165,16.174-27.148,16.122-45.565c0-57.878,0-150.261,0-185.878
+						C493.743,171.409,492.074,166.4,485.395,158.609z M284.491,227.061H120.656V71.235h163.834V227.061z M458.126,212.009
+						c0,2.808-1.609,4.122-3.896,4.078c-4.304-0.07-11.009-1-13.913-5.722c-5.191-8.435-12.183-24.87-4.609-37.756
+						c0.808-1.374,2.574-3.583,5.722-1.478l10.13,9.304c4.182,3.826,6.565,9.226,6.565,14.895
+						C458.126,195.33,458.126,209.2,458.126,212.009z"
+					/>
+				</g>
 			</svg>
-			<span>{stations.length} {$t.map.myStations}</span>
 			{#if nearbyStations.length > 0}
-				<span class="separator">·</span>
 				<span>
 					{nearbyStations.length}
 					{$t.map.nearby}

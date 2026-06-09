@@ -29,7 +29,7 @@ describe('themeStore', () => {
 	test('initializes with default settings when no stored value', async () => {
 		const { themeStore } = await import('$lib/stores/theme');
 		const settings = get(themeStore);
-		expect(settings.globalTheme).toBe('dark-modern');
+		expect(settings.globalTheme).toBe('auto');
 		expect(settings.colorBlindOverride).toBe('none');
 	});
 
@@ -54,7 +54,7 @@ describe('themeStore', () => {
 		themeStore.setColorBlindOverride('deuteranopia');
 		const settings = get(themeStore);
 		expect(settings.colorBlindOverride).toBe('deuteranopia');
-		expect(mockLocalStorage.setItem).toHaveBeenCalledWith('theme-settings', JSON.stringify({ globalTheme: 'dark-modern', colorBlindOverride: 'deuteranopia' }));
+		expect(mockLocalStorage.setItem).toHaveBeenCalledWith('theme-settings', JSON.stringify({ globalTheme: 'auto', colorBlindOverride: 'deuteranopia' }));
 	});
 
 	test('reset restores default settings', async () => {
@@ -62,7 +62,7 @@ describe('themeStore', () => {
 		themeStore.setColorBlindOverride('tritanopia');
 		themeStore.reset();
 		const settings = get(themeStore);
-		expect(settings.globalTheme).toBe('dark-modern');
+		expect(settings.globalTheme).toBe('auto');
 		expect(settings.colorBlindOverride).toBe('none');
 	});
 
@@ -87,7 +87,7 @@ describe('themeStore', () => {
 		vi.resetModules();
 		const { themeStore } = await import('$lib/stores/theme');
 		const settings = get(themeStore);
-		expect(settings.globalTheme).toBe('dark-modern');
+		expect(settings.globalTheme).toBe('auto');
 		expect(settings.colorBlindOverride).toBe('none');
 	});
 
@@ -96,14 +96,14 @@ describe('themeStore', () => {
 		themeStore.setGlobalTheme('light-modern');
 		mockLocalStorage.setItem.mockClear();
 		themeStore.reset();
-		expect(mockLocalStorage.setItem).toHaveBeenLastCalledWith('theme-settings', JSON.stringify({ globalTheme: 'dark-modern', colorBlindOverride: 'none' }));
+		expect(mockLocalStorage.setItem).toHaveBeenLastCalledWith('theme-settings', JSON.stringify({ globalTheme: 'auto', colorBlindOverride: 'none' }));
 	});
 
 	test('setColorBlindOverride persists to localStorage', async () => {
 		const { themeStore } = await import('$lib/stores/theme');
 		mockLocalStorage.setItem.mockClear();
 		themeStore.setColorBlindOverride('protanopia');
-		expect(mockLocalStorage.setItem).toHaveBeenLastCalledWith('theme-settings', JSON.stringify({ globalTheme: 'dark-modern', colorBlindOverride: 'protanopia' }));
+		expect(mockLocalStorage.setItem).toHaveBeenLastCalledWith('theme-settings', JSON.stringify({ globalTheme: 'auto', colorBlindOverride: 'protanopia' }));
 	});
 
 	test('setGlobalTheme persists to localStorage', async () => {
@@ -129,7 +129,7 @@ describe('themeStore in non-browser environment', () => {
 		vi.resetModules();
 		const { themeStore } = await import('$lib/stores/theme');
 		const settings = get(themeStore);
-		expect(settings.globalTheme).toBe('dark-modern');
+		expect(settings.globalTheme).toBe('auto');
 		expect(settings.colorBlindOverride).toBe('none');
 		expect(mockLocalStorage.getItem).not.toHaveBeenCalledWith('theme-settings');
 	});
@@ -201,9 +201,9 @@ describe('GLOBAL_THEMES', () => {
 		expect(GLOBAL_THEMES).toContainEqual({ id: 'light-modern', name: 'Light Modern' });
 	});
 
-	test('contains exactly two themes', async () => {
+	test('contains exactly three themes', async () => {
 		const { GLOBAL_THEMES } = await import('$lib/stores/theme');
-		expect(GLOBAL_THEMES).toHaveLength(2);
+		expect(GLOBAL_THEMES).toHaveLength(3);
 	});
 });
 

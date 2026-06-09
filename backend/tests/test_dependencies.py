@@ -1,14 +1,18 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, MagicMock
 
 from app.dependencies import (
+	get_fillings_service,
+	get_current_user_with_request_state,
 	get_flat_export_data_service,
 	get_nested_export_data_service,
 )
+
 from app.services.export_data_service import (
 	ExportDataService,
 	FlatExportDataService,
 	NestedExportDataService,
 )
+from app.services.fillings_service import FillingsService
 
 
 class TestDependencies:
@@ -28,4 +32,19 @@ class TestDependencies:
 
 		assert isinstance(service, FlatExportDataService)
 		assert isinstance(service, ExportDataService)
+		assert service.db is db
+
+	def test_get_current_user_with_request_state_sets_user_on_state(self):
+		request = MagicMock()
+		user = MagicMock()
+
+		result = get_current_user_with_request_state(request, user)
+
+		assert request.state.user is user
+		assert result is user
+
+	def test_get_fillings_service_returns_fillings_service(self):
+		db = Mock()
+		service = get_fillings_service(db)
+		assert isinstance(service, FillingsService)
 		assert service.db is db

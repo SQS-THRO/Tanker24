@@ -1,8 +1,10 @@
+import logging
 from io import StringIO
 import csv
 
 
 from fastapi import APIRouter, Depends, status
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 from typing import Annotated
@@ -14,6 +16,7 @@ from app.schemas.user import UserRead
 from app.services.export_data_service import ExportDataService
 from app.dependencies import get_flat_export_data_service, get_nested_export_data_service
 
+logger = logging.getLogger("app.routers.export")
 router = APIRouter(prefix="/export", tags=["export"])
 
 
@@ -29,7 +32,10 @@ async def get_user_data_as_json(
 	service: Annotated[ExportDataService, Depends(get_nested_export_data_service)],
 ) -> JSONResponse:
 	result = await service.get_user_data(user.id)
-	return JSONResponse(content=result, headers={"Content-Disposition": "attachment; filename=user_data.json"})
+	logger.info(f"Exporting data as json for {user.email}.")
+	return JSONResponse(
+		content=jsonable_encoder(result), headers={"Content-Disposition": "attachment; filename=user_data.json"}
+	)
 
 
 # Returns a csv file containing the user data. As csv files can't contain nested data the car_id is part of each row
@@ -44,6 +50,7 @@ async def get_user_data_as_csv(
 	user: Annotated[UserRead, Depends(get_current_active_user)],
 	service: Annotated[ExportDataService, Depends(get_flat_export_data_service)],
 ) -> StreamingResponse:
+	logger.info(f"Exporting data as csv for {user.email}.")
 	result = await service.get_user_data(user.id)
 
 	# Fill an StringIO pseudo file with the data
@@ -62,6 +69,7 @@ async def get_user_data_as_csv(
 			"litres",
 			"total_price",
 			"fuel_type",
+			"tankerkoenig_station_id",
 		],
 	)
 	writer.writeheader()

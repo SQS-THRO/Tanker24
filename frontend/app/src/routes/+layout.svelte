@@ -2,10 +2,11 @@
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import faviconDark from '$lib/assets/favicon-dark.svg';
-	import { themeStore, CVD_PALETTES, THEME_PALETTES } from '$lib/stores/theme';
+	import { themeStore, CVD_PALETTES, THEME_PALETTES, type GlobalTheme } from '$lib/stores/theme';
 	import { privacyStore } from '$lib/stores/privacy';
 	import { onMount } from 'svelte';
 	import { dev } from '$app/environment';
+	import { onNavigate } from '$app/navigation';
 	import ConsentModal from '$lib/components/ConsentModal.svelte';
 
 	let { children } = $props();
@@ -31,11 +32,29 @@
 		}
 	});
 
+	onNavigate((navigation) => {
+		if (!document.startViewTransition) return;
+
+		return new Promise<void>((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
+	});
+
+	function getEffectiveTheme(theme: GlobalTheme): 'dark-modern' | 'light-modern' {
+		if (theme !== 'auto') return theme;
+		if (typeof window === 'undefined') return 'dark-modern';
+		return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark-modern' : 'light-modern';
+	}
+
 	function applyThemeVariables(override: keyof typeof CVD_PALETTES) {
 		if (typeof document === 'undefined') return;
 
 		const globalTheme = $themeStore.globalTheme;
-		const basePalette = THEME_PALETTES[globalTheme];
+		const effectiveTheme = getEffectiveTheme(globalTheme);
+		const basePalette = THEME_PALETTES[effectiveTheme];
 		const cvdPalette = CVD_PALETTES[override];
 		const root = document.documentElement;
 
@@ -56,7 +75,7 @@
 		root.style.setProperty('--error', accentSource.error);
 		root.style.setProperty('--warning', accentSource.warning);
 
-		if (globalTheme === 'light-modern') {
+		if (effectiveTheme === 'light-modern') {
 			document.body.classList.add('light-theme');
 		} else {
 			document.body.classList.remove('light-theme');
@@ -80,6 +99,18 @@
 	$effect(() => {
 		applyThemeVariables($themeStore.colorBlindOverride);
 	});
+
+	$effect(() => {
+		if (typeof window === 'undefined') return;
+		if ($themeStore.globalTheme === 'auto') {
+			const mq = window.matchMedia('(prefers-color-scheme: dark)');
+			const handler = () => {
+				applyThemeVariables($themeStore.colorBlindOverride);
+			};
+			mq.addEventListener('change', handler);
+			return () => mq.removeEventListener('change', handler);
+		}
+	});
 </script>
 
 <svelte:head>
@@ -92,7 +123,7 @@
 			crossorigin=""
 		></script>
 	{/if}
-	<link rel="icon" href={$themeStore.globalTheme === 'dark-modern' ? faviconDark : favicon} />
+	<link rel="icon" href={$themeStore.globalTheme !== 'light-modern' ? faviconDark : favicon} />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />

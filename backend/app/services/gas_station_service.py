@@ -37,8 +37,15 @@ class TankerkoenigGasStationService(GasStationService):
 		params = {"id": id, "apikey": self.api_key}
 
 		logger.debug("Fetching gas station by id=%s", id)
-		response = httpx.get(self.BASE_URL + endpoint_url, params=params, timeout=10.0)
-		response.raise_for_status()
+		try:
+			response = httpx.get(self.BASE_URL + endpoint_url, params=params, timeout=10.0)
+			response.raise_for_status()
+		except httpx.HTTPStatusError as e:
+			logger.exception("Tankerkoenig API returned HTTP error for station id=%s: %s", id, e.response.status_code)
+			raise RuntimeError("Tankerkoenig API returned an HTTP error.") from e
+		except httpx.RequestError as e:
+			logger.error("Failed to connect to Tankerkoenig API for station id=%s", id)
+			raise RuntimeError("Failed to connect to Tankerkoenig API.") from e
 
 		data = response.json()
 
@@ -100,8 +107,20 @@ class TankerkoenigGasStationService(GasStationService):
 		}
 
 		logger.debug("Fetching nearby stations: lat=%.4f lon=%.4f radius=%.1f", latitude, longitude, radius)
-		response = httpx.get(self.BASE_URL + endpoint_url, params=params, timeout=10.0)  # type: ignore[arg-type]
-		response.raise_for_status()
+		try:
+			response = httpx.get(self.BASE_URL + endpoint_url, params=params, timeout=10.0)  # type: ignore[arg-type]
+			response.raise_for_status()
+		except httpx.HTTPStatusError as e:
+			logger.exception(
+				"Tankerkoenig API returned HTTP error for list request: lat=%.4f lon=%.4f (status=%d)",
+				latitude,
+				longitude,
+				e.response.status_code,
+			)
+			raise RuntimeError("Tankerkoenig API returned an HTTP error.") from e
+		except httpx.RequestError as e:
+			logger.error("Failed to connect to Tankerkoenig API: lat=%.4f lon=%.4f", latitude, longitude)
+			raise RuntimeError("Failed to connect to Tankerkoenig API.") from e
 
 		data = response.json()
 

@@ -1,35 +1,23 @@
-import { env } from '$env/dynamic/public';
-
-const API_BASE = (env.PUBLIC_BACKEND_URL ?? 'http://127.0.0.1:8000') + '/api/v0';
+import { request } from '$lib/utils/request';
 
 export async function exportAsJson(token: string): Promise<Blob> {
-	const response = await fetch(`${API_BASE}/export/json`, {
+	return request<Blob>('/export/json', {
 		headers: {
 			Authorization: `Bearer ${token}`
-		}
+		},
+		responseType: 'blob',
+		fallbackError: 'Export failed'
 	});
-
-	if (!response.ok) {
-		const error = await response.json().catch(() => ({ detail: 'Export failed' }));
-		throw new Error(error.detail || 'Export failed');
-	}
-
-	return response.blob();
 }
 
 export async function exportAsCsv(token: string): Promise<Blob> {
-	const response = await fetch(`${API_BASE}/export/csv`, {
+	return request<Blob>('/export/csv', {
 		headers: {
 			Authorization: `Bearer ${token}`
-		}
+		},
+		responseType: 'blob',
+		fallbackError: 'Export failed'
 	});
-
-	if (!response.ok) {
-		const error = await response.json().catch(() => ({ detail: 'Export failed' }));
-		throw new Error(error.detail || 'Export failed');
-	}
-
-	return response.blob();
 }
 
 export function downloadBlob(blob: Blob, filename: string): void {

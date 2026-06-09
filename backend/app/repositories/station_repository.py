@@ -1,39 +1,121 @@
-from typing import List, Optional
+from datetime import datetime, UTC
 
-from sqlalchemy import select
+from sqlalchemy import and_, delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.dtos.gas_station_dtos import GasStation
 from app.models import Station
-from app.schemas.station import StationCreate, StationUpdate
 
 
 class StationRepository:
 	def __init__(self, db: AsyncSession) -> None:
 		self.db = db
 
-	async def get_stations_by_owner(self, owner_id: int) -> List[Station]:
-		result = await self.db.execute(select(Station).where(Station.owner_id == owner_id))
+	async def get_all_stations(self) -> list[Station]:
+		result = await self.db.execute(select(Station).order_by(Station.name))
 		return list(result.scalars().all())
 
-	async def get_station_by_id_and_owner(self, station_id: int, owner_id: int) -> Optional[Station]:
-		result = await self.db.execute(select(Station).where(Station.id == station_id, Station.owner_id == owner_id))
+	async def get_cached_stations(
+		self,
+		latitude: float,
+		longitude: float,
+		radius: float,
+		min_cached_at: datetime,
+		tolerance: float,
+	) -> list[Station]:
+		result = await self.db.execute(
+			select(Station)
+			.where(
+				and_(
+					Station.cache_lat.isnot(None),
+					Station.cache_lon.isnot(None),
+					Station.cache_radius == radius,
+					Station.cached_at >= min_cached_at,
+					Station.cache_lat.between(latitude - tolerance, latitude + tolerance),
+					Station.cache_lon.between(longitude - tolerance, longitude + tolerance),
+				)
+			)
+			.order_by(Station.distance)
+		)
+		return list(result.scalars().all())
+
+	async def get_existing_cached_ids(self, cache_radius: float) -> set[str]:
+		result = await self.db.execute(
+			select(Station.tankerkoenig_id).where(
+				and_(
+					Station.cache_lat.isnot(None),
+					Station.cache_lon.isnot(None),
+					Station.cache_radius == cache_radius,
+				)
+			)
+		)
+		return {row[0] for row in result.fetchall()}
+
+	async def delete_by_tankerkoenig_ids(self, ids: set[str]) -> None:
+		if ids:
+			await self.db.execute(delete(Station).where(Station.tankerkoenig_id.in_(ids)))
+
+	async def find_by_tankerkoenig_id(self, tankerkoenig_id: str) -> Station | None:
+		result = await self.db.execute(select(Station).where(Station.tankerkoenig_id == tankerkoenig_id))
 		return result.scalar_one_or_none()
 
-	async def create_station(self, station_data: StationCreate, owner_id: int) -> Station:
-		db_station = Station(**station_data.model_dump(), owner_id=owner_id)
-		self.db.add(db_station)
-		await self.db.commit()
-		await self.db.refresh(db_station)
-		return db_station
+	async def upsert_stations(
+		self,
+		api_stations: list[GasStation],
+		cache_lat: float,
+		cache_lon: float,
+		cache_radius: float,
+	) -> None:
+		now = datetime.now(UTC).replace(tzinfo=None)
 
-	async def update_station(self, station: Station, update_data: StationUpdate) -> Station:
-		update_dict = update_data.model_dump(exclude_unset=True)
-		for key, value in update_dict.items():
-			setattr(station, key, value)
-		await self.db.commit()
-		await self.db.refresh(station)
-		return station
+		existing_ids = await self.get_existing_cached_ids(cache_radius)
+		new_ids = {s.id for s in api_stations}
 
-	async def delete_station(self, station: Station) -> None:
-		await self.db.delete(station)
+		ids_to_delete = existing_ids - new_ids
+		await self.delete_by_tankerkoenig_ids(ids_to_delete)
+
+		for station in api_stations:
+			db_station = await self.find_by_tankerkoenig_id(station.id)
+
+			if db_station:
+				db_station.name = station.name
+				db_station.brand = station.brand
+				db_station.street = station.street
+				db_station.house_number = station.house_number
+				db_station.post_code = station.post_code
+				db_station.place = station.place
+				db_station.latitude = station.latitude
+				db_station.longitude = station.longitude
+				db_station.distance = station.distance
+				db_station.diesel = station.diesel
+				db_station.e5 = station.e5
+				db_station.e10 = station.e10
+				db_station.is_open = station.is_open
+				db_station.cached_at = now
+				db_station.cache_lat = cache_lat
+				db_station.cache_lon = cache_lon
+				db_station.cache_radius = cache_radius
+			else:
+				db_station = Station(
+					tankerkoenig_id=station.id,
+					name=station.name,
+					brand=station.brand,
+					street=station.street,
+					house_number=station.house_number,
+					post_code=station.post_code,
+					place=station.place,
+					latitude=station.latitude,
+					longitude=station.longitude,
+					distance=station.distance,
+					diesel=station.diesel,
+					e5=station.e5,
+					e10=station.e10,
+					is_open=station.is_open,
+					cached_at=now,
+					cache_lat=cache_lat,
+					cache_lon=cache_lon,
+					cache_radius=cache_radius,
+				)
+				self.db.add(db_station)
+
 		await self.db.commit()
