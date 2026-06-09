@@ -14,6 +14,7 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v6
       - name: Set up Node.js
@@ -31,6 +32,7 @@ jobs:
 
   unit-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v6
       - name: Set up Node.js
@@ -48,6 +50,7 @@ jobs:
   
   e2e-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v6
       - name: Set up Node.js
@@ -68,6 +71,7 @@ jobs:
   
   architecture-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v6
       - name: Set up Node.js

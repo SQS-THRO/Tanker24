@@ -57,3 +57,28 @@ class TestStationListUnauthenticated:
 		response = await async_client.get("/api/v0/stations/")
 
 		assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+class TestGetNearbyStations:
+	@pytest.fixture(autouse=True)
+	def clear_rate_limiter(self):
+		from app.limiter import limiter
+
+		limiter._storage.storage.clear()
+		limiter._storage.expirations.clear()
+		yield
+		limiter._storage.storage.clear()
+		limiter._storage.expirations.clear()
+
+	async def test_nearby_stations_value_error_returns_400(self, authenticated_client):
+		from unittest.mock import patch, AsyncMock
+
+		with patch("app.routers.stations.NearbyStationsService") as mock_service_class:
+			mock_instance = mock_service_class.return_value
+			mock_instance.get_nearby_stations = AsyncMock(side_effect=ValueError("Invalid coordinates"))
+
+			response = await authenticated_client.get("/api/v0/stations/nearby?latitude=52.52&longitude=13.405")
+
+		assert response.status_code == 400
+		assert response.json()["detail"] == "Invalid coordinates"
