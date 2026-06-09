@@ -88,17 +88,7 @@ This page lists all identified risks and technical debts, ordered by priority. F
 
 ## 11.2 Technical Debt
 
-### TD1: No Database Migration Tool
-
-**Description:** Table creation uses SQLAlchemy's `Base.metadata.create_all()` which is non-destructive but also non-migration-aware. Schema changes in production require manual intervention.
-
-**Severity:** MEDIUM
-
-**Resolution:** Adopt Alembic for schema migration management. Generate initial migration from current schema, then run `alembic upgrade head` during application startup.
-
----
-
-### TD2: In-Memory Rate Limiting
+### TD1: In-Memory Rate Limiting
 
 **Description:** SlowAPI rate limits are stored in memory (`memory://` backend). In a multi-process or multi-container deployment, rate limits would not be shared.
 
@@ -108,7 +98,7 @@ This page lists all identified risks and technical debts, ordered by priority. F
 
 ---
 
-### TD3: Frontend Test Coverage
+### TD2: Frontend Test Coverage
 
 **Description:** While the frontend has unit tests for services and stores, E2E tests are limited to the map page and login. Several routes lack E2E coverage.
 
@@ -118,7 +108,7 @@ This page lists all identified risks and technical debts, ordered by priority. F
 
 ---
 
-### TD4: Missing Input Validation on Frontend
+### TD3: Missing Input Validation on Frontend
 
 **Description:** Some form inputs on the frontend rely primarily on backend validation (Pydantic). Client-side validation could provide faster feedback.
 
@@ -128,7 +118,7 @@ This page lists all identified risks and technical debts, ordered by priority. F
 
 ---
 
-### TD5: ER Model Documentation Outdated
+### TD4: ER Model Documentation Outdated
 
 **Description:** The ER model diagram in `docs/er-model.md` does not reflect the full database schema including `Station` and `InvitationKey` tables. The old user-owned `Station` table has been removed and `TankerkoenigStation` was renamed to `Station`.
 
@@ -138,7 +128,7 @@ This page lists all identified risks and technical debts, ordered by priority. F
 
 ---
 
-### TD6: Hardcoded Configuration in Containerfile
+### TD5: Hardcoded Configuration in Containerfile
 
 **Description:** The backend `Containerfile` embeds the build argument `SECRET` as an environment variable during image build, which embeds the secret in the container image layer.
 
@@ -148,7 +138,7 @@ This page lists all identified risks and technical debts, ordered by priority. F
 
 ---
 
-### TD7: Test Concept Documentation Incomplete
+### TD6: Test Concept Documentation Incomplete
 
 **Description:** The `testConcept.md` documentation contains TODO markers for the GitHub pipeline test execution section, unit tests, integration tests, and smoke tests sections.
 
@@ -165,13 +155,12 @@ This page lists all identified risks and technical debts, ordered by priority. F
 | R1 | Tankerkönig API Unavailability | HIGH | Mitigated (graceful degradation + cache) |
 | R2 | Terms of Service Violation | MEDIUM | Mitigated (rate limiter + cache) |
 | R3 | Single Point of Failure | MEDIUM | Acknowledged |
-| R4 | No Database Backup | MEDIUM | Open |
+| R4 | No Database Backup | MEDIUM | Accepted (Out of Scope) |
 | R5 | SQL Injection | LOW | Mitigated (ORM usage) |
 | R6 | JWT Secret Exposure | LOW | Mitigated (.env + .gitignore) |
-| TD1 | No DB Migration Tool | MEDIUM | Open |
-| TD2 | In-Memory Rate Limiting | LOW | Accepted for current scale |
-| TD3 | Frontend Test Coverage | MEDIUM | Open |
-| TD4 | Missing Frontend Validation | LOW | Open |
-| TD5 | ER Model Outdated | LOW | Open |
-| TD6 | Secret in Containerfile | MEDIUM | Open |
-| TD7 | Test Concept Incomplete | LOW | Avoided by improving the test concept |
+| TD1 | In-Memory Rate Limiting | LOW | Accepted for current scale |
+| TD2 | Frontend Test Coverage | MEDIUM | Mitigated (increased coverage) |
+| TD3 | Missing Frontend Validation | LOW | Mitigated |
+| TD4 | ER Model Outdated | LOW | Mitigated (Updated diagram) |
+| TD5 | Secret in Containerfile | MEDIUM | Mitigated |
+| TD6 | Test Concept Incomplete | LOW | Avoided by improving the test concept |
