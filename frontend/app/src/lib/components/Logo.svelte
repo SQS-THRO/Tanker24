@@ -6,6 +6,22 @@
 	const { size = 32 } = $props<{
 		size?: number;
 	}>();
+
+	let prefersDark = $state(false);
+
+	$effect(() => {
+		if (typeof window === 'undefined') return;
+		const mq = window.matchMedia('(prefers-color-scheme: dark)');
+		prefersDark = mq.matches;
+		const handler = () => { prefersDark = mq.matches; };
+		mq.addEventListener('change', handler);
+		return () => mq.removeEventListener('change', handler);
+	});
+
+	const isDark = $derived(
+		$themeStore.globalTheme === 'dark-modern' ||
+		($themeStore.globalTheme === 'auto' && prefersDark)
+	);
 </script>
 
-<img src={$themeStore.globalTheme === 'dark-modern' ? faviconDark : favicon} alt="Tanker24" width={size} height={size} class="logo-icon" />
+<img src={isDark ? faviconDark : favicon} alt="Tanker24" width={size} height={size} class="logo-icon" />
