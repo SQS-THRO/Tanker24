@@ -74,8 +74,8 @@ function createThemeStore() {
 
 export function getEffectiveTheme(theme: GlobalTheme): 'dark-modern' | 'light-modern' {
 	if (theme !== 'auto') return theme;
-	if (typeof window === 'undefined') return 'dark-modern';
-	return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark-modern' : 'light-modern';
+	if (typeof globalThis.window === 'undefined') return 'dark-modern';
+	return globalThis.window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark-modern' : 'light-modern';
 }
 
 export const themeStore = createThemeStore();
