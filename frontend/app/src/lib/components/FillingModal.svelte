@@ -57,9 +57,7 @@
 	const PLATE_REGEX = /^[A-ZÄÖÜ]{1,3}-[A-ZÄÖÜ]{1,2}-\d{1,4}[E|H]?$/i;
 	const PLATE_CHARS_REGEX = /^[A-ZÄÖÜ0-9-]+$/i;
 
-	const licensePlateValid = $derived(
-		licensePlate.trim().length >= 2 && PLATE_REGEX.test(licensePlate.trim())
-	);
+	const licensePlateValid = $derived(licensePlate.trim().length >= 2 && PLATE_REGEX.test(licensePlate.trim()));
 	const licensePlateChecks = $derived({
 		minLength: licensePlate.trim().length >= 2,
 		allowedChars: PLATE_CHARS_REGEX.test(licensePlate.trim()),
@@ -78,9 +76,7 @@
 		return usesComma;
 	});
 
-	const fuelTypeLabel = $derived(
-		fuelType === 'diesel' ? 'Diesel' : fuelType === 'e5' ? 'E5' : 'E10'
-	);
+	const fuelTypeLabel = $derived(fuelType === 'diesel' ? 'Diesel' : fuelType === 'e5' ? 'E5' : 'E10');
 
 	const stationInfo = $derived.by(() => {
 		if (!selectedStationId) return '';
