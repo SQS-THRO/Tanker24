@@ -2,7 +2,29 @@
 
 This page lists all identified risks and technical debts, ordered by priority. For each item, a mitigation or resolution strategy is proposed.
 
-## 11.1 Risks
+
+---
+
+## 11.1 Risk and Debt Status Tracking
+
+| ID | Category | Priority | Status |
+|---|---|---|---|
+| R1 | Tankerkönig API Unavailability | HIGH | Mitigated (graceful degradation + cache) |
+| R2 | Terms of Service Violation | MEDIUM | Mitigated (rate limiter + cache) |
+| R3 | Single Point of Failure | MEDIUM | Acknowledged |
+| R4 | No Database Backup | MEDIUM | Accepted (Out of Scope) |
+| R5 | SQL Injection | LOW | Mitigated (ORM usage) |
+| R6 | JWT Secret Exposure | LOW | Mitigated (.env + .gitignore) |
+| TD1 | In-Memory Rate Limiting | LOW | Accepted for current scale |
+| TD2 | Frontend Test Coverage | MEDIUM | Mitigated (increased coverage) |
+| TD3 | Missing Frontend Validation | LOW | Mitigated |
+| TD4 | ER Model Outdated | LOW | Mitigated (Updated diagram) |
+| TD5 | Secret in Containerfile | MEDIUM | Mitigated |
+| TD6 | Test Concept Incomplete | LOW | Avoided by improving the test concept |
+
+
+
+## 11.2 Risks
 
 ### R1: Tankerkönig API Unavailability (HIGH)
 
@@ -86,7 +108,7 @@ This page lists all identified risks and technical debts, ordered by priority. F
 
 ---
 
-## 11.2 Technical Debt
+## 11.3 Technical Debt
 
 ### TD1: In-Memory Rate Limiting
 
@@ -145,22 +167,3 @@ This page lists all identified risks and technical debts, ordered by priority. F
 **Severity:** LOW
 
 **Resolution:** Complete all remaining sections of the test concept documentation.
-
----
-
-## 11.3 Risk and Debt Status Tracking
-
-| ID | Category | Priority | Status |
-|---|---|---|---|
-| R1 | Tankerkönig API Unavailability | HIGH | Mitigated (graceful degradation + cache) |
-| R2 | Terms of Service Violation | MEDIUM | Mitigated (rate limiter + cache) |
-| R3 | Single Point of Failure | MEDIUM | Acknowledged |
-| R4 | No Database Backup | MEDIUM | Accepted (Out of Scope) |
-| R5 | SQL Injection | LOW | Mitigated (ORM usage) |
-| R6 | JWT Secret Exposure | LOW | Mitigated (.env + .gitignore) |
-| TD1 | In-Memory Rate Limiting | LOW | Accepted for current scale |
-| TD2 | Frontend Test Coverage | MEDIUM | Mitigated (increased coverage) |
-| TD3 | Missing Frontend Validation | LOW | Mitigated |
-| TD4 | ER Model Outdated | LOW | Mitigated (Updated diagram) |
-| TD5 | Secret in Containerfile | MEDIUM | Mitigated |
-| TD6 | Test Concept Incomplete | LOW | Avoided by improving the test concept |
