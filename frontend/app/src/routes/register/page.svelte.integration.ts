@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test('can register and will be logged in after', async ({ page }) => {
 	const email = `test-${Date.now()}@example.com`;
-	const password = 'securePassword123!';
+	const password = `pw-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 	await page.goto('/register');
 
