@@ -32,8 +32,8 @@ The container diagram shows how Tanker24 is structured internally without puttin
         Container(backend, "Tanker24 Backend", "Python 3", $tags="conApp")
 
         Rel_D(web_app, backend, "Request user data", "REST")
-        Rel_L(backend, postgre, "Reads user data", "SOCKET")
-        Rel_L(backend, postgre, "Read gas price cache", "SOCKET")
+        Rel_L(backend, postgre, "Read/Write user data", "SOCKET")
+        Rel_L(backend, postgre, "Read/Write gas price cache", "SOCKET")
     }
 
     Rel(user, web_app, "Request gas prices in area.", "UI interaction")

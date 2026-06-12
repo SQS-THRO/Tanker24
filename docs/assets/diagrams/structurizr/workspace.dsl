@@ -27,8 +27,8 @@ workspace "Tanker24 - System Context" "System context diagram for the Tanker24 a
         user -> tanker24.webApp "Store filling data" "UI interaction"
 
         tanker24.webApp -> tanker24.backend "Request user data" "REST"
-        tanker24.backend -> tanker24.postgre "Reads user data" "SOCKET"
-        tanker24.backend -> tanker24.postgre "Read gas price cache" "SOCKET"
+        tanker24.backend -> tanker24.postgre "Read/Write user data" "SOCKET"
+        tanker24.backend -> tanker24.postgre "Read/Write gas price cache" "SOCKET"
 
         tanker24.backend -> tankerkoenig "Get current gas prices" "REST"
         tanker24.webApp -> osm "Get map" "REST"
