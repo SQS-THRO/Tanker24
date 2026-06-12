@@ -116,7 +116,7 @@ The repository layer provides an abstraction for querying information from the d
 |---|---|---|
 | `StationRepository` | `Station` | Cache lookup with spatial tolerance, upsert with stale record cleanup, list all cached stations |
 | `CarRepository` | `Car` | Create and read cars by owner |
-| `HistoryRecordRepository` | `HistoryRecord` | Create and read history records by car |
+| `HistoryRecordRepository` | `HistoryRecord` | Create,  read and delete history records by car |
 | `InvitationKeyRepository` | `InvitationKey` | CRUD for invitation keys, lookup users by key |
 |`FuelTypeRepository`|`FuelType`|Read the fuel types by name from the database.|
 
@@ -156,12 +156,13 @@ entity "Car" as car {
 entity "HistoryRecord" as hr {
     *id : int
     --
+    car_id : int (FK)
+    fuel_type_id : int (FK)
     timestamp : datetime
     mileage : float
     price_per_litre : float
     litres : float
-    car_id : int (FK)
-    fuel_type_id : int (FK)
+    tankerkoenig_station_id: str
 }
 
 entity "FuelType" as ft {
