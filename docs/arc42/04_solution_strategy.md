@@ -52,7 +52,8 @@ The container diagram shows how Tanker24 is structured internally without puttin
 
 
 ## Technology decisions
-As per organizational constraint OC-3 all relevant technology decisions need to be documented as architecture decision records (ADR). The following page lists all ADRs: [here](../decisions/index.md) To ensure the quality of the ADRs they use a shared comprehensive template.
+As per organizational constraint OC-3 all relevant technology decisions need to be documented as architecture decision records (ADR). The following page lists all ADRs: [here](../decisions/index.md)  
+To ensure the quality of the ADRs they use a shared comprehensive template.
 
 ## Quality Goals
 
@@ -60,7 +61,7 @@ The following table maps the quality goals from [Section 1.2](01_intro_goals.md#
 
 |Quality Goal|Scenario|Solution approach|Link to Details|
 |--|---|--|--|
-|Functional Stability|All main use cases must be covered.|Implement Test-Driven Development (TDD) with pytest and Playwright E2E tests. CI pipeline enforces passing tests before merge.|[Test Concept](../testConcept.md)|
+|Functional Stability|All main use cases must be covered.|Implement a unit and integration tests with pytest and Playwright E2E tests. CI pipeline enforces passing tests before merge.|[Test Concept](../testConcept.md)|
 |Reliability|The Tankerkoenig data API is unavailable.|Implement caching of station data in PostgreSQL to serve location information even without live price data.|[Section 8.4](08_crosscutting_concepts.md#84-caching-strategy)|
 |Reliability|The Tankerkoenig data API returns errors or times out.|Implement graceful degradation: catch exceptions, log them, return an empty station list without propagating 500 errors.|[Section 6.1](06_runtime_view.md#61-scenario-search-nearby-gas-stations-uc1-uc7)|
 |Security|A user requests user-specific data.|Implement JWT-based authentication via fastapi-users library. All protected endpoints require a valid bearer token.|[Section 8.2](08_crosscutting_concepts.md#82-authentication-and-authorization)|
