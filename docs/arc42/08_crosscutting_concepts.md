@@ -7,7 +7,7 @@ The domain model reflects the core entities of the application:
 - **User**: Authenticated driver who owns cars and tracks fueling history.
 - **Car**: A vehicle associated with a user, identified by license plate.
 - **FuelType**: Enumeration of fuel types (Diesel, E5, E10).
-- **HistoryRecord**: A single fueling event with timestamp, mileage, price, liters, and fuel type.
+- **HistoryRecord**: A single fueling event with timestamp, mileage, price, liters, fuel type and a reference to the used gas station.
 - **Station**: Cached gas station data from the external Tankerkönig API with spatial metadata.
 
 The complete data model is documented in the [Entity-Relationship Model](../er-model.md) and in [Section 5.2.4](05_building_block_view.md#524-data-model-orm).
@@ -143,6 +143,8 @@ A custom `RequestLoggingMiddleware` logs each incoming request with method, path
 ### 8.7.2 Graceful Degradation
 
 When the Tankerkönig API is unavailable (network error, timeout, bad response), the `NearbyStationsService` catches the exception, logs it, and returns an empty station list rather than propagating a 500 error to the user. This ensures the application remains functional even if the external data source is down.
+
+The application is ready for implenting a second data provider as the specific Tankerkönig implementation only extends the abstract class GasStationService. If there would be another free data provider in the future the application could switch between them in case of downtimes. 
 
 ## 8.8 Internationalization (i18n)
 
