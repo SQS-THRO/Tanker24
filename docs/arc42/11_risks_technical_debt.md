@@ -167,5 +167,3 @@ This page lists all identified risks and technical debts, ordered by priority. F
 **Severity:** LOW
 
 **Resolution:** Complete all remaining sections of the test concept documentation.
-
-
