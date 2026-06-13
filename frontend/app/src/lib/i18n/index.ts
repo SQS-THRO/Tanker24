@@ -146,6 +146,7 @@ export const translations = {
 		map: {
 			priceDevider: '.',
 			searchPlaceholder: 'Search stations...',
+			searchNoResults: 'No stations match your search',
 			nearby: 'Nearby',
 			back: 'Back',
 			yourLocation: 'Your Location',
@@ -413,6 +414,7 @@ export const translations = {
 		map: {
 			priceDevider: ',',
 			searchPlaceholder: 'Tankstellen suchen...',
+			searchNoResults: 'Keine Tankstellen entsprechen deiner Suche',
 			nearby: 'In der Nähe',
 			back: 'Zurück',
 			yourLocation: 'Dein Standort',

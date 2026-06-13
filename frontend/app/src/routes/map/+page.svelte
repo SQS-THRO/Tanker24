@@ -28,6 +28,16 @@
 	let mapContainer: HTMLDivElement;
 	let nearbyStations: TankerkoenigStation[] = $state([]);
 	let sortedNearbyStations: TankerkoenigStation[] = $state([]);
+	let filteredStations = $derived(
+		searchQuery.trim()
+			? sortedNearbyStations.filter(
+					(s) =>
+						s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+						s.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+						(s.street && s.street.toLowerCase().includes(searchQuery.toLowerCase()))
+				)
+			: sortedNearbyStations
+	);
 	let minSelectedFuelPrice: number | null = $state(null);
 	let knownStations = new Map<string, TankerkoenigStation>();
 	let nearbyFetchError = $state('');
@@ -601,7 +611,7 @@
 
 	<div class="station-sidebar" class:open={sidebarOpen}>
 		<div class="sidebar-header">
-			<h3>{$t.map.nearby} <span class="station-count-badge">{nearbyStations.length}</span></h3>
+			<h3>{$t.map.nearby} <span class="station-count-badge">{filteredStations.length}</span></h3>
 			<button class="sidebar-close" onclick={() => closeSidebar()} aria-label="Close sidebar">
 				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 					<line x1="18" y1="6" x2="6" y2="18" />
@@ -614,8 +624,10 @@
 				<div class="sidebar-loading">{$t.map.selectFuel}...</div>
 			{:else if nearbyStations.length === 0}
 				<div class="sidebar-empty">{$t.map.nearbyFetchFailed}</div>
+			{:else if filteredStations.length === 0}
+				<div class="sidebar-empty">{$t.map.searchNoResults}</div>
 			{:else}
-				{#each sortedNearbyStations as station (station.tankerkoenig_id)}
+				{#each filteredStations as station (station.tankerkoenig_id)}
 					{@const address = [station.street, station.house_number, station.post_code, station.place].filter(Boolean).join(', ')}
 					{@const price = station[$fuelType] as number | null}
 					{@const isCheapest = price !== null && minSelectedFuelPrice !== null && price === minSelectedFuelPrice}
