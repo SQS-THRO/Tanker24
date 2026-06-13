@@ -7,7 +7,7 @@ The domain model reflects the core entities of the application:
 - **User**: Authenticated driver who owns cars and tracks fueling history.
 - **Car**: A vehicle associated with a user, identified by license plate.
 - **FuelType**: Enumeration of fuel types (Diesel, E5, E10).
-- **HistoryRecord**: A single fueling event with timestamp, mileage, price, liters, and fuel type.
+- **HistoryRecord**: A single fueling event with timestamp, mileage, price, liters, fuel type and a reference to the used gas station.
 - **Station**: Cached gas station data from the external Tankerkönig API with spatial metadata.
 
 The complete data model is documented in the [Entity-Relationship Model](../er-model.md) and in [Section 5.2.4](05_building_block_view.md#524-data-model-orm).
@@ -144,6 +144,8 @@ A custom `RequestLoggingMiddleware` logs each incoming request with method, path
 
 When the Tankerkönig API is unavailable (network error, timeout, bad response), the `NearbyStationsService` catches the exception, logs it, and returns an empty station list rather than propagating a 500 error to the user. This ensures the application remains functional even if the external data source is down.
 
+The application is ready for implenting a second data provider as the specific Tankerkönig implementation only extends the abstract class GasStationService. If there would be another free data provider in the future the application could switch between them in case of downtimes. 
+
 ## 8.8 Internationalization (i18n)
 
 The frontend supports multiple languages using `svelte-i18n`:
@@ -166,13 +168,15 @@ The frontend supports light and dark themes:
 
 Tanker24 follows the test automation pyramid:
 
+![The 3-tier test automation pyramid](../assets/images/TestPyramid.png)
+
 ### 8.10.1 Backend Tests (pytest)
 
 | Test Type | Tool | Scope |
 |---|---|---|
 | **Unit tests** | pytest, pytest-asyncio | Individual functions, services, models |
 | **Integration tests** | pytest + SQLite test DB | Database repositories, API endpoints via TestClient |
-| **Architecture tests** | pytest | Enforces architectural rules (layer dependencies, imports) |
+| **Architecture tests** | pytestarch | Enforces architectural rules (layer dependencies, imports) |
 | **Code coverage** | pytest-cov | Target: ≥80% |
 
 Backend tests use SQLite as the test database (faster, no external dependencies) and are configured in `pytest.ini` with `asyncio_mode = auto`.
@@ -228,6 +232,8 @@ class GasStationService(ABC):
 ```
 
 The current implementation, `TankerkoenigGasStationService`, communicates with the Tankerkönig REST API. This abstraction allows swapping to a different data provider (e.g., a self-hosted database replica) without changing the consuming services.
+
+This enables the application to further increase it's robustness by adding a second alternative provider. The application is ready to implement a provider switch from Tankerkönig to any different one if the Tankerkönig REST api is unavailable. The application detects the unavailability via timeouts which prevent the application from freezing indefinitely. As Tankerkönig provides its API as best as they can the response times can vary. 
 
 ### 8.12.2 Data Export
 
