@@ -288,7 +288,7 @@
 				<h2>{$t.account.exportSection}</h2>
 				<p class="export-description">{$t.account.exportDescription}</p>
 				<div class="export-buttons">
-					<button class="btn btn-primary" onclick={() => handleExport('json')} disabled={exporting !== null}>
+					<button class="btn btn-secondary" onclick={() => handleExport('json')} disabled={exporting !== null}>
 						{#if exporting === 'json'}
 							<div class="spinner"></div>
 							{$t.account.exporting}

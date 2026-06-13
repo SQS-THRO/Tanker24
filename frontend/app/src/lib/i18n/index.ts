@@ -253,7 +253,17 @@ export const translations = {
 			success: 'Filling recorded!',
 			error: 'Failed to save filling',
 			cancel: 'Cancel',
-			fillRequired: 'Please fill in all fields'
+			fillRequired: 'Please fill in all fields',
+			stationRequired: 'Please select a station',
+			priceInvalid: 'Price must be greater than 0',
+			timestampRequired: 'Please select a date and time',
+			licensePlateAllowedChars: 'Only letters, numbers, and hyphens',
+			licensePlateMinLength: 'At least 2 characters',
+			licensePlateFormat: 'Must match format e.g. RO-AB-123 or M-AB-12E',
+			carTypeRequired: 'Please enter a car type',
+			mileageInvalid: 'Mileage must be greater than 0',
+			litresInvalid: 'Litres must be greater than 0',
+			litresWrongSeparator: 'Please use . as decimal separator'
 		}
 	},
 	de: {
@@ -511,7 +521,17 @@ export const translations = {
 			success: 'Tankvorgang gespeichert!',
 			error: 'Tankvorgang konnte nicht gespeichert werden',
 			cancel: 'Abbrechen',
-			fillRequired: 'Bitte fülle alle Felder aus'
+			fillRequired: 'Bitte fülle alle Felder aus',
+			stationRequired: 'Bitte wähle eine Tankstelle aus',
+			priceInvalid: 'Preis muss größer als 0 sein',
+			timestampRequired: 'Bitte wähle Datum und Uhrzeit',
+			licensePlateAllowedChars: 'Nur Buchstaben, Zahlen und Bindestriche',
+			licensePlateMinLength: 'Mindestens 2 Zeichen',
+			licensePlateFormat: 'Muss Format haben z.B. RO-AB-123 oder M-AB-12E',
+			carTypeRequired: 'Bitte gib einen Fahrzeugtyp ein',
+			mileageInvalid: 'Kilometerstand muss größer als 0 sein',
+			litresInvalid: 'Liter müssen größer als 0 sein',
+			litresWrongSeparator: 'Bitte , als Dezimaltrenner verwenden'
 		}
 	}
 };
