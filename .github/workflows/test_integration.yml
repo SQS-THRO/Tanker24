@@ -69,4 +69,4 @@ jobs:
 
       - name: Tear down compose stack
         if: always()
-        run: docker compose -f compose.integration.yaml down
+        run: docker compose -f compose.integration.yaml down -v
