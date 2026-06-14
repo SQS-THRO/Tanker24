@@ -10,20 +10,20 @@ The application fills a gap in the market for a free, privacy-respecting fuel pr
 
 The system context and scope is described with a C4-Model System Context (Level 1) diagram. It displays all interacting partners at a high level while specifying the required interfaces to users and external systems.
 
-**In scope (Tanker24):**
-- User authentication and registration (invitation-key based)
-- Search for gas stations by geographic coordinates
-- Display of fuel prices (Diesel, E5, E10) sorted by distance
-- Tracking fuel filling events for multiple cars
-- Export of user data (fueling history, cars) as JSON and CSV
+**In scope (Tanker24):**  
+- User authentication and registration (invitation-key based)  
+- Search for gas stations by geographic coordinates  
+- Display of fuel prices (Diesel, E5, E10) sorted by price  
+- Tracking fuel filling events for multiple cars  
+- Export of user data (fueling history, cars) as JSON and CSV  
 
-**Out of scope:**
-- Payment processing for fuel purchases
-- Navigation/routing to gas stations
-- Native mobile applications (Android/iOS)
-- Integration with vehicle telemetry systems
-- Administrative dashboard for user management
-- Geocoding (address-to-coordinate conversion)
+**Out of scope:**  
+- Payment processing for fuel purchases  
+- Navigation/routing to gas stations  
+- Native mobile applications (Android/iOS)  
+- Integration with vehicle telemetry systems  
+- Administrative dashboard for user management  
+- Geocoding (address-to-coordinate conversion)  
 
 ## 3.3 System Context Diagram (C4-Model Level 1)
 

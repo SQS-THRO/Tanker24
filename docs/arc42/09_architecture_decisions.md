@@ -44,11 +44,3 @@ The technology stack was chosen to balance developer productivity, performance, 
 | **Dual DB Support** | The backend supports both PostgreSQL (production) and SQLite (development/testing) via a common async SQLAlchemy interface. |
 | **Docker Compose Deployment** | All services (backend, frontend, database, monitoring) run in Docker containers, ensuring consistent environments. |
 
-## 9.3 Not Yet Decided
-
-The following architectural decisions remain open and may be addressed in future ADRs:
-
-- **Reverse proxy selection:** Currently Nginx is used in production but no ADR has been written.
-- **Database migration tool:** Currently `create_all` is used; Alembic may be considered for production schema migrations.
-- **Caching backend for rate limits:** Currently in-memory; Redis may be considered for multi-process deployments.
-- **CI/CD runner strategy:** Self-hosted vs GitHub-hosted runners for deployment.
