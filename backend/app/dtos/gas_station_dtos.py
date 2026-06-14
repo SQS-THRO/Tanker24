@@ -54,10 +54,10 @@ class GasStationInternalDTO (BaseModel):
 	tankerkoenig_id:str
 	name: str
 	brand: str
-	street: str
-	house_number: str
-	post_code: int
-	place: str
+	street: Optional[str] = None
+	house_number: Optional[str] = None
+	post_code: Optional[int] = None
+	place: Optional[str] = None
 	latitude: float
 	longitude: float
 	is_open: bool
