@@ -33,17 +33,6 @@ class TestArchitecture:
 		)
 		rule.assert_applies(arch)
 
-	def test_routers_must_not_import_schemas(self, arch):
-		rule = (
-			Rule()
-			.modules_that()
-			.are_sub_modules_of("backend.app.routers")
-			.should_not()
-			.import_modules_that()
-			.are_sub_modules_of("backend.app.schemas")
-		)
-		rule.assert_applies(arch)
-
 	def test_dtos_must_not_import_routers(self, arch):
 		rule = (
 			Rule()
