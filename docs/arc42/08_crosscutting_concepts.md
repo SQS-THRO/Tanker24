@@ -166,11 +166,11 @@ The frontend supports light and dark themes:
 
 ## 8.10 Testing Strategy
 
-Tanker24 follows the test automation pyramid:
+The project needs to reach at least 80% code coverage and include tests from all levels of the **test automation pyramid**:
 
 ![The 3-tier test automation pyramid](../assets/images/TestPyramid.png)
 
-### 8.10.1 Backend Tests (pytest)
+### 8.10.1 Backend Tests Setup (pytest)
 
 | Test Type | Tool | Scope |
 |---|---|---|
@@ -181,7 +181,7 @@ Tanker24 follows the test automation pyramid:
 
 Backend tests use SQLite as the test database (faster, no external dependencies) and are configured in `pytest.ini` with `asyncio_mode = auto`.
 
-### 8.10.2 Frontend Tests (Vitest + Playwright)
+### 8.10.2 Frontend Tests Setup (Vitest + Playwright)
 
 | Test Type | Tool | Scope |
 |---|---|---|
@@ -190,16 +190,78 @@ Backend tests use SQLite as the test database (faster, no external dependencies)
 
 Playwright tests (`*.e2e.ts`) run against the production build, simulating real user interactions.
 
-### 8.10.3 CI Integration
+### 8.10.3 Unit Tests
+The unit tests aim for a high branch and line coverage. The main focus lies on testing edge cases to catch errors due to abnormal inputs or conditions. To test a specific module without its dependencies mocking is used where required. The tests and test data are designed by the developers. The test data must make sense and add value to the tests suite by either specifying good or bad behaviour and testing edge cases. Each developer is responsible for adding tests for new functionalities to maintain a high code coverage with useful and adequate tests.
+
+By formulating good and bad results of the function calls it is checked that the behaviour of the called function is not changed by a code change. This is done with black box tests in which only the inputs and outputs are compared and must be deterministic across runs.
+
+The file names of the backend unit test files follows the following naming schema: `test_<name of the file under test>.py` 
+### 8.10.4 Integration Tests
+As integration tests are on a higher level than unit tests they combine different modules to system components. Integration tests validate the interaction between multiple modules and ensure that interfaces between components function correctly.
+
+Integration tests are part of the automated CI tests suite. 
+
+### 8.10.5 E2E Tests
+The End-to-End Tests are created with a tool called Playwright. Playwright enables us to automatically test the front end of our application via its chromium based browser.
+
+### 8.10.6 Smoke Tests
+A smoke test verifies that the application starts up and is reachable. The tests suite contains smoke tests for the gas station service to check the ongoing compatibility with the Tankerkönig API.
+
+### 8.10.7 Architecture Tests
+Architecture tests ensure that certain namespaces are not allowed to import or use another namespace. This enforces separation of concerns and promotes modularity and abstraction. 
+
+The diagram below displays the allowed and forbidden namespace imports of the backend application. Routers form the entry point of the backend application and use services to provide functionality to callers.
+```puml
+[routers]
+[services]
+[dtos]
+[repositories]
+[schemas]
+
+[services] -[#red]up-> [routers]: <color:red>forbidden</color>
+[schemas] -[#red]up-> [routers]: <color:red>forbidden</color>
+[dtos] -[#red]up-> [routers]: <color:red>forbidden</color>
+[dtos] -[#red]left-> [services]: <color:red>forbidden</color>
+[repositories] -[#red]up-> [routers]: <color:red>forbidden</color>
+[repositories] -[#red]up-> [services]: <color:red>forbidden</color>
+
+[routers] -down-> [services]
+[services] -down-> [repositories]
+[services] -right-> [dtos]
+[routers] -down-> [dtos]
+[repositories] -down-> [schemas]
+```
+
+### 8.10.8 GitHub CI Integration for Test Execution
+The GitHub Pipeline executes the tests every time new code is pushed to an pull request in the repository. The tests suite contains unit tests, integration tests, system tests, architecture tests, E2E tests, performance tests and penetration tests. For extra insights into the system the pipeline triggers static code analysis with an external sonar qube instance as well. The pipeline fails and prevents merges in pull requests if any of the pipeline stages fail.  
+
+The pipeline test steps are split up between the front and backend to separate the concerns. The written tests are split up in different folders in the specific domain as well. 
 
 All tests are executed in GitHub Actions CI:
 - `test_backend.yml`: pytest with coverage → `coverage.xml`
 - `test_frontend.yml`: vitest + Playwright
 - `sonarcloud.yml`: Aggregates both coverage reports for SonarCloud analysis
 
+The results of the tests and static code analysis are added as a criteria for accepting pull request. A pull request may only be merged if all unit, integration, system, architecture, and static analysis checks pass successfully and the configured coverage threshold of 80% is reached.
+
+**Exit criteria for merging pull requests:**
+|Description|
+|---|
+|All automated tests must pass.|
+|Coverage is greater than 80%.|
+|SonarQube does not flag any security issues or critical issues. Ranking SonarCube Score A on the given code changes is a pass.|
+|No architecture test rules are violated by the code changes.|
+|The code changes must be approved by a different project member.|
+
 ## 8.11 Code Quality
 
 ### 8.11.1 Static Analysis
+
+Static code analysis with SonarQube creates metrics for checking the code quality. These metrics include: coverage, errors, common shortcomings, maintainability grade, cognitive complexity, number of functions per class, lines of code per class and package security analysis. The static code analysis is integrated in the GitHub pipeline. If SonarQube discovers issues, the pipeline fails and prevents the pull request from being merged. 
+
+The goal is to maintain high code quality, readability, maintainability, and security by following the quality standards enforced through SonarQube which takes industry standards into account.
+
+Link to SonarQube Cloud: https://sonarcloud.io/project/overview?id=SQS-THRO_Tanker24
 
 | Tool | Language | Checks |
 |---|---|---|
