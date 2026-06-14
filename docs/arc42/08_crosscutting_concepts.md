@@ -187,15 +187,21 @@ Backend tests use SQLite as the test database (faster, no external dependencies)
 |---|---|---|
 | **Unit tests** | Vitest | Services (`*.test.ts`), stores (`*.test.ts`), utility functions |
 | **E2E tests** | Playwright (Chromium) | Full browser-based user journeys: map page, login flow |
+| **Integration tests** | Playwright (Chromium) | Test against a fullstack deployment (DB + backend + frontend) |
+| **Architecture tests** | dependency-cruiser | Enforces architectural rules (dependencies, imports) |
+| **Code coverage** | vitest | Target: ≥80% |
 
-Playwright tests (`*.e2e.ts`) run against the production build, simulating real user interactions.
+Playwright tests (`*.e2e.ts` and `*.integration.ts`) run against the production build, simulating real user interactions.
 
 ### 8.10.3 Unit Tests
 The unit tests aim for a high branch and line coverage. The main focus lies on testing edge cases to catch errors due to abnormal inputs or conditions. To test a specific module without its dependencies mocking is used where required. The tests and test data are designed by the developers. The test data must make sense and add value to the tests suite by either specifying good or bad behaviour and testing edge cases. Each developer is responsible for adding tests for new functionalities to maintain a high code coverage with useful and adequate tests.
 
 By formulating good and bad results of the function calls it is checked that the behaviour of the called function is not changed by a code change. This is done with black box tests in which only the inputs and outputs are compared and must be deterministic across runs.
 
-The file names of the backend unit test files follows the following naming schema: `test_<name of the file under test>.py` 
+The file names of the backend unit test files follows the following naming schema: `test_<name of the file under test>.py`
+
+The file names of the frontend unit test files follows the following naming schema: `<name of the file under test>.test.ts`
+
 ### 8.10.4 Integration Tests
 As integration tests are on a higher level than unit tests they combine different modules to system components. Integration tests validate the interaction between multiple modules and ensure that interfaces between components function correctly.
 
@@ -231,6 +237,47 @@ The diagram below displays the allowed and forbidden namespace imports of the ba
 [routers] -down-> [dtos]
 [repositories] -down-> [schemas]
 ```
+The diagram below displays the allowed and forbidden namespace imports of the frontend application. Routes form the entry point of the frontend application and use services and stores to provide functionality routes. Components can be included into route pages and i18n supply everything with translated display text.
+```puml
+[routes]
+[components]
+[services]
+[stores]
+[i18n]
+[utils]
+[assets]
+
+' --- forbidden ---
+[components] -[#red]up-> [routes]: <color:red>forbidden</color>
+[components] -[#red]left-> [services]: <color:red>forbidden</color>
+[services] -[#red]up-> [routes]: <color:red>forbidden</color>
+[services] -[#red]left-> [components]: <color:red>forbidden</color>
+[services] -[#red]left-> [stores]: <color:red>forbidden</color>
+[services] -[#red]left-> [i18n]: <color:red>forbidden</color>
+[services] -[#red]left-> [assets]: <color:red>forbidden</color>
+[stores] -[#red]up-> [routes]: <color:red>forbidden</color>
+[stores] -[#red]left-> [components]: <color:red>forbidden</color>
+[stores] -[#red]left-> [assets]: <color:red>forbidden</color>
+
+' --- allowed ---
+[routes] -down-> [components]
+[routes] -down-> [services]
+[routes] -down-> [stores]
+[routes] -down-> [i18n]
+[routes] -down-> [utils]
+[routes] -down-> [assets]
+
+[components] -down-> [stores]
+[components] -down-> [i18n]
+[components] -down-> [utils]
+[components] -down-> [assets]
+
+[services] -down-> [utils]
+
+[stores] -down-> [services]
+[stores] -down-> [i18n]
+[stores] -down-> [utils]
+```
 
 ### 8.10.8 GitHub CI Integration for Test Execution
 The GitHub Pipeline executes the tests every time new code is pushed to an pull request in the repository. The tests suite contains unit tests, integration tests, system tests, architecture tests, E2E tests, performance tests and penetration tests. For extra insights into the system the pipeline triggers static code analysis with an external sonar qube instance as well. The pipeline fails and prevents merges in pull requests if any of the pipeline stages fail.  
@@ -239,7 +286,8 @@ The pipeline test steps are split up between the front and backend to separate t
 
 All tests are executed in GitHub Actions CI:
 - `test_backend.yml`: pytest with coverage → `coverage.xml`
-- `test_frontend.yml`: vitest + Playwright
+- `test_frontend.yml`: vitest with coverage → `lcov.info` + Playwright
+- `test_integration.yml`: Playwright tests against a production compiled fullstack application deployment
 - `sonarcloud.yml`: Aggregates both coverage reports for SonarCloud analysis
 
 The results of the tests and static code analysis are added as a criteria for accepting pull request. A pull request may only be merged if all unit, integration, system, architecture, and static analysis checks pass successfully and the configured coverage threshold of 80% is reached.
