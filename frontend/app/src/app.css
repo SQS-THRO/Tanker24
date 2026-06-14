@@ -202,6 +202,14 @@
 		font-family: inherit;
 	}
 
+	.btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+		pointer-events: none;
+		transform: none !important;
+		box-shadow: none !important;
+	}
+
 	.btn-primary {
 		background: var(--accent-gradient);
 		color: white;
