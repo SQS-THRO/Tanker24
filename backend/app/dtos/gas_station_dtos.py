@@ -63,9 +63,9 @@ class GasStationInternalDTO(BaseModel):
 	longitude: float
 	is_open: bool
 	# prices are optional because not all stations offer all 3 types of gas
-	diesel: Optional[float]
-	e5: Optional[float]
-	e10: Optional[float]
+	diesel: Optional[float] = None
+	e5: Optional[float] = None
+	e10: Optional[float] = None
 	distance: Optional[float] = None
 	cached_at: Optional[datetime] = None
 	cache_lat: Optional[float] = None
