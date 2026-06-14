@@ -46,12 +46,13 @@ class GasStation:
 	opening_times: Optional[List[OpeningTime]] = None
 	distance: Optional[float] = None
 
+
 # Map the station schema to a DTO to send it to the frontend
-class GasStationInternalDTO (BaseModel):
+class GasStationInternalDTO(BaseModel):
 	"""Class for handling gas station data."""
 
 	id: int
-	tankerkoenig_id:str
+	tankerkoenig_id: str
 	name: str
 	brand: str
 	street: Optional[str] = None
@@ -66,10 +67,10 @@ class GasStationInternalDTO (BaseModel):
 	e5: Optional[float]
 	e10: Optional[float]
 	distance: Optional[float] = None
-	cached_at: Optional[datetime]= None
-	cache_lat: Optional[float]= None
-	cache_lon: Optional[float]= None
-	cache_radius: Optional[float]= None
+	cached_at: Optional[datetime] = None
+	cache_lat: Optional[float] = None
+	cache_lon: Optional[float] = None
+	cache_radius: Optional[float] = None
 
 	@classmethod
 	def from_schema(cls, station: StationSchema) -> "GasStationInternalDTO":
