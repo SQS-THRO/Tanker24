@@ -67,6 +67,10 @@ jobs:
         working-directory: frontend/app
         run: npx playwright test --config=playwright.integration.config.ts
 
+      - name: Dump compose logs
+        if: failure()
+        run: docker compose -f compose.integration.yaml logs --timestamps
+
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
