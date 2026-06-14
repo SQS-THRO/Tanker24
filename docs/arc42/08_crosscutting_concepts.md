@@ -208,7 +208,9 @@ As integration tests are on a higher level than unit tests they combine differen
 Integration tests are part of the automated CI tests suite. 
 
 ### 8.10.5 E2E Tests
-The End-to-End Tests are created with a tool called Playwright. Playwright enables us to automatically test the front end of our application via its chromium based browser.
+The End-to-End Tests are created with a tool called Playwright. Playwright enables us to automatically test the front end of our application via its chromium based browser. The browser is instructed to navigate through the frontend like a user would. Playwright then tests, if it behaves accordingly.
+To be independent of the backend, the backend is mocked. For each page we load the page and check, if the page contains the expected html response results.
+The results are checked based on so called "selectors".
 
 ### 8.10.6 Smoke Tests
 A smoke test verifies that the application starts up and is reachable. The tests suite contains smoke tests for the gas station service to check the ongoing compatibility with the Tankerkönig API.
