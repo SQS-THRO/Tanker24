@@ -208,10 +208,22 @@ As integration tests are on a higher level than unit tests they combine differen
 Integration tests are part of the automated CI tests suite. 
 
 ### 8.10.5 E2E Tests
-The End-to-End Tests are created with a tool called Playwright. Playwright enables us to automatically test the front end of our application via its chromium based browser.
+The End-to-End Tests are created with a tool called Playwright. Playwright enables us to automatically test the front end of our application via its chromium based browser. The browser is instructed to navigate through the frontend like a user would. Playwright then tests, if it behaves accordingly.
+To be independent of the backend, the backend is mocked. For each page we load the page and check, if the page contains the expected html response results.
+The results are checked based on so called "selectors".
 
 ### 8.10.6 Smoke Tests
 A smoke test verifies that the application starts up and is reachable. The tests suite contains smoke tests for the gas station service to check the ongoing compatibility with the Tankerkönig API.
+
+### 8.10.7 Penetration Tests
+The backend penetration test strategy focuses on verifying the correct enforcement of authentication for all protected FastAPI endpoints. Since the application exposes user-specific and security-relevant data, such as fuel history records, exported user data, and station-related information, every non-public endpoint must reject requests that are not associated with a valid authenticated user. The main goal of these tests is therefore to ensure that no protected route can be accessed anonymously or with invalid credentials.
+
+The implemented tests follow a lightweight but systematic approach. For each protected endpoint, an automated pytest test sends a request without an `Authorization` header and expects the backend to respond with either `401 Unauthorized` or `403 Forbidden`. A second test sends the same request with a malformed or invalid bearer token and again verifies that access is denied. Where an endpoint requires query parameters or a request body, the tests provide valid example input so that validation errors cannot hide authentication problems. This ensures that a successful response would clearly indicate a broken authentication check.
+
+The actual backend test classes are grouped by router in the `test_pentest.py` file. The tests are intended to run as part of the automated test suite and CI pipeline, so newly introduced regressions in authentication behavior are detected early before deployment. 
+
+The test suite also flags any new and unclassified endpoints by iterating over all available endpoints. The project group agreed that every new endpoint must be classified and that the necessary tests must be developed if it is a protected endpoint.
+
 
 ### 8.10.7 Architecture Tests
 Architecture tests ensure that certain namespaces are not allowed to import or use another namespace. This enforces separation of concerns and promotes modularity and abstraction. 
