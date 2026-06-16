@@ -62,7 +62,7 @@ The app is now running at:
 cd backend && pytest tests/ -v --cov=app
 
 # Frontend
-cd frontend/app && npm test
+cd frontend/app && npm run test:unit
 ```
 
 ## Contributors
