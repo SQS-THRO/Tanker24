@@ -37,7 +37,7 @@
 ### Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) and Docker Compose
-- Or: [uv](https://docs.astral.sh/uv/) (Python), [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) (Node.js), and [PostgreSQL](https://www.postgresql.org/download/) 18
+- Or: [uv](https://docs.astral.sh/uv/) (Python 3.14), [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) (Node.js 24), and [PostgreSQL](https://www.postgresql.org/download/) 18
 
 ### Docker (recommended)
 
