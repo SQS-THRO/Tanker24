@@ -1,10 +1,8 @@
 <!-- omit from toc -->
 # Welcome to Tanker24's documentation!
+Tanker24 is developed by three students of the university of applied sciences for their course `Software Qualitätssicherung`.
 
-!!! note
-
-    This project is under active development.
-
+## Getting started
 Check out the [usage](usage) section for further information, including how to [install](installation) the project.
 
 ## Project Vision
