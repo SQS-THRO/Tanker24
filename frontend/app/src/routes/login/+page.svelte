@@ -148,7 +148,7 @@
 					</div>
 				</div>
 
-				<button type="submit" class="btn btn-primary submit-btn" disabled={loading}>
+				<button type="submit" class="btn btn-primary submit-btn" disabled={loading || !email || !password}>
 					{#if loading}
 						<span class="spinner"></span>
 						{$t.login.signingIn}
