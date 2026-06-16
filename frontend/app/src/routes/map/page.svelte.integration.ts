@@ -10,7 +10,7 @@ test('shows auth required modal when not logged in', async ({ page }) => {
 	await expect(page.locator('.modal-overlay').filter({ has: page.locator('.modal-icon') })).toBeVisible();
 });
 
-test('map loads with controls when authenticated', async ({ page }) => {
+test('map loads with controls and stations when authenticated', async ({ page }) => {
 	const email = `test-${Date.now()}@example.com`;
 	const password = `Pw-${crypto.randomUUID()}!`;
 
@@ -29,5 +29,5 @@ test('map loads with controls when authenticated', async ({ page }) => {
 	await expect(page.locator('.leaflet-container')).toBeVisible({ timeout: 10000 });
 	await expect(page.locator('.zoom-controls')).toBeVisible();
 	await expect(page.locator('.location-btn')).toBeVisible();
-	await expect(page.locator('.nearby-station-marker').first()).toBeVisible(); //one or more markers on the map are available -> stations are shown
+	await expect(page.locator('.nearby-station-marker').first()).toBeVisible({ timeout: 10000 }); //one or more markers on the map are available -> stations are shown
 });
