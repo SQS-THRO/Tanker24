@@ -28,22 +28,34 @@
 	let mapContainer: HTMLDivElement;
 	let nearbyStations: TankerkoenigStation[] = $state([]);
 	let sortedNearbyStations: TankerkoenigStation[] = $state([]);
-	let filteredStations = $derived(
-		searchQuery.trim()
+	let filteredStations: TankerkoenigStation[] = $derived.by(() => {
+		const searched = searchQuery.trim()
 			? sortedNearbyStations.filter(
 					(s) =>
 						s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
 						s.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
 						(s.street && s.street.toLowerCase().includes(searchQuery.toLowerCase()))
 				)
-			: sortedNearbyStations
-	);
+			: sortedNearbyStations;
+		if (!map) return searched;
+		const bounds = map.getBounds();
+		const center = bounds.getCenter();
+		const northEast = bounds.getNorthEast();
+		const viewRadius = center.distanceTo(northEast);
+		return searched.filter((station) => {
+			if (station.latitude == null || station.longitude == null) return false;
+			const dist = map.distance([station.latitude, station.longitude], [currentCenterLat, currentCenterLng]);
+			return dist <= viewRadius;
+		});
+	});
 	let minSelectedFuelPrice: number | null = $state(null);
 	let knownStations = new Map<string, TankerkoenigStation>();
 	let nearbyFetchError = $state('');
 	let searchQuery = $state('');
 	let userLat = $state<number | null>(null);
 	let userLng = $state<number | null>(null);
+	let currentCenterLat = $state(DEFAULT_LAT);
+	let currentCenterLng = $state(DEFAULT_LNG);
 	let user = $state<{ forename: string; surname?: string } | null>(null);
 	let showUserMenu = $state(false);
 	let showAuthModal = $state(false);
@@ -426,9 +438,11 @@
 		await fetchNearbyStations(lat, lng);
 
 		map.on('moveend', () => {
+			if (!map) return;
+			const center = map.getCenter();
+			currentCenterLat = center.lat;
+			currentCenterLng = center.lng;
 			debounce(async () => {
-				if (!map) return;
-				const center = map.getCenter();
 				await fetchNearbyStations(center.lat, center.lng);
 			}, NEARBY_DEBOUNCE_MS);
 		});
@@ -698,9 +712,9 @@
 					/>
 				</g>
 			</svg>
-			{#if nearbyStations.length > 0}
+			{#if filteredStations.length > 0}
 				<span>
-					{nearbyStations.length}
+					{filteredStations.length}
 					{$t.map.nearby}
 					{#if isNearbyLoading}
 						<span class="loading-spinner"></span>
