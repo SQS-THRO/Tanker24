@@ -55,24 +55,6 @@ The app is now running at:
 | Backend API   | http://localhost:8000/docs       |
 | Uptime-Kuma   | http://localhost:3001            |
 
-### Manual setup
-
-#### Backend
-
-```bash
-cd backend
-uv pip install --system .[dev]
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-#### Frontend
-
-```bash
-cd frontend/app
-npm install
-npm run dev
-```
-
 ### Running tests
 
 ```bash
