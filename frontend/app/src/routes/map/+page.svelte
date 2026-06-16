@@ -489,31 +489,6 @@
 		</a>
 
 		<div class="header-center">
-			<div class="search-box">
-				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-					<circle cx="11" cy="11" r="8" />
-					<path d="M21 21l-4.35-4.35" />
-				</svg>
-				<input
-					type="text"
-					placeholder={$t.map.searchPlaceholder}
-					class="search-input"
-					bind:value={searchQuery}
-					onkeydown={(e) => {
-						if (e.key === 'Enter') {
-							handleMapSearch();
-						}
-					}}
-				/>
-				{#if searchQuery}
-					<button class="search-btn" onclick={handleMapSearch} aria-label="Search map center">
-						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<path d="M5 12h14M12 5l7 7-7 7" />
-						</svg>
-					</button>
-				{/if}
-			</div>
-
 			<div class="fuel-selector-wrapper">
 				<button class="fuel-selector-btn glass" onclick={() => (showFuelDropdown = !showFuelDropdown)} aria-label={$t.map.selectFuel}>
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -632,6 +607,30 @@
 					<line x1="6" y1="6" x2="18" y2="18" />
 				</svg>
 			</button>
+		</div>
+		<div class="search-box">
+			<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+				<circle cx="11" cy="11" r="8" />
+				<path d="M21 21l-4.35-4.35" />
+			</svg>
+			<input
+				type="text"
+				placeholder={$t.map.searchPlaceholder}
+				class="search-input"
+				bind:value={searchQuery}
+				onkeydown={(e) => {
+					if (e.key === 'Enter') {
+						handleMapSearch();
+					}
+				}}
+			/>
+			{#if searchQuery}
+				<button class="search-btn" onclick={handleMapSearch} aria-label="Search map center">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M5 12h14M12 5l7 7-7 7" />
+					</svg>
+				</button>
+			{/if}
 		</div>
 		<div class="sidebar-list">
 			{#if isNearbyLoading && nearbyStations.length === 0}

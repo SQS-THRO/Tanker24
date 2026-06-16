@@ -145,7 +145,7 @@ export const translations = {
 		},
 		map: {
 			priceDevider: '.',
-			searchPlaceholder: 'Search stations...',
+			searchPlaceholder: 'Filter stations...',
 			searchNoResults: 'No stations match your search',
 			nearby: 'Nearby',
 			back: 'Back',
@@ -413,7 +413,7 @@ export const translations = {
 		},
 		map: {
 			priceDevider: ',',
-			searchPlaceholder: 'Tankstellen suchen...',
+			searchPlaceholder: 'Tankstellen filtern...',
 			searchNoResults: 'Keine Tankstellen entsprechen deiner Suche',
 			nearby: 'In der Nähe',
 			back: 'Zurück',
