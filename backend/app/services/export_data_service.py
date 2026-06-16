@@ -64,7 +64,6 @@ class NestedExportDataService(ExportDataService):
 
 		except SQLAlchemyError as e:
 			logger.exception("Database error during nested export for user_id=%d", user_id)
-			await self.db.rollback()
 			raise HTTPException(
 				status_code=503,
 				detail="Database temporarily unavailable.",
@@ -104,7 +103,6 @@ class FlatExportDataService(ExportDataService):
 			return result
 		except SQLAlchemyError as e:
 			logger.exception("Database error during flat export for user_id=%d", user_id)
-			await self.db.rollback()
 			raise HTTPException(
 				status_code=503,
 				detail="Database temporarily unavailable.",

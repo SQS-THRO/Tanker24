@@ -95,6 +95,7 @@ class StationRepository:
 				db_station.cache_lat = cache_lat
 				db_station.cache_lon = cache_lon
 				db_station.cache_radius = cache_radius
+				db_station.tankerkoenig_id = station.id
 			else:
 				db_station = Station(
 					tankerkoenig_id=station.id,
