@@ -36,6 +36,8 @@
 
 	const confirmPasswordValid = $derived(confirmPassword && password === confirmPassword);
 
+	const invitationKeyValid = $derived(/^[a-f0-9]{32}$/.test(invitationKey));
+
 	function handleEmailInput() {
 		if (email && !emailValid()) {
 			error = '';
@@ -113,11 +115,27 @@
 				<div class="form-row">
 					<div class="form-group">
 						<label for="first_name">{$t.register.firstName}</label>
-						<input type="text" id="first_name" bind:value={first_name} placeholder={$t.register.firstNamePlaceholder} class="input" disabled={loading} />
+						<input
+							type="text"
+							id="first_name"
+							bind:value={first_name}
+							placeholder={$t.register.firstNamePlaceholder}
+							class="input"
+							class:input-success={first_name}
+							disabled={loading}
+						/>
 					</div>
 					<div class="form-group">
 						<label for="last_name">{$t.register.lastName}</label>
-						<input type="text" id="last_name" bind:value={last_name} placeholder={$t.register.lastNamePlaceholder} class="input" disabled={loading} />
+						<input
+							type="text"
+							id="last_name"
+							bind:value={last_name}
+							placeholder={$t.register.lastNamePlaceholder}
+							class="input"
+							class:input-success={last_name}
+							disabled={loading}
+						/>
 					</div>
 				</div>
 
@@ -162,7 +180,32 @@
 						<svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
 						</svg>
-						<input type="text" id="invitationKey" bind:value={invitationKey} placeholder={$t.register.invitationKeyPlaceholder} class="input with-icon" disabled={loading} />
+						<input
+							type="text"
+							id="invitationKey"
+							bind:value={invitationKey}
+							placeholder={$t.register.invitationKeyPlaceholder}
+							class="input with-icon"
+							class:input-error={invitationKey && !invitationKeyValid}
+							class:input-success={invitationKeyValid}
+							disabled={loading}
+						/>
+					</div>
+					<div class="field-error-wrapper" class:visible={invitationKey && !invitationKeyValid}>
+						<div class="field-error">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<line x1="18" y1="6" x2="6" y2="18" />
+								<line x1="6" y1="6" x2="18" y2="18" />
+							</svg>
+							<span>{$t.register.invitationKeyLength}</span>
+						</div>
+						<div class="field-error">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<line x1="18" y1="6" x2="6" y2="18" />
+								<line x1="6" y1="6" x2="18" y2="18" />
+							</svg>
+							<span>{$t.register.invitationKeyChars}</span>
+						</div>
 					</div>
 				</div>
 
@@ -181,6 +224,8 @@
 							onblur={() => (passwordFocused = false)}
 							placeholder={$t.register.passwordPlaceholder}
 							class="input with-icon toggle-btn"
+							class:input-error={password && !passwordValid}
+							class:input-success={password && passwordValid}
 							disabled={loading}
 						/>
 						<button type="button" class="toggle-password" onclick={() => (showPassword = !showPassword)}>
