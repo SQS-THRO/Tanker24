@@ -20,9 +20,9 @@ If you started the docker container with the demo composer command the database 
 
 ## Usage
 
-After logging in, you will be redirected to the map view. The map displays gas stations near your current location, including their current fuel prices. You can move around the map by dragging it with the left mouse button or by entering a location in the search bar.
+After logging in, you will be redirected to the map view. The map displays gas stations near your current location, including their current fuel prices. You can move around the map by dragging it with the left mouse button. 
 
-On the left-hand side of the map view, you will find a list of nearby gas stations. This list is sorted by price in ascending order. You can change the selected fuel type using the dropdown menu next to the search bar at the top of the screen.
+On the left-hand side of the map view, you will find a list of nearby gas stations. This list is sorted by price in ascending order. You can change the selected fuel type using the dropdown menu next to the search bar at the top of the screen. The filter bar at the top of the list allows the user to filter through the list of stations in the current search radius by its location.
 
 To record a refueling, click on a gas station icon on the map and then click **Record**. Enter the required data and click **Save**. Your refueling history can be viewed on your account page. From there, you can also delete records and export your refueling data as either a nested JSON file or a flat CSV file.
 
