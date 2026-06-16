@@ -1,0 +1,84 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+      - '.github/workflows/test_integration.yml'
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+      - '.github/workflows/test_integration.yml'
+
+jobs:
+  integration:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Create .env file with our example values
+        run: |
+          echo "SECRET=supersecretkey" > .env
+          echo "PUBLIC_BACKEND_URL=http://localhost:8000" >> .env
+          echo "CORS_ORIGINS=http://localhost:3000" >> .env
+          echo "INVITATION_KEYS=901563b82fa7adcbbc2a7e885f143c57,901563b82fa7adcbbc2a7e885f143c58,901563b82fa7adcbbc2a7e885f143c59" >> .env #added more than one key, to be able to test with multiple users
+          echo "POSTGRES_USER=postgres" >> .env
+          echo "POSTGRES_PASSWORD=postgres" >> .env
+          echo "POSTGRES_DB=tanker24" >> .env
+          echo "POSTGRES_HOST=postgres" >> .env
+          echo "POSTGRES_PORT=5432" >> .env
+          echo "TANKERKOENIG_API_KEY=00000000-0000-0000-0000-000000000002" >> .env
+          echo "NEARBY_STATIONS_RATE_LIMIT=10/minute" >> .env
+
+      - name: deploy compose stack
+        run: |
+          docker compose -f compose.integration.yaml up -d --build
+          # Wait for the backend to be healthy
+          until curl -s http://localhost:8000/health; do
+            echo "Waiting for backend to be healthy..."
+            sleep 2
+          done
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: frontend/app/package-lock.json
+      
+      - name: Install dependencies
+        working-directory: frontend/app
+        run: npm install
+
+      - name: Install Playwright browsers and system deps
+        working-directory: frontend/app
+        run: |
+          npx playwright install chromium
+          npx playwright install-deps chromium
+
+      - name: Run integration tests
+        working-directory: frontend/app
+        run: npx playwright test --config=playwright.integration.config.ts
+
+      - name: Dump compose logs
+        if: failure()
+        run: docker compose -f compose.integration.yaml logs --timestamps
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-integration
+          path: frontend/app/playwright-report/
+          retention-days: 7
+
+      - name: Tear down compose stack
+        if: always()
+        run: docker compose -f compose.integration.yaml down -v
