@@ -16,7 +16,10 @@ test.describe('account flow', () => {
 		await page.fill('#confirmPassword', password);
 		await page.fill('#invitationKey', '901563b82fa7adcbbc2a7e885f143c57');
 		await page.click('button[type="submit"]');
+		await page.waitForFunction(() => localStorage.getItem('token') !== null, { timeout: 15000 });
+		await page.goto('/account');
 		await page.waitForURL('**/account');
+		await page.locator('.modal-overlay .btn-secondary').click();
 	});
 
 	test('can log in with valid credentials', async ({ page }) => {
@@ -29,7 +32,10 @@ test.describe('account flow', () => {
 		await page.fill('#email', email);
 		await page.fill('#password', password);
 		await page.click('button[type="submit"]');
+		await page.waitForFunction(() => localStorage.getItem('token') !== null, { timeout: 15000 });
+		await page.goto('/account');
 		await page.waitForURL('**/account');
+		await page.locator('.modal-overlay .btn-secondary').click();
 		await expect(page.locator('.profile-header')).toBeVisible();
 	});
 

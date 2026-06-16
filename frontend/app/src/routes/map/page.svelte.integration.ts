@@ -23,10 +23,7 @@ test('map loads with controls when authenticated', async ({ page }) => {
 	await page.fill('#confirmPassword', password);
 	await page.fill('#invitationKey', '901563b82fa7adcbbc2a7e885f143c57');
 	await page.click('button[type="submit"]');
-	await page.waitForURL('**/account');
-
-	await page.goto('/map');
-	await page.locator('.modal-overlay .btn-secondary').click();
+	await page.waitForURL('**/map');
 
 	await expect(page.locator('.map-container')).toBeVisible();
 	await expect(page.locator('.leaflet-container')).toBeVisible({ timeout: 10000 });
