@@ -242,6 +242,13 @@ module.exports = {
 			comment: 'Utilities must not depend on other lib modules or routes.',
 			from: { path: '^src/lib/utils/' },
 			to: { path: '^(src/routes/|src/lib/)', pathNot: ['^src/lib/utils/'] }
+		},
+		{
+			name: 'only-services-to-requests-util',
+			severity: 'error',
+			comment: 'Only Services can include the requests util.',
+			from: { pathNot: '^src/lib/services/' },
+			to: { path: '^src/lib/utils/requests.ts' }
 		}
 	],
 	options: {
