@@ -17,7 +17,9 @@ test('can register and will be logged in after', async ({ page }) => {
 
 	await page.click('button[type="submit"]');
 
-	await page.waitForURL('**/account');
+	await page.waitForFunction(() => localStorage.getItem('token') !== null, { timeout: 15000 });
 
-	await expect(page.locator('.profile-header')).toBeVisible();
+	await page.waitForURL('**/map');
+
+	await expect(page.locator('.map-container')).toBeVisible();
 });

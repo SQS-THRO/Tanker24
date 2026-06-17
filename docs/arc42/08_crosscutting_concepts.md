@@ -249,7 +249,8 @@ The diagram below displays the allowed and forbidden namespace imports of the ba
 [routers] -down-> [dtos]
 [repositories] -down-> [schemas]
 ```
-The diagram below displays the allowed and forbidden namespace imports of the frontend application. Routes form the entry point of the frontend application and use services and stores to provide functionality routes. Components can be included into route pages and i18n supply everything with translated display text.
+The diagram below displays the most important allowed and forbidden namespace imports of the frontend application. Routes form the entry point of the frontend application and use services and stores to provide functionality routes. Components can be included into route pages and i18n supply everything with translated display text.
+
 ```puml
 [routes]
 [components]
@@ -261,35 +262,28 @@ The diagram below displays the allowed and forbidden namespace imports of the fr
 
 ' --- forbidden ---
 [components] -[#red]up-> [routes]: <color:red>forbidden</color>
-[components] -[#red]left-> [services]: <color:red>forbidden</color>
+[stores] -[#red]right-> [routes]: <color:red>forbidden</color>
 [services] -[#red]up-> [routes]: <color:red>forbidden</color>
-[services] -[#red]left-> [components]: <color:red>forbidden</color>
-[services] -[#red]left-> [stores]: <color:red>forbidden</color>
-[services] -[#red]left-> [i18n]: <color:red>forbidden</color>
-[services] -[#red]left-> [assets]: <color:red>forbidden</color>
-[stores] -[#red]up-> [routes]: <color:red>forbidden</color>
-[stores] -[#red]left-> [components]: <color:red>forbidden</color>
-[stores] -[#red]left-> [assets]: <color:red>forbidden</color>
+[services] -[#red]up-> [components]: <color:red>forbidden</color>
+[services] -[#red]up-> [stores]: <color:red>forbidden</color>
 
 ' --- allowed ---
 [routes] -down-> [components]
 [routes] -down-> [services]
 [routes] -down-> [stores]
 [routes] -down-> [i18n]
-[routes] -down-> [utils]
 [routes] -down-> [assets]
 
 [components] -down-> [stores]
 [components] -down-> [i18n]
-[components] -down-> [utils]
 [components] -down-> [assets]
 
 [services] -down-> [utils]
 
 [stores] -down-> [services]
 [stores] -down-> [i18n]
-[stores] -down-> [utils]
 ```
+*The important rules are shown in the diagram above. All imports not explicitly shown in the diagram are not allowed.
 
 ### 8.10.8 GitHub CI Integration for Test Execution
 The GitHub Pipeline executes the tests every time new code is pushed to an pull request in the repository. The tests suite contains unit tests, integration tests, system tests, architecture tests, E2E tests, performance tests and penetration tests. For extra insights into the system the pipeline triggers static code analysis with an external sonar qube instance as well. The pipeline fails and prevents merges in pull requests if any of the pipeline stages fail.  

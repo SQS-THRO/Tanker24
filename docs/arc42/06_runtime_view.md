@@ -57,7 +57,7 @@ FE --> User: Map is displayed with station markers
 - If the user exceeds the rate limit, a `429 Too Many Requests` response is returned.
 - If `latitude` or `longitude` are out of valid range, a `400 Bad Request` is returned.
 
-## 6.2 Scenario: User Registration (UC5, UC6)
+## 6.2 Scenario: User Registration (UC5)
 
 A new user registers with an invitation key.
 
