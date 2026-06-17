@@ -28,7 +28,7 @@ Then start it like this
 cp .env.example .env
 ```
 
-To use the ``skeleton`` or ```default`` version of Tanker24
+To use the `skeleton` or `default` version of Tanker24
 
 ```bash
 docker compose up -d
@@ -43,7 +43,7 @@ docker compose -f compose.yaml -f compose.demo.yaml up --build -d
 Demo credentials: max@tanker24.eu / Tanker24.eu
 
 
-# Demo setup
+# Demo Database Creation Process
 
 Creating a new database dump should be done with this command:
 

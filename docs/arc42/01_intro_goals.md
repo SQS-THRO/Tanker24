@@ -35,11 +35,14 @@ user --> UC4.1
 user --> UC4.2
 user --> UC6
 user --> UC7
-UC3 .right.> UC5: <<include>>
+UC3 ..> UC5: <<include>>
 UC6 .> UC5: <<include>>
 UC4 ..> UC5: <<include>>
 UC4.1 ..> UC4: <<extend>>
 UC4.2 ..> UC4: <<extend>>
+UC1 ..> UC5: <<include>>
+UC2 ..> UC5: <<include>>
+UC7 ..> UC5: <<include>>
 
 json Legend{
     "palegreen": "Main use case",
