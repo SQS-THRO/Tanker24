@@ -37,7 +37,7 @@
 ### Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) and Docker Compose
-- Or: [uv](https://docs.astral.sh/uv/) (Python), [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) (Node.js), and [PostgreSQL](https://www.postgresql.org/download/) 18
+- Or: [uv](https://docs.astral.sh/uv/) (Python 3.14), [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) (Node.js 24), and [PostgreSQL](https://www.postgresql.org/download/) 18
 
 ### Docker (recommended)
 
@@ -55,24 +55,6 @@ The app is now running at:
 | Backend API   | http://localhost:8000/docs       |
 | Uptime-Kuma   | http://localhost:3001            |
 
-### Manual setup
-
-#### Backend
-
-```bash
-cd backend
-uv pip install --system .[dev]
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-#### Frontend
-
-```bash
-cd frontend/app
-npm install
-npm run dev
-```
-
 ### Running tests
 
 ```bash
@@ -80,7 +62,7 @@ npm run dev
 cd backend && pytest tests/ -v --cov=app
 
 # Frontend
-cd frontend/app && npm test
+cd frontend/app && npm run test:unit
 ```
 
 ## Contributors
