@@ -7,6 +7,9 @@
 
 Check out the [usage](usage) section for further information, including how to [install](installation) the project.
 
+[ :fontawesome-regular-play-circle: Usage intro ](usage){ .md-button }
+[ :simple-docker: Installation guide  ](install){ .md-button }
+
 ## Project Vision
 With Tanker24 we want to showcase Software Quality Assurance methods on an important real world tool. As gas prices rise in Germany many people use Apps or Websites to check gas prices in their area. Tanker24 will implement such a website and enable users to track their gas price history.
 
