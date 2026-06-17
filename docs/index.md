@@ -15,7 +15,7 @@ With Tanker24 we want to showcase Software Quality Assurance methods on an impor
 
 !!! abstract "System Vision"
 
-    For german car drivers who need to check gas prices Tanker24 is a web service that allows them to see all real time gas prices in their vicinity and track their expenditures. 
+    For german car drivers who need to check gas prices, Tanker24 is a web service that allows them to see all real-time gas prices in their vicinity and track their expenditures. 
 
 The system vision schema is based on: G. Beneken, F. Hummel und M. Kucich, Grundkurs agiles Software-Engineering: Ein Handbuch für Studium und Praxis. Wiesbaden, Germany: Springer Vieweg, 2022. doi: 10.1007/978-3-658-37371-9
 
