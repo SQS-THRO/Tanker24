@@ -88,8 +88,6 @@ markdown_extensions:
 nav:
   - Home:
     - index.md
-    - Entity-Relationship model: er-model.md
-    - Class model: class-model.md
   - Getting started:
     - Installation: installation.md
     - Usage: usage.md
