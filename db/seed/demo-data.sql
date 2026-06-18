@@ -340,7 +340,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 INSERT INTO public.cars VALUES (1, 'Pickup', 'HO-DF-7841', 1);
-INSERT INTO public.cars VALUES (2, 'Schr├ñghecklimo', 'HO-LE-5889', 1);
+INSERT INTO public.cars VALUES (2, 'Schraeghecklimo', 'HO-LE-5889', 1);
 
 
 --
