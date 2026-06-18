@@ -48,5 +48,5 @@ Demo credentials: max@tanker24.eu / Tanker24.eu
 Creating a new database dump should be done with this command:
 
 ```bash
-docker exec -t postgres_db pg_dump -U myuser -d tanker24 --clean --if-exists --inserts > db/seed/demo-data.sql
+docker exec postgres_db pg_dump -U myuser -d tanker24 --clean --if-exists --inserts > db/seed/demo-data.sql
 ```
